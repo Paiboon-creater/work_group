@@ -78,7 +78,7 @@
     .emp-badge span { color: #ef4444; cursor: pointer; font-weight: bold; }
 
     .preview-table-wrapper { width: 100%; overflow-x: auto; margin-top: 15px; border-radius: 8px; border: 2px solid var(--blue-primary); }
-    .preview-table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: center; }
+    .preview-table { width: 100%; border-collapse: collapse; font-size: 12px; text-align: center; }
     .preview-table th { background: var(--blue-primary); color: white; padding: 8px 4px; font-weight: 700; }
     .preview-table td { padding: 6px 4px; border-bottom: 1px solid var(--border-dim); background: #fff; }
 
@@ -147,7 +147,7 @@
         <thead>
           <tr>
             <th>พนักงาน</th>
-            <th>ใบสั่งงาน / ชิ้นงาน / ขั้นตอน / เป้า</th>
+            <th>รหัส 5 หลัก / ใบสั่ง / ขั้นตอน</th>
             <th>ชม.</th>
             <th>ยอดผลิต</th>
             <th>EFF%</th>
@@ -213,11 +213,9 @@
         empDatalist.appendChild(opt);
       });
 
-      // ⚡ บรรจุข้อมูลเลขออเดอร์พร้อม ID ลงใน datalist ให้พิมพ์ค้นหาได้ทันที
       const orderDatalist = document.getElementById('order_datalist');
       globalOrders.forEach(ord => {
         let opt = document.createElement('option');
-        // แสดงทั้งเลขที่ใบสั่งและ ID ให้เห็นชัดเจน
         opt.value = `${ord.order_no} (ID: ${ord.id_order})`;
         orderDatalist.appendChild(opt);
       });
@@ -264,9 +262,7 @@
 
     if(!rawVal) return;
 
-    // ดึงเฉพาะเลขออเดอร์ก่อนวงเล็บ (รองรับทั้งกรณีพิมพ์เองหรือเลือกจาก datalist)
     let orderNoClean = rawVal.split('(')[0].trim().toLowerCase();
-
     const foundOrd = globalOrders.find(o => String(o.order_no).trim().toLowerCase() === orderNoClean);
     if(!foundOrd) return;
 
@@ -298,11 +294,12 @@
 
       let opt = document.createElement('option');
       opt.value = JSON.stringify({ 
-        id_target: t.id_target, 
-        id_work: foundOrd.id_work, 
+        id_target: parseInt(t.id_target), 
+        id_work: parseInt(t.id_work), 
         target_amount: t.target_amount 
       });
-      opt.textContent = `ชิ้นงาน: ${workCode} | ขั้นตอน: ${stepName} (เป้า: ${t.target_amount}/ชม.)`;
+      // แสดงรหัส 5 หลัก (id_target) ชัดเจนใน Dropdown ตัวเลือก
+      opt.textContent = `[รหัส 5 หลัก: #${t.id_target}] ${workCode} | ขั้นตอน: ${stepName} (เป้า: ${t.target_amount}/ชม.)`;
       targetSelect.appendChild(opt);
     });
 
@@ -398,8 +395,8 @@
           order_text: foundOrd.order_no,
           work_code: workCodeText,
           step_name: stepNameText,
-          id_target: targetData.id_target,
-          id_work: targetData.id_work,
+          id_target: parseInt(targetData.id_target),
+          id_work: parseInt(targetData.id_work),
           target_amount: targetData.target_amount,
           total_qty: qty
         });
@@ -438,22 +435,26 @@
 
         let effColor = eff >= 85 ? '#10b981' : '#ef4444';
 
+        // บันทึก id_target ลง Payload อย่างถูกต้องสมบูรณ์
         preparedPayload.push({
           record_date: dateVal,
-          id_order: task.id_order,
-          id_work: task.id_work,
-          id_target: task.id_target,
-          id_name: emp.id_name,
+          id_order: parseInt(task.id_order),
+          id_work: parseInt(task.id_work),
+          id_target: parseInt(task.id_target),
+          id_name: parseInt(emp.id_name),
           hour_work: parseFloat(empAssignedHours.toFixed(2)),
           work_period: "ปกติ",
-          produced_amount: assignedQty,
+          produced_amount: parseInt(assignedQty),
           nogoods_amount: 0,
           remark: `Batch Smart-Allocated`
         });
 
         previewHtml += `<tr>
           <td>${emp.name}</td>
-          <td style="text-align: left; padding-left: 8px;"><b>${task.order_text}</b><br><span style="font-size:11px; color:#6b7280;">ชิ้นงาน: ${task.work_code} | ขั้นตอน: ${task.step_name} (เป้า: ${task.target_amount}/ชม.)</span></td>
+          <td style="text-align: left; padding-left: 8px;">
+            <b style="color:var(--blue-dark);">[#${task.id_target}]</b> <b>${task.order_text}</b><br>
+            <span style="font-size:11px; color:#6b7280;">ชิ้นงาน: ${task.work_code} | ขั้นตอน: ${task.step_name} (เป้า: ${task.target_amount}/ชม.)</span>
+          </td>
           <td>${empAssignedHours.toFixed(2)}</td>
           <td style="color: #059669; font-weight: bold;">${assignedQty.toLocaleString()}</td>
           <td style="color: ${effColor}; font-weight: bold;">${eff.toFixed(1)}%</td>
