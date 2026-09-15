@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>⚡ BATCH PACKING // CYBER BLUE ⚡</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&display=swap');
+    :root {
+      --bg-blue: #1e3a8a; --panel-bg: #ffffff; --blue-primary: #2563eb; 
+      --blue-dark: #1e40af; --blue-light: #eff6ff; --blue-gold: #f59e0b; 
+      --text-main: #1f2937; --text-muted: #6b7280; --input-bg: #fafafa; --border-dim: #e5e7eb;
+    }
+    body {
+      font-family: 'Kanit', sans-serif;
+      background: linear-gradient(135deg, #0f172a, #1e3a8a, #3b82f6);
+      background-attachment: fixed; color: var(--text-main);
+      margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; min-height: 100vh;
+    }
+    .terminal-container {
+      width: 100%; max-width: 650px; background: var(--panel-bg);
+      padding: 20px 15px; border-radius: 12px; border: 3px solid var(--blue-gold);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 15px rgba(245, 158, 11, 0.4);
+      margin-bottom: 15px; box-sizing: border-box;
+    }
+    .app-header {
+      display: flex; align-items: center; justify-content: center; gap: 15px;
+      border-bottom: 3px solid var(--blue-gold); padding-bottom: 12px; margin-bottom: 15px;
+    }
+    .emblem {
+      width: 50px; height: 50px; background: var(--blue-primary); border: 3px solid var(--blue-gold);
+      border-radius: 50%; display: flex; justify-content: center; align-items: center;
+      box-shadow: 0 0 15px rgba(245, 158, 11, 0.6);
+    }
+    .emblem i { font-size: 24px; color: var(--blue-gold); }
+    .app-title { font-size: 1.3rem; font-weight: 800; font-style: italic; color: var(--blue-primary); margin: 0; text-transform: uppercase; }
+    
+    .form-group { margin-bottom: 15px; }
+    .form-group label { display: block; margin-bottom: 6px; font-size: 15px; font-weight: 700; color: var(--blue-dark); }
+    input, select {
+      width: 100%; padding: 12px; background-color: var(--input-bg); border: 2px solid var(--border-dim); 
+      color: var(--text-main); font-weight: 600; border-radius: 8px; box-sizing: border-box; font-family: inherit; font-size: 16px;
+    }
+    input[type="date"] { text-align: center; }
+    input:focus, select:focus { border-color: var(--blue-gold); outline: none; box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.2); background-color: #fff; }
+
+    .task-row-box {
+      background: var(--blue-light); border: 2px dashed var(--blue-primary); padding: 10px; border-radius: 8px; margin-bottom: 8px; display: flex; gap: 8px; align-items: center;
+    }
+    .task-row-grid { display: flex; gap: 8px; flex: 1; }
+    .remove-task-btn {
+      background: #ef4444; color: white; border: none; width: 40px; border-radius: 8px; cursor: pointer; font-size: 16px; display: flex; justify-content: center; align-items: center;
+    }
+
+    .nav-buttons-wrapper { display: flex; gap: 10px; margin-bottom: 15px; }
+    .nav-btn {
+      display: flex; align-items: center; justify-content: center; gap: 8px; flex: 1;
+      background: #fff; color: var(--blue-primary); border: 2px solid var(--blue-primary);
+      padding: 10px; font-size: 14px; border-radius: 8px; text-decoration: none; font-weight: 700; text-transform: uppercase;
+    }
+    .nav-btn:hover { background: var(--blue-primary); color: #fff; }
+
+    .emp-input-row { display: flex; gap: 8px; margin-bottom: 8px; }
+    .add-btn {
+      background: var(--blue-primary); color: white; border: none; padding: 0 15px; border-radius: 8px; font-weight: bold; cursor: pointer; white-space: nowrap;
+    }
+    .selected-emp-list {
+      display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px;
+    }
+    .emp-badge {
+      background: var(--blue-light); border: 1px solid var(--blue-primary); color: var(--blue-dark);
+      padding: 5px 10px; border-radius: 20px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px;
+    }
+    .emp-badge span { color: #ef4444; cursor: pointer; font-weight: bold; }
+
+    .preview-table-wrapper { width: 100%; overflow-x: auto; margin-top: 15px; border-radius: 8px; border: 2px solid var(--blue-primary); }
+    .preview-table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: center; }
+    .preview-table th { background: var(--blue-primary); color: white; padding: 8px 4px; font-weight: 700; }
+    .preview-table td { padding: 6px 4px; border-bottom: 1px solid var(--border-dim); background: #fff; }
+
+    .action-btn {
+      width: 100%; background: linear-gradient(90deg, var(--blue-dark), var(--blue-primary)); color: #ffffff; border: 2px solid var(--blue-gold); padding: 16px; font-size: 18px;
+      border-radius: 8px; cursor: pointer; font-weight: 800; font-style: italic; margin-top: 15px; font-family: inherit; box-shadow: 0 6px 15px rgba(37, 99, 235, 0.4); text-transform: uppercase;
+    }
+    .action-btn:hover { background: linear-gradient(90deg, var(--blue-primary), var(--blue-gold)); }
+    .preview-btn {
+      background: #10b981; border-color: #059669; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+    }
+  </style>
+</head>
+<body>
+
+<div class="terminal-container">
+  <div class="nav-buttons-wrapper">
+    <a href="https://paiboon-creater.github.io/daily-production/" class="nav-btn"><i class="fa-solid fa-house"></i> หน้าหลัก</a>
+    <a href="#" class="nav-btn" style="background: var(--blue-primary); color: #fff;"><i class="fa-solid fa-users-gear"></i> งานกลุ่ม (Active)</a>
+  </div>
+
+  <div class="app-header">
+    <div class="emblem"><i class="fa-solid fa-boxes-packing"></i></div>
+    <div><h1 class="app-title">⚡ บันทึกแพ็คกิ้งกลุ่ม (Smart Batch)</h1></div>
+  </div>
+
+  <form id="batchForm" onsubmit="event.preventDefault();">
+    
+    <div class="form-group">
+      <label>📅 1. วันที่ทำงาน</label>
+      <input type="date" id="batch_date" required>
+    </div>
+
+    <div class="form-group">
+      <label>⏱️ 2. ชั่วโมงทำงานปกติ / คน</label>
+      <input type="number" id="batch_hours" value="8" step="0.5" required>
+    </div>
+
+    <div class="form-group">
+      <label>🏃 3. เพิ่มรายชื่อพนักงาน (พิมพ์ค้นหาและกดเพิ่มทีละคน)</label>
+      <div class="emp-input-row">
+        <input type="text" id="emp_search_input" list="emp_datalist" placeholder="พิมพ์ชื่อพนักงาน..." autocomplete="off">
+        <button type="button" class="add-btn" onclick="addEmployee()"><i class="fa-solid fa-plus"></i> เพิ่ม</button>
+      </div>
+      <datalist id="emp_datalist"></datalist>
+      <div class="selected-emp-list" id="selectedEmpContainer"></div>
+    </div>
+
+    <div class="form-group">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+        <label style="margin:0;">📦 4. รายการใบสั่งงานและยอดผลิตรวม</label>
+        <button type="button" class="add-btn" style="padding: 6px 12px; font-size: 13px;" onclick="addTaskRow()"><i class="fa-solid fa-plus"></i> เพิ่มใส่งาน</button>
+      </div>
+      
+      <div id="taskRowsContainer"></div>
+      <datalist id="order_datalist"></datalist>
+    </div>
+
+    <button type="button" class="action-btn preview-btn" onclick="generatePreview()"><i class="fa-solid fa-eye"></i> พรีวิวตารางงานก่อนบันทึก</button>
+  </form>
+
+  <div id="previewSection" style="display: none;">
+    <h3 style="color: var(--blue-primary); font-size: 1.1rem; text-align: center; margin: 20px 0 10px 0; font-weight: 800; font-style: italic;">⚡ พรีวิวข้อมูลก่อนบันทึกจริง</h3>
+    <div class="preview-table-wrapper">
+      <table class="preview-table">
+        <thead>
+          <tr>
+            <th>พนักงาน</th>
+            <th>ใบสั่งงาน</th>
+            <th>ชม.</th>
+            <th>ยอดผลิต</th>
+          </tr>
+        </thead>
+        <tbody id="previewTbody"></tbody>
+      </table>
+    </div>
+    <button type="button" class="action-btn" id="confirmSubmitBtn" onclick="executeBatchSubmit()"><i class="fa-solid fa-bolt"></i> ยืนยันบันทึกข้อมูลด้วยความเร็วแสง!</button>
+  </div>
+</div>
+
+<script>
+  const SUPABASE_URL = "https://siiiifesdjuunwmwozfb.supabase.co/rest/v1";
+  const SUPABASE_KEY = "sb_publishable_ohToE8Z_Fzo87uBtzdPDIg_cqHCi3HT";
+  const headers = { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY, "Content-Type": "application/json", "Prefer": "return=representation" };
+
+  let globalOrders = [];
+  let globalEmployees = [];
+  let selectedEmployeeList = [];
+  let preparedPayload = [];
+
+  window.onload = async function() {
+    document.getElementById('batch_date').value = new Date().toISOString().split('T')[0];
+
+    try {
+      const [ordersRes, empsRes] = await Promise.all([
+        fetch(SUPABASE_URL + "/orders?select=*", { headers }),
+        fetch(SUPABASE_URL + "/employees?select=*", { headers })
+      ]);
+
+      if(ordersRes.ok) globalOrders = await ordersRes.json();
+      if(empsRes.ok) {
+        globalEmployees = await empsRes.json();
+        globalEmployees.sort((a, b) => (a.name || '').localeCompare(b.name || '', 'th'));
+      }
+
+      const empDatalist = document.getElementById('emp_datalist');
+      globalEmployees.forEach(emp => {
+        let opt = document.createElement('option');
+        opt.value = emp.name;
+        empDatalist.appendChild(opt);
+      });
+
+      const orderDatalist = document.getElementById('order_datalist');
+      globalOrders.forEach(ord => {
+        let opt = document.createElement('option');
+        opt.value = `${ord.order_no} [ID:${ord.id_order}]`;
+        orderDatalist.appendChild(opt);
+      });
+
+      addTaskRow();
+    } catch(e) {
+      alert("⚠️ โหลดข้อมูลไม่สำเร็จ: " + e.message);
+    }
+  };
+
+  function addTaskRow() {
+    const container = document.getElementById('taskRowsContainer');
+    const div = document.createElement('div');
+    div.className = 'task-row-box';
+    div.innerHTML = `
+      <div class="task-row-grid">
+        <input type="text" class="order-search" list="order_datalist" placeholder="พิมพ์ค้นหารหัส/เลขที่ใบสั่งงาน..." autocomplete="off">
+        <input type="number" class="order-qty" placeholder="ยอดรวม (ชิ้น)">
+      </div>
+      <button type="button" class="remove-task-btn" onclick="this.parentElement.remove()"><i class="fa-solid fa-trash"></i></button>
+    `;
+    container.appendChild(div);
+  }
+
+  function addEmployee() {
+    const input = document.getElementById('emp_search_input');
+    const nameVal = input.value.trim();
+    if(!nameVal) return;
+
+    const empObj = globalEmployees.find(e => e.name === nameVal);
+    if(!empObj) {
+      alert("⚠️ ไม่พบชื่อพนักงานนี้ในระบบ กรุณาเลือกจากรายการค้นหา");
+      return;
+    }
+
+    if(selectedEmployeeList.some(e => e.id_name === empObj.id_name)) {
+      alert("⚠️ พนักงานคนนี้ถูกเพิ่มไปแล้วครับ");
+      input.value = '';
+      return;
+    }
+
+    selectedEmployeeList.push(empObj);
+    renderSelectedEmployees();
+    input.value = '';
+    input.focus();
+  }
+
+  function removeEmployee(id_name) {
+    selectedEmployeeList = selectedEmployeeList.filter(e => e.id_name !== id_name);
+    renderSelectedEmployees();
+  }
+
+  function renderSelectedEmployees() {
+    const container = document.getElementById('selectedEmpContainer');
+    container.innerHTML = '';
+    selectedEmployeeList.forEach(emp => {
+      let badge = document.createElement('div');
+      badge.className = 'emp-badge';
+      badge.innerHTML = `${emp.name} <span onclick="removeEmployee(${emp.id_name})">&times;</span>`;
+      container.appendChild(badge);
+    });
+  }
+
+  function generatePreview() {
+    const dateVal = document.getElementById('batch_date').value;
+    const totalHoursPerEmp = parseFloat(document.getElementById('batch_hours').value) || 8;
+
+    if(selectedEmployeeList.length === 0) {
+      alert("⚠️ กรุณาเพิ่มรายชื่อพนักงานอย่างน้อย 1 คนครับ!");
+      return;
+    }
+
+    let tasks = [];
+    document.querySelectorAll('.task-row-box').forEach(box => {
+      let searchText = box.querySelector('.order-search').value.trim();
+      let qty = parseFloat(box.querySelector('.order-qty').value) || 0;
+
+      if(searchText && qty > 0) {
+        let orderId = null;
+        let match = searchText.match(/\[ID:(\d+)\]/);
+        if(match) {
+          orderId = parseInt(match[1]);
+        } else {
+          let found = globalOrders.find(o => String(o.order_no) === searchText || String(o.id_order) === searchText);
+          if(found) orderId = found.id_order;
+        }
+
+        if(orderId) {
+          tasks.push({ id_order: orderId, order_text: searchText, total_qty: qty });
+        }
+      }
+    });
+
+    if(tasks.length === 0) {
+      alert("⚠️ กรุณาระบุใบสั่งงาน (จากรายการค้นหา) และยอดผลิตให้ถูกต้องอย่างน้อย 1 รายการครับ!");
+      return;
+    }
+
+    preparedPayload = [];
+    let hoursPerTask = totalHoursPerEmp / tasks.length;
+    let previewHtml = '';
+
+    selectedEmployeeList.forEach(emp => {
+      tasks.forEach(task => {
+        let assignedQty = Math.round(task.total_qty / selectedEmployeeList.length);
+
+        preparedPayload.push({
+          record_date: dateVal,
+          id_order: task.id_order,
+          id_name: emp.id_name,
+          hour_work: parseFloat(hoursPerTask.toFixed(2)),
+          work_period: "ปกติ",
+          produced_amount: assignedQty,
+          nogoods_amount: 0,
+          remark: "Batch Packing Smart-Allocated"
+        });
+
+        previewHtml += `<tr>
+          <td>${emp.name}</td>
+          <td style="text-align: left; padding-left: 8px;">${task.order_text}</td>
+          <td>${hoursPerTask.toFixed(1)}</td>
+          <td style="color: #059669; font-weight: bold;">${assignedQty.toLocaleString()}</td>
+        </tr>`;
+      });
+    });
+
+    document.getElementById('previewTbody').innerHTML = previewHtml;
+    document.getElementById('previewSection').style.display = 'block';
+    document.getElementById('previewSection').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  async function executeBatchSubmit() {
+    if(preparedPayload.length === 0) return;
+    if(!confirm(`ยืนยันการบันทึกข้อมูลชุดนี้ทั้งหมด ${preparedPayload.length} รายการ ใช่หรือไม่?`)) return;
+
+    const btn = document.getElementById('confirmSubmitBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึกข้อมูลลงฐานข้อมูล...';
+
+    try {
+      const res = await fetch(SUPABASE_URL + "/daily_production", {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(preparedPayload)
+      });
+
+      if(res.ok) {
+        alert("⚡ บันทึกข้อมูลกลุ่มลง Supabase สำเร็จเรียบร้อยแล้ว!");
+        location.reload();
+      } else {
+        const err = await res.json();
+        alert("❌ บันทึกล้มเหลว: " + (err.message || JSON.stringify(err)));
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-bolt"></i> ยืนยันบันทึกข้อมูลด้วยความเร็วแสง!';
+      }
+    } catch(err) {
+      alert("⚠️ ข้อผิดพลาด: " + err.message);
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-bolt"></i> ยืนยันบันทึกข้อมูลด้วยความเร็วแสง!';
+    }
+  }
+</script>
+</body>
+</html>
