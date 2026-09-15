@@ -157,10 +157,11 @@
       </table>
     </div>
 
+    <!-- ส่วนเลือกสาเหตุ (ไม่บังคับเลือกแล้ว ปล่อยว่างได้) -->
     <div class="form-group" id="reasonGroup" style="display: none; margin-top: 15px;">
-      <label style="color: #ef4444;">⚠️ มีพนักงานประสิทธิภาพต่ำกว่า 85% - บังคับเลือกสาเหตุยอดตก</label>
+      <label style="color: var(--blue-dark);">ℹ️ มีพนักงานประสิทธิภาพต่ำกว่า 85% (ไม่บังคับเลือก สามารถเว้นว่างได้)</label>
       <select id="id_reason">
-        <option value="">👉 แตะเลือกสาเหตุยอดตก</option>
+        <option value="">-- ไม่ระบุสาเหตุ (ปล่อยว่างได้) --</option>
       </select>
     </div>
 
@@ -181,7 +182,6 @@
   let globalSteps = [];
   let selectedEmployeeList = [];
   let preparedPayload = [];
-  let requiresReason = false;
 
   window.onload = async function() {
     document.getElementById('batch_date').value = new Date().toISOString().split('T')[0];
@@ -298,7 +298,6 @@
         id_work: parseInt(t.id_work), 
         target_amount: t.target_amount 
       });
-      // แสดงรหัส 5 หลัก (id_target) ชัดเจนใน Dropdown ตัวเลือก
       opt.textContent = `[รหัส 5 หลัก: #${t.id_target}] ${workCode} | ขั้นตอน: ${stepName} (เป้า: ${t.target_amount}/ชม.)`;
       targetSelect.appendChild(opt);
     });
@@ -416,7 +415,7 @@
     let totalLoadWeight = taskLoadWeights.reduce((a, b) => a + b, 0);
 
     preparedPayload = [];
-    requiresReason = false;
+    let hasLowEff = false;
     let previewHtml = '';
 
     selectedEmployeeList.forEach(emp => {
@@ -430,12 +429,11 @@
         let eff = totalTargetForEmp > 0 ? (assignedQty / totalTargetForEmp) * 100 : 0;
         
         if (eff < 85) {
-          requiresReason = true;
+          hasLowEff = true;
         }
 
         let effColor = eff >= 85 ? '#10b981' : '#ef4444';
 
-        // บันทึก id_target ลง Payload อย่างถูกต้องสมบูรณ์
         preparedPayload.push({
           record_date: dateVal,
           id_order: parseInt(task.id_order),
@@ -465,7 +463,8 @@
     document.getElementById('previewTbody').innerHTML = previewHtml;
     document.getElementById('previewSection').style.display = 'block';
 
-    if (requiresReason) {
+    // แสดงคำแนะนำให้เลือกสาเหตุ แต่ไม่บล็อกการกดบันทึก (ปล่อยว่างได้)
+    if (hasLowEff) {
       document.getElementById('reasonGroup').style.display = 'block';
     } else {
       document.getElementById('reasonGroup').style.display = 'none';
@@ -476,19 +475,14 @@
   }
 
   async function executeBatchSubmit() {
-    let reasonVal = document.getElementById('id_reason').value;
-    if (requiresReason && !reasonVal) {
-      alert("⚠️ ประสิทธิภาพการผลิตต่ำกว่า 85% กรุณาเลือกสาเหตุยอดตกก่อนบันทึกครับ!");
-      document.getElementById('id_reason').focus();
-      return;
-    }
-
     if(preparedPayload.length === 0) return;
     if(!confirm(`ยืนยันการบันทึกข้อมูลชุดนี้ทั้งหมด ${preparedPayload.length} รายการ ใช่หรือไม่?`)) return;
 
+    let reasonVal = document.getElementById('id_reason').value;
     if (reasonVal) {
+      let parsedReason = parseInt(reasonVal);
       preparedPayload.forEach(item => {
-        item.id_reason = parseInt(reasonVal);
+        item.id_reason = parsedReason;
       });
     }
 
