@@ -102,7 +102,7 @@
 
   <div class="app-header">
     <div class="emblem"><i class="fa-solid fa-industry"></i></div>
-    <div><h1 class="app-title">⚡ บันทึกงานกลุ่ม (Smart Batch)</h1></div>
+    <div><h1 class="app-title">⚡ บันทึกงานกลุ่ม (SMART BATCH)</h1></div>
   </div>
 
   <form id="batchForm" onsubmit="event.preventDefault();">
@@ -255,32 +255,35 @@
 
   function handleOrderInput(inputEl) {
     let orderNoVal = inputEl.value.trim().toLowerCase();
-    const foundOrd = globalOrders.find(o => String(o.order_no).toLowerCase() === orderNoVal);
-    let orderId = foundOrd ? foundOrd.id_order : null;
-
     const box = inputEl.closest('.task-row-box');
     const targetSelect = box.querySelector('.target-select');
     
-    if(!orderId) {
-      targetSelect.innerHTML = '<option value="">👉 เลือกขั้นตอน / ชิ้นงาน / เป้า</option>';
+    targetSelect.innerHTML = '<option value="">👉 เลือกขั้นตอน / ชิ้นงาน / เป้า</option>';
+
+    if(!orderNoVal) return;
+
+    // ค้นหาออเดอร์แบบยืดหยุ่น (รองรับทั้งพิมพ์ตัวพิมพ์เล็ก/ใหญ่)
+    const foundOrd = globalOrders.find(o => String(o.order_no).toLowerCase() === orderNoVal);
+    if(!foundOrd || !foundOrd.id_work) return;
+
+    // ดึง Targets ที่มี id_work ตรงกับออเดอร์นี้
+    const targets = globalTargets.filter(t => String(t.id_work) === String(foundOrd.id_work));
+    
+    if(targets.length === 0) {
+      let opt = document.createElement('option');
+      opt.value = "";
+      opt.textContent = "⚠️ ไม่พบข้ามขั้นตอน/เป้าหมายของสินค้านี้";
+      targetSelect.appendChild(opt);
       return;
     }
 
-    targetSelect.innerHTML = '<option value="">👉 เลือกขั้นตอน / ชิ้นงาน / เป้า</option>';
-
-    const orderObj = globalOrders.find(o => o.id_order === orderId);
-    if(!orderObj || !orderObj.id_work) return;
-
-    // ดึง Target ทุกขั้นตอนของชิ้นงานนี้มาให้ผู้ใช้เลือกตรวจสอบด้วยตนเอง
-    const targets = globalTargets.filter(t => String(t.id_work) === String(orderObj.id_work));
-    
     targets.forEach(t => {
       let stepName = t.id_step;
       const foundStep = globalSteps.find(s => String(s.id_step) === String(t.id_step));
       if(foundStep) stepName = foundStep.step_name;
 
-      let workCode = t.id_work;
-      const foundWork = globalWorkItems.find(w => String(w.id_work) === String(t.id_work));
+      let workCode = foundOrd.id_work;
+      const foundWork = globalWorkItems.find(w => String(w.id_work) === String(foundOrd.id_work));
       if(foundWork) workCode = foundWork.work_code;
 
       let opt = document.createElement('option');
