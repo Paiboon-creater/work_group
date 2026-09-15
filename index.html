@@ -102,36 +102,23 @@
 
   <div class="app-header">
     <div class="emblem"><i class="fa-solid fa-industry"></i></div>
-    <div><h1 class="app-title" id="pageMainTitle">⚡ บันทึกงานกลุ่ม (Smart Batch)</h1></div>
+    <div><h1 class="app-title">⚡ บันทึกงานกลุ่ม (Smart Batch)</h1></div>
   </div>
 
   <form id="batchForm" onsubmit="event.preventDefault();">
-    
-    <div class="form-group">
-      <label>🏭 1. เลือกแผนก / ส่วนงาน</label>
-      <select id="department_select" required onchange="updateAllRowsDepartment()">
-        <option value="">-- กรุณาเลือกแผนกทำงาน --</option>
-        <option value="ขัดข้าง">ขัดข้าง</option>
-        <option value="ขัดเงา">ขัดเงา</option>
-        <option value="ขัดสัน">ขัดสัน</option>
-        <option value="ขัดถัง">ขัดถัง</option>
-        <option value="แพ็คกิ้ง" selected>แพ็คกิ้ง</option>
-        <option value="อื่นๆ">อื่นๆ</option>
-      </select>
-    </div>
 
     <div class="form-group">
-      <label>📅 2. วันที่ทำงาน</label>
+      <label>📅 1. วันที่ทำงาน</label>
       <input type="date" id="batch_date" required>
     </div>
 
     <div class="form-group">
-      <label>⏱️ 3. ชั่วโมงทำงานปกติ / คน</label>
+      <label>⏱️ 2. ชั่วโมงทำงานปกติ / คน</label>
       <input type="number" id="batch_hours" value="8" step="0.5" required>
     </div>
 
     <div class="form-group">
-      <label>🏃 4. เพิ่มรายชื่อพนักงาน (พิมพ์ค้นหาและกดเพิ่มทีละคน)</label>
+      <label>🏃 3. เพิ่มรายชื่อพนักงาน (พิมพ์ค้นหาและกดเพิ่มทีละคน)</label>
       <div class="emp-input-row">
         <input type="text" id="emp_search_input" list="emp_datalist" placeholder="พิมพ์ชื่อพนักงาน..." autocomplete="off">
         <button type="button" class="add-btn" onclick="addEmployee()"><i class="fa-solid fa-plus"></i> เพิ่ม</button>
@@ -142,7 +129,7 @@
 
     <div class="form-group">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-        <label style="margin:0;">📦 5. รายการใบสั่งงาน รหัสชิ้นงาน และเป้าหมาย</label>
+        <label style="margin:0;">📦 4. รายการใบสั่งงาน ขั้นตอน และยอดผลิตรวม</label>
         <button type="button" class="add-btn" style="padding: 6px 12px; font-size: 13px;" onclick="addTaskRow()"><i class="fa-solid fa-plus"></i> เพิ่มใส่งาน</button>
       </div>
       
@@ -155,13 +142,12 @@
 
   <div id="previewSection" style="display: none;">
     <h3 style="color: var(--blue-primary); font-size: 1.1rem; text-align: center; margin: 20px 0 10px 0; font-weight: 800; font-style: italic;">⚡ พรีวิวข้อมูลก่อนบันทึกจริง</h3>
-    <div style="text-align: center; font-weight: bold; color: var(--blue-dark); margin-bottom: 8px;" id="previewDeptDisplay"></div>
     <div class="preview-table-wrapper">
       <table class="preview-table">
         <thead>
           <tr>
             <th>พนักงาน</th>
-            <th>ใบสั่งงาน / ขั้นตอน / เป้า</th>
+            <th>ใบสั่งงาน / ชิ้นงาน / ขั้นตอน / เป้า</th>
             <th>ชม.</th>
             <th>ยอดผลิต</th>
             <th>EFF%</th>
@@ -256,7 +242,7 @@
       <div class="task-row-grid">
         <input type="text" class="order-search" list="order_datalist" placeholder="พิมพ์เลขออเดอร์..." autocomplete="off" oninput="handleOrderInput(this)" onchange="handleOrderInput(this)">
         <select class="target-select" required>
-          <option value="">👉 เลือกขั้นตอน / เป้าหมาย</option>
+          <option value="">👉 เลือกขั้นตอน / ชิ้นงาน / เป้า</option>
         </select>
         <input type="number" class="order-qty" placeholder="ยอดรวม (ชิ้น)">
       </div>
@@ -276,37 +262,19 @@
     const targetSelect = box.querySelector('.target-select');
     
     if(!orderId) {
-      targetSelect.innerHTML = '<option value="">👉 เลือกขั้นตอน / เป้าหมาย</option>';
+      targetSelect.innerHTML = '<option value="">👉 เลือกขั้นตอน / ชิ้นงาน / เป้า</option>';
       return;
     }
 
-    targetSelect.innerHTML = '<option value="">👉 เลือกขั้นตอน / เป้าหมาย</option>';
+    targetSelect.innerHTML = '<option value="">👉 เลือกขั้นตอน / ชิ้นงาน / เป้า</option>';
 
     const orderObj = globalOrders.find(o => o.id_order === orderId);
     if(!orderObj || !orderObj.id_work) return;
 
-    // ดึงค่าแผนกปัจจุบันมาช่วยกรองขั้นตอนให้อัตโนมัติ
-    let currentDept = document.getElementById('department_select').value.trim().toLowerCase();
-    let keywords = [currentDept];
-    if (currentDept.includes("แพ็ค")) keywords.push("แพ็ค", "pack", "บรรจุ");
-    if (currentDept.includes("ขัด")) keywords.push("ขัด", "ปัด", "polish");
-
-    // ดึง targets ที่ตรงกับ id_work ของ Order นี้
+    // ดึง Target ทุกขั้นตอนของชิ้นงานนี้มาให้ผู้ใช้เลือกตรวจสอบด้วยตนเอง
     const targets = globalTargets.filter(t => String(t.id_work) === String(orderObj.id_work));
     
-    let matchedTargets = targets.filter(t => {
-      if(!currentDept) return true;
-      const foundStep = globalSteps.find(s => String(s.id_step) === String(t.id_step));
-      if(foundStep && foundStep.step_name) {
-        let stepName = foundStep.step_name.toLowerCase();
-        return keywords.some(kw => stepName.includes(kw));
-      }
-      return false;
-    });
-
-    let displayTargets = matchedTargets.length > 0 ? matchedTargets : targets;
-
-    displayTargets.forEach(t => {
+    targets.forEach(t => {
       let stepName = t.id_step;
       const foundStep = globalSteps.find(s => String(s.id_step) === String(t.id_step));
       if(foundStep) stepName = foundStep.step_name;
@@ -316,21 +284,14 @@
       if(foundWork) workCode = foundWork.work_code;
 
       let opt = document.createElement('option');
-      // เก็บค่า id_target, id_work และ target_amount ไว้คำนวณจริงจัง
       opt.value = JSON.stringify({ id_target: t.id_target, id_work: t.id_work, target_amount: t.target_amount });
       opt.textContent = `ชิ้นงาน: ${workCode} | ขั้นตอน: ${stepName} (เป้า: ${t.target_amount}/ชม.)`;
       targetSelect.appendChild(opt);
     });
 
-    if (displayTargets.length > 0) {
+    if (targets.length === 1) {
       targetSelect.selectedIndex = 1;
     }
-  }
-
-  function updateAllRowsDepartment() {
-    document.querySelectorAll('.order-search').forEach(input => {
-      if(input.value.trim()) handleOrderInput(input);
-    });
   }
 
   function addEmployee() {
@@ -373,13 +334,6 @@
   }
 
   function generatePreview() {
-    const deptVal = document.getElementById('department_select').value;
-    if(!deptVal) {
-      alert("⚠️ กรุณาเลือกแผนกทำงานก่อนครับ!");
-      document.getElementById('department_select').focus();
-      return;
-    }
-
     const dateVal = document.getElementById('batch_date').value;
     const totalHoursPerEmp = parseFloat(document.getElementById('batch_hours').value) || 8;
 
@@ -439,7 +393,6 @@
       return;
     }
 
-    // คำนวณสัดส่วนชั่วโมง (Proportional Hours) ตาม Target ของแต่ละขั้นตอนที่เลือกจริง
     let taskLoadWeights = tasks.map(task => {
       let hoursNeeded = task.target_amount > 0 ? (task.total_qty / task.target_amount) : 1;
       return hoursNeeded;
@@ -458,7 +411,6 @@
         let proportion = totalLoadWeight > 0 ? (taskLoadWeights[idx] / totalLoadWeight) : (1 / tasks.length);
         let empAssignedHours = totalHoursPerEmp * proportion;
 
-        // คำนวณ EFF% แม่นยำตาม id_target ที่เลือก
         let totalTargetForEmp = task.target_amount * empAssignedHours;
         let eff = totalTargetForEmp > 0 ? (assignedQty / totalTargetForEmp) * 100 : 0;
         
@@ -472,13 +424,13 @@
           record_date: dateVal,
           id_order: task.id_order,
           id_work: task.id_work,
-          id_target: task.id_target, // บันทึก id_target ลงตาราง daily_production ถูกต้องสมบูรณ์
+          id_target: task.id_target,
           id_name: emp.id_name,
           hour_work: parseFloat(empAssignedHours.toFixed(2)),
           work_period: "ปกติ",
           produced_amount: assignedQty,
           nogoods_amount: 0,
-          remark: `[แผนก: ${deptVal}] Batch Smart-Allocated`
+          remark: `Batch Smart-Allocated`
         });
 
         previewHtml += `<tr>
@@ -491,7 +443,6 @@
       });
     });
 
-    document.getElementById('previewDeptDisplay').innerText = `แผนก: ${deptVal} | พนักงานรวม: ${selectedEmployeeList.length} คน`;
     document.getElementById('previewTbody').innerHTML = previewHtml;
     document.getElementById('previewSection').style.display = 'block';
 
