@@ -213,10 +213,12 @@
         empDatalist.appendChild(opt);
       });
 
+      // ⚡ บรรจุข้อมูลเลขออเดอร์พร้อม ID ลงใน datalist ให้พิมพ์ค้นหาได้ทันที
       const orderDatalist = document.getElementById('order_datalist');
       globalOrders.forEach(ord => {
         let opt = document.createElement('option');
-        opt.value = ord.order_no;
+        // แสดงทั้งเลขที่ใบสั่งและ ID ให้เห็นชัดเจน
+        opt.value = `${ord.order_no} (ID: ${ord.id_order})`;
         orderDatalist.appendChild(opt);
       });
 
@@ -240,7 +242,7 @@
     div.className = 'task-row-box';
     div.innerHTML = `
       <div class="task-row-grid">
-        <input type="text" class="order-search" list="order_datalist" placeholder="พิมพ์ค้นหาเลขออเดอร์..." autocomplete="off" oninput="handleOrderInput(this)" onchange="handleOrderInput(this)">
+        <input type="text" class="order-search" list="order_datalist" placeholder="พิมพ์ค้นหาเลขออเดอร์ หรือ ID..." autocomplete="off" oninput="handleOrderInput(this)" onchange="handleOrderInput(this)">
         <select class="target-select" required>
           <option value="">👉 เลือกขั้นตอนการผลิต</option>
         </select>
@@ -254,16 +256,18 @@
   }
 
   function handleOrderInput(inputEl) {
-    let orderNoVal = inputEl.value.trim().toLowerCase();
+    let rawVal = inputEl.value.trim();
     const box = inputEl.closest('.task-row-box');
     const targetSelect = box.querySelector('.target-select');
     
     targetSelect.innerHTML = '<option value="">👉 เลือกขั้นตอนการผลิต</option>';
 
-    if(!orderNoVal) return;
+    if(!rawVal) return;
 
-    // ค้นหาออเดอร์โดยเทียบ String ตัวพิมพ์เล็ก-ใหญ่ให้ตรงกัน
-    const foundOrd = globalOrders.find(o => String(o.order_no).trim().toLowerCase() === orderNoVal);
+    // ดึงเฉพาะเลขออเดอร์ก่อนวงเล็บ (รองรับทั้งกรณีพิมพ์เองหรือเลือกจาก datalist)
+    let orderNoClean = rawVal.split('(')[0].trim().toLowerCase();
+
+    const foundOrd = globalOrders.find(o => String(o.order_no).trim().toLowerCase() === orderNoClean);
     if(!foundOrd) return;
 
     if(foundOrd.id_work === null || foundOrd.id_work === undefined || foundOrd.id_work === "") {
@@ -274,7 +278,6 @@
       return;
     }
 
-    // แปลงรหัสชิ้นงานเป็น String เพื่อใช้กรองตาราง targets ได้อย่างแม่นยำ 100%
     const targetWorkIdStr = String(foundOrd.id_work).trim();
     const targetsForThisWork = globalTargets.filter(t => String(t.id_work).trim() === targetWorkIdStr);
 
@@ -360,17 +363,18 @@
     let isValidTasks = true;
 
     document.querySelectorAll('.task-row-box').forEach(box => {
-      let orderNoVal = box.querySelector('.order-search').value.trim();
+      let rawVal = box.querySelector('.order-search').value.trim();
       let targetValStr = box.querySelector('.target-select').value;
       let qty = parseFloat(box.querySelector('.order-qty').value) || 0;
 
-      if(orderNoVal || targetValStr || qty > 0) {
-        if(!orderNoVal || !targetValStr || qty <= 0) {
+      if(rawVal || targetValStr || qty > 0) {
+        if(!rawVal || !targetValStr || qty <= 0) {
           isValidTasks = false;
           return;
         }
 
-        const foundOrd = globalOrders.find(o => String(o.order_no).trim().toLowerCase() === orderNoVal.toLowerCase());
+        let orderNoClean = rawVal.split('(')[0].trim().toLowerCase();
+        const foundOrd = globalOrders.find(o => String(o.order_no).trim().toLowerCase() === orderNoClean);
         let orderId = foundOrd ? foundOrd.id_order : null;
 
         if(!orderId) {
