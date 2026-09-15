@@ -213,7 +213,6 @@
         empDatalist.appendChild(opt);
       });
 
-      // เติมข้อมูลลง Smart Datalist สำหรับค้นหาเลขออเดอร์
       const orderDatalist = document.getElementById('order_datalist');
       globalOrders.forEach(ord => {
         let opt = document.createElement('option');
@@ -254,7 +253,6 @@
     container.appendChild(div);
   }
 
-  // ⚡ ฟังก์ชันเชื่อมโยง Smart Dropdown ออเดอร์ ➡️ ดึงขั้นตอนและเป้าหมายที่สัมพันธ์กัน
   function handleOrderInput(inputEl) {
     let orderNoVal = inputEl.value.trim().toLowerCase();
     const box = inputEl.closest('.task-row-box');
@@ -264,22 +262,28 @@
 
     if(!orderNoVal) return;
 
-    // 1. ค้นหาเลขออเดอร์เพื่อดึง id_work (รหัสชิ้นงาน)
     const foundOrd = globalOrders.find(o => String(o.order_no).toLowerCase() === orderNoVal);
-    if(!foundOrd || !foundOrd.id_work) return;
+    if(!foundOrd) return;
 
-    // 2. นำ id_work ไปค้นหาในตาราง targets เพื่อดึงขั้นตอนและเป้าหมายที่ตรงกัน
+    // ตรวจสอบว่าออเดอร์นี้ผูกกับ id_work หรือไม่
+    if(!foundOrd.id_work) {
+      let opt = document.createElement('option');
+      opt.value = "";
+      opt.textContent = "⚠️ ออเดอร์นี้ยังไม่ได้ผูกรหัสชิ้นงาน (id_work เป็นค่าว่าง)";
+      targetSelect.appendChild(opt);
+      return;
+    }
+
     const targetsForThisWork = globalTargets.filter(t => String(t.id_work) === String(foundOrd.id_work));
 
     if(targetsForThisWork.length === 0) {
       let opt = document.createElement('option');
       opt.value = "";
-      opt.textContent = "⚠️ ไม่พบขั้นตอน/เป้าหมายของชิ้นงานนี้";
+      opt.textContent = "⚠️ ชิ้นงานนี้ยังไม่ได้ตั้งค่าเป้าหมาย (Targets) ในระบบ";
       targetSelect.appendChild(opt);
       return;
     }
 
-    // 3. แสดงรหัสชิ้นงานและขั้นตอนใน Dropdown ให้เลือก
     const foundWork = globalWorkItems.find(w => String(w.id_work) === String(foundOrd.id_work));
     const workCode = foundWork ? foundWork.work_code : foundOrd.id_work;
 
