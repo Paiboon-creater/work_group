@@ -40,7 +40,7 @@
     .form-group label { display: block; margin-bottom: 6px; font-size: 15px; font-weight: 700; color: var(--blue-dark); }
     input, select {
       width: 100%; padding: 12px; background-color: var(--input-bg); border: 2px solid var(--border-dim); 
-      color: var(--text-main); font-weight: 600; border-radius: 8px; box-sizing: border-box; font-family: inherit; font-size: 16px;
+      color: var(--text-main); font-weight: 600; border-radius: 8px; box-sizing: border-box; font-family: inherit; font-size: 15px;
     }
     input[type="date"] { text-align: center; }
     input:focus, select:focus { border-color: var(--blue-gold); outline: none; box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.2); background-color: #fff; }
@@ -48,7 +48,10 @@
     .task-row-box {
       background: var(--blue-light); border: 2px dashed var(--blue-primary); padding: 10px; border-radius: 8px; margin-bottom: 10px;
     }
-    .task-row-grid { display: flex; gap: 8px; margin-bottom: 6px; }
+    .task-row-grid { display: flex; flex-direction: column; gap: 8px; margin-bottom: 6px; }
+    @media(min-width: 480px) {
+      .task-row-grid { display: grid; grid-template-columns: 1fr 1.5fr 1fr; gap: 6px; }
+    }
     .remove-task-btn {
       background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: bold;
     }
@@ -99,20 +102,20 @@
 
   <div class="app-header">
     <div class="emblem"><i class="fa-solid fa-industry"></i></div>
-    <div><h1 class="app-title">⚡ บันทึกงานกลุ่ม (Smart Batch)</h1></div>
+    <div><h1 class="app-title" id="pageMainTitle">⚡ บันทึกงานกลุ่ม (Smart Batch)</h1></div>
   </div>
 
   <form id="batchForm" onsubmit="event.preventDefault();">
     
     <div class="form-group">
       <label>🏭 1. เลือกแผนก / ส่วนงาน</label>
-      <select id="department_select" required>
+      <select id="department_select" required onchange="updateAllRowsDepartment()">
         <option value="">-- กรุณาเลือกแผนกทำงาน --</option>
         <option value="ขัดข้าง">ขัดข้าง</option>
         <option value="ขัดเงา">ขัดเงา</option>
         <option value="ขัดสัน">ขัดสัน</option>
         <option value="ขัดถัง">ขัดถัง</option>
-        <option value="แพ็คกิ้ง">แพ็คกิ้ง</option>
+        <option value="แพ็คกิ้ง" selected>แพ็คกิ้ง</option>
         <option value="อื่นๆ">อื่นๆ</option>
       </select>
     </div>
@@ -139,7 +142,7 @@
 
     <div class="form-group">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-        <label style="margin:0;">📦 5. รายการใบสั่งงานและยอดผลิตรวม</label>
+        <label style="margin:0;">📦 5. รายการใบสั่งงาน รหัสชิ้นงาน และเป้าหมาย</label>
         <button type="button" class="add-btn" style="padding: 6px 12px; font-size: 13px;" onclick="addTaskRow()"><i class="fa-solid fa-plus"></i> เพิ่มใส่งาน</button>
       </div>
       
@@ -158,7 +161,7 @@
         <thead>
           <tr>
             <th>พนักงาน</th>
-            <th>ใบสั่งงาน</th>
+            <th>ใบสั่งงาน / ขั้นตอน / เป้า</th>
             <th>ชม.</th>
             <th>ยอดผลิต</th>
             <th>EFF%</th>
@@ -168,7 +171,6 @@
       </table>
     </div>
 
-    <!-- ส่วนเลือกสาเหตุ กรณี EFF ต่ำกว่า 85% -->
     <div class="form-group" id="reasonGroup" style="display: none; margin-top: 15px;">
       <label style="color: #ef4444;">⚠️ มีพนักงานประสิทธิภาพต่ำกว่า 85% - บังคับเลือกสาเหตุยอดตก</label>
       <select id="id_reason">
@@ -228,7 +230,7 @@
       const orderDatalist = document.getElementById('order_datalist');
       globalOrders.forEach(ord => {
         let opt = document.createElement('option');
-        opt.value = `${ord.order_no} [ID:${ord.id_order}]`;
+        opt.value = ord.order_no;
         orderDatalist.appendChild(opt);
       });
 
@@ -252,7 +254,10 @@
     div.className = 'task-row-box';
     div.innerHTML = `
       <div class="task-row-grid">
-        <input type="text" class="order-search" list="order_datalist" placeholder="พิมพ์ค้นหารหัส/เลขที่ใบสั่งงาน..." autocomplete="off">
+        <input type="text" class="order-search" list="order_datalist" placeholder="พิมพ์เลขออเดอร์..." autocomplete="off" oninput="handleOrderInput(this)" onchange="handleOrderInput(this)">
+        <select class="target-select" required>
+          <option value="">👉 เลือกขั้นตอน / เป้าหมาย</option>
+        </select>
         <input type="number" class="order-qty" placeholder="ยอดรวม (ชิ้น)">
       </div>
       <div style="text-align: right; margin-top: 5px;">
@@ -260,6 +265,72 @@
       </div>
     `;
     container.appendChild(div);
+  }
+
+  function handleOrderInput(inputEl) {
+    let orderNoVal = inputEl.value.trim().toLowerCase();
+    const foundOrd = globalOrders.find(o => String(o.order_no).toLowerCase() === orderNoVal);
+    let orderId = foundOrd ? foundOrd.id_order : null;
+
+    const box = inputEl.closest('.task-row-box');
+    const targetSelect = box.querySelector('.target-select');
+    
+    if(!orderId) {
+      targetSelect.innerHTML = '<option value="">👉 เลือกขั้นตอน / เป้าหมาย</option>';
+      return;
+    }
+
+    targetSelect.innerHTML = '<option value="">👉 เลือกขั้นตอน / เป้าหมาย</option>';
+
+    const orderObj = globalOrders.find(o => o.id_order === orderId);
+    if(!orderObj || !orderObj.id_work) return;
+
+    // ดึงค่าแผนกปัจจุบันมาช่วยกรองขั้นตอนให้อัตโนมัติ
+    let currentDept = document.getElementById('department_select').value.trim().toLowerCase();
+    let keywords = [currentDept];
+    if (currentDept.includes("แพ็ค")) keywords.push("แพ็ค", "pack", "บรรจุ");
+    if (currentDept.includes("ขัด")) keywords.push("ขัด", "ปัด", "polish");
+
+    // ดึง targets ที่ตรงกับ id_work ของ Order นี้
+    const targets = globalTargets.filter(t => String(t.id_work) === String(orderObj.id_work));
+    
+    let matchedTargets = targets.filter(t => {
+      if(!currentDept) return true;
+      const foundStep = globalSteps.find(s => String(s.id_step) === String(t.id_step));
+      if(foundStep && foundStep.step_name) {
+        let stepName = foundStep.step_name.toLowerCase();
+        return keywords.some(kw => stepName.includes(kw));
+      }
+      return false;
+    });
+
+    let displayTargets = matchedTargets.length > 0 ? matchedTargets : targets;
+
+    displayTargets.forEach(t => {
+      let stepName = t.id_step;
+      const foundStep = globalSteps.find(s => String(s.id_step) === String(t.id_step));
+      if(foundStep) stepName = foundStep.step_name;
+
+      let workCode = t.id_work;
+      const foundWork = globalWorkItems.find(w => String(w.id_work) === String(t.id_work));
+      if(foundWork) workCode = foundWork.work_code;
+
+      let opt = document.createElement('option');
+      // เก็บค่า id_target, id_work และ target_amount ไว้คำนวณจริงจัง
+      opt.value = JSON.stringify({ id_target: t.id_target, id_work: t.id_work, target_amount: t.target_amount });
+      opt.textContent = `ชิ้นงาน: ${workCode} | ขั้นตอน: ${stepName} (เป้า: ${t.target_amount}/ชม.)`;
+      targetSelect.appendChild(opt);
+    });
+
+    if (displayTargets.length > 0) {
+      targetSelect.selectedIndex = 1;
+    }
+  }
+
+  function updateAllRowsDepartment() {
+    document.querySelectorAll('.order-search').forEach(input => {
+      if(input.value.trim()) handleOrderInput(input);
+    });
   }
 
   function addEmployee() {
@@ -321,60 +392,54 @@
     let isValidTasks = true;
 
     document.querySelectorAll('.task-row-box').forEach(box => {
-      let searchText = box.querySelector('.order-search').value.trim();
+      let orderNoVal = box.querySelector('.order-search').value.trim();
+      let targetValStr = box.querySelector('.target-select').value;
       let qty = parseFloat(box.querySelector('.order-qty').value) || 0;
 
-      if(searchText || qty > 0) {
-        if(!searchText || qty <= 0) {
+      if(orderNoVal || targetValStr || qty > 0) {
+        if(!orderNoVal || !targetValStr || qty <= 0) {
           isValidTasks = false;
           return;
         }
 
-        let orderId = null;
-        let match = searchText.match(/\[ID:(\d+)\]/);
-        if(match) {
-          orderId = parseInt(match[1]);
-        } else {
-          let found = globalOrders.find(o => String(o.order_no) === searchText || String(o.id_order) === searchText);
-          if(found) orderId = found.id_order;
-        }
+        const foundOrd = globalOrders.find(o => String(o.order_no).toLowerCase() === orderNoVal.toLowerCase());
+        let orderId = foundOrd ? foundOrd.id_order : null;
 
         if(!orderId) {
           isValidTasks = false;
           return;
         }
 
-        const orderObj = globalOrders.find(o => o.id_order === orderId);
-        // ค้นหา Target ที่ตรงกับงานนี้และแผนกที่เลือก
-        let targetObj = null;
-        if(orderObj && orderObj.id_work) {
-          let possibleTargets = globalTargets.filter(t => String(t.id_work) === String(orderObj.id_work));
-          // พยายามหา Target ที่ตรงกับชื่อแผนก
-          targetObj = possibleTargets.find(t => {
-            const step = globalSteps.find(s => String(s.id_step) === String(t.id_step));
-            return step && step.step_name && step.step_name.includes(deptVal);
-          });
-          // ถ้าไม่เจอให้เอาอันแรกสุดสำรองไว้
-          if(!targetObj && possibleTargets.length > 0) targetObj = possibleTargets[0];
+        let targetData = JSON.parse(targetValStr);
+        let foundWork = globalWorkItems.find(w => String(w.id_work) === String(targetData.id_work));
+        let workCodeText = foundWork ? foundWork.work_code : targetData.id_work;
+
+        let foundTargetObj = globalTargets.find(t => String(t.id_target) === String(targetData.id_target));
+        let stepNameText = "";
+        if (foundTargetObj) {
+          let foundStep = globalSteps.find(s => String(s.id_step) === String(foundTargetObj.id_step));
+          if (foundStep) stepNameText = foundStep.step_name;
         }
 
         tasks.push({
           id_order: orderId,
-          order_text: searchText,
-          id_work: orderObj ? orderObj.id_work : null,
-          id_target: targetObj ? targetObj.id_target : null,
-          target_amount: targetObj ? targetObj.target_amount : 0,
+          order_text: foundOrd.order_no,
+          work_code: workCodeText,
+          step_name: stepNameText,
+          id_target: targetData.id_target,
+          id_work: targetData.id_work,
+          target_amount: targetData.target_amount,
           total_qty: qty
         });
       }
     });
 
     if(!isValidTasks || tasks.length === 0) {
-      alert("⚠️ กรุณาระบุใบสั่งงานและใส่ยอดผลิตให้ถูกต้องครบถ้วนครับ!");
+      alert("⚠️ กรุณากรอกเลขออเดอร์ เลือกขั้นตอน และใส่ยอดผลิตให้ครบถ้วนทุกช่องครับ!");
       return;
     }
 
-    // คำนวณสัดส่วนชั่วโมงตามน้ำหนักเป้าหมาย
+    // คำนวณสัดส่วนชั่วโมง (Proportional Hours) ตาม Target ของแต่ละขั้นตอนที่เลือกจริง
     let taskLoadWeights = tasks.map(task => {
       let hoursNeeded = task.target_amount > 0 ? (task.total_qty / task.target_amount) : 1;
       return hoursNeeded;
@@ -393,7 +458,7 @@
         let proportion = totalLoadWeight > 0 ? (taskLoadWeights[idx] / totalLoadWeight) : (1 / tasks.length);
         let empAssignedHours = totalHoursPerEmp * proportion;
 
-        // คำนวณ EFF%
+        // คำนวณ EFF% แม่นยำตาม id_target ที่เลือก
         let totalTargetForEmp = task.target_amount * empAssignedHours;
         let eff = totalTargetForEmp > 0 ? (assignedQty / totalTargetForEmp) * 100 : 0;
         
@@ -407,7 +472,7 @@
           record_date: dateVal,
           id_order: task.id_order,
           id_work: task.id_work,
-          id_target: task.id_target,
+          id_target: task.id_target, // บันทึก id_target ลงตาราง daily_production ถูกต้องสมบูรณ์
           id_name: emp.id_name,
           hour_work: parseFloat(empAssignedHours.toFixed(2)),
           work_period: "ปกติ",
@@ -418,7 +483,7 @@
 
         previewHtml += `<tr>
           <td>${emp.name}</td>
-          <td style="text-align: left; padding-left: 8px;">${task.order_text}</td>
+          <td style="text-align: left; padding-left: 8px;"><b>${task.order_text}</b><br><span style="font-size:11px; color:#6b7280;">ชิ้นงาน: ${task.work_code} | ขั้นตอน: ${task.step_name} (เป้า: ${task.target_amount}/ชม.)</span></td>
           <td>${empAssignedHours.toFixed(2)}</td>
           <td style="color: #059669; font-weight: bold;">${assignedQty.toLocaleString()}</td>
           <td style="color: ${effColor}; font-weight: bold;">${eff.toFixed(1)}%</td>
