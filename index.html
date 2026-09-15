@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>⚡ BATCH PACKING // CYBER BLUE ⚡</title>
+  <title>⚡ BATCH SMART ENTRY // CYBER BLUE ⚡</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&display=swap');
@@ -46,11 +46,11 @@
     input:focus, select:focus { border-color: var(--blue-gold); outline: none; box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.2); background-color: #fff; }
 
     .task-row-box {
-      background: var(--blue-light); border: 2px dashed var(--blue-primary); padding: 10px; border-radius: 8px; margin-bottom: 8px; display: flex; gap: 8px; align-items: center;
+      background: var(--blue-light); border: 2px dashed var(--blue-primary); padding: 10px; border-radius: 8px; margin-bottom: 10px;
     }
-    .task-row-grid { display: flex; gap: 8px; flex: 1; }
+    .task-row-grid { display: flex; gap: 8px; margin-bottom: 6px; }
     .remove-task-btn {
-      background: #ef4444; color: white; border: none; width: 40px; border-radius: 8px; cursor: pointer; font-size: 16px; display: flex; justify-content: center; align-items: center;
+      background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: bold;
     }
 
     .nav-buttons-wrapper { display: flex; gap: 10px; margin-bottom: 15px; }
@@ -98,24 +98,37 @@
   </div>
 
   <div class="app-header">
-    <div class="emblem"><i class="fa-solid fa-boxes-packing"></i></div>
-    <div><h1 class="app-title">⚡ บันทึกแพ็คกิ้งกลุ่ม (Smart Batch)</h1></div>
+    <div class="emblem"><i class="fa-solid fa-industry"></i></div>
+    <div><h1 class="app-title">⚡ บันทึกงานกลุ่ม (Smart Batch)</h1></div>
   </div>
 
   <form id="batchForm" onsubmit="event.preventDefault();">
     
     <div class="form-group">
-      <label>📅 1. วันที่ทำงาน</label>
+      <label>🏭 1. เลือกแผนก / ส่วนงาน</label>
+      <select id="department_select" required>
+        <option value="">-- กรุณาเลือกแผนกทำงาน --</option>
+        <option value="ขัดข้าง">ขัดข้าง</option>
+        <option value="ขัดเงา">ขัดเงา</option>
+        <option value="ขัดสัน">ขัดสัน</option>
+        <option value="ขัดถัง">ขัดถัง</option>
+        <option value="แพ็คกิ้ง">แพ็คกิ้ง</option>
+        <option value="อื่นๆ">อื่นๆ</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>📅 2. วันที่ทำงาน</label>
       <input type="date" id="batch_date" required>
     </div>
 
     <div class="form-group">
-      <label>⏱️ 2. ชั่วโมงทำงานปกติ / คน</label>
+      <label>⏱️ 3. ชั่วโมงทำงานปกติ / คน</label>
       <input type="number" id="batch_hours" value="8" step="0.5" required>
     </div>
 
     <div class="form-group">
-      <label>🏃 3. เพิ่มรายชื่อพนักงาน (พิมพ์ค้นหาและกดเพิ่มทีละคน)</label>
+      <label>🏃 4. เพิ่มรายชื่อพนักงาน (พิมพ์ค้นหาและกดเพิ่มทีละคน)</label>
       <div class="emp-input-row">
         <input type="text" id="emp_search_input" list="emp_datalist" placeholder="พิมพ์ชื่อพนักงาน..." autocomplete="off">
         <button type="button" class="add-btn" onclick="addEmployee()"><i class="fa-solid fa-plus"></i> เพิ่ม</button>
@@ -126,7 +139,7 @@
 
     <div class="form-group">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-        <label style="margin:0;">📦 4. รายการใบสั่งงานและยอดผลิตรวม</label>
+        <label style="margin:0;">📦 5. รายการใบสั่งงานและยอดผลิตรวม</label>
         <button type="button" class="add-btn" style="padding: 6px 12px; font-size: 13px;" onclick="addTaskRow()"><i class="fa-solid fa-plus"></i> เพิ่มใส่งาน</button>
       </div>
       
@@ -139,6 +152,7 @@
 
   <div id="previewSection" style="display: none;">
     <h3 style="color: var(--blue-primary); font-size: 1.1rem; text-align: center; margin: 20px 0 10px 0; font-weight: 800; font-style: italic;">⚡ พรีวิวข้อมูลก่อนบันทึกจริง</h3>
+    <div style="text-align: center; font-weight: bold; color: var(--blue-dark); margin-bottom: 8px;" id="previewDeptDisplay"></div>
     <div class="preview-table-wrapper">
       <table class="preview-table">
         <thead>
@@ -147,11 +161,21 @@
             <th>ใบสั่งงาน</th>
             <th>ชม.</th>
             <th>ยอดผลิต</th>
+            <th>EFF%</th>
           </tr>
         </thead>
         <tbody id="previewTbody"></tbody>
       </table>
     </div>
+
+    <!-- ส่วนเลือกสาเหตุ กรณี EFF ต่ำกว่า 85% -->
+    <div class="form-group" id="reasonGroup" style="display: none; margin-top: 15px;">
+      <label style="color: #ef4444;">⚠️ มีพนักงานประสิทธิภาพต่ำกว่า 85% - บังคับเลือกสาเหตุยอดตก</label>
+      <select id="id_reason">
+        <option value="">👉 แตะเลือกสาเหตุยอดตก</option>
+      </select>
+    </div>
+
     <button type="button" class="action-btn" id="confirmSubmitBtn" onclick="executeBatchSubmit()"><i class="fa-solid fa-bolt"></i> ยืนยันบันทึกข้อมูลด้วยความเร็วแสง!</button>
   </div>
 </div>
@@ -163,16 +187,25 @@
 
   let globalOrders = [];
   let globalEmployees = [];
+  let globalTargets = [];
+  let globalReasons = [];
+  let globalWorkItems = [];
+  let globalSteps = [];
   let selectedEmployeeList = [];
   let preparedPayload = [];
+  let requiresReason = false;
 
   window.onload = async function() {
     document.getElementById('batch_date').value = new Date().toISOString().split('T')[0];
 
     try {
-      const [ordersRes, empsRes] = await Promise.all([
+      const [ordersRes, empsRes, targetsRes, reasonsRes, worksRes, stepsRes] = await Promise.all([
         fetch(SUPABASE_URL + "/orders?select=*", { headers }),
-        fetch(SUPABASE_URL + "/employees?select=*", { headers })
+        fetch(SUPABASE_URL + "/employees?select=*", { headers }),
+        fetch(SUPABASE_URL + "/targets?select=*", { headers }),
+        fetch(SUPABASE_URL + "/reasons?select=*", { headers }),
+        fetch(SUPABASE_URL + "/work_items?select=*", { headers }),
+        fetch(SUPABASE_URL + "/production_steps?select=*", { headers })
       ]);
 
       if(ordersRes.ok) globalOrders = await ordersRes.json();
@@ -180,6 +213,10 @@
         globalEmployees = await empsRes.json();
         globalEmployees.sort((a, b) => (a.name || '').localeCompare(b.name || '', 'th'));
       }
+      if(targetsRes.ok) globalTargets = await targetsRes.json();
+      if(reasonsRes.ok) globalReasons = await reasonsRes.json();
+      if(worksRes.ok) globalWorkItems = await worksRes.json();
+      if(stepsRes.ok) globalSteps = await stepsRes.json();
 
       const empDatalist = document.getElementById('emp_datalist');
       globalEmployees.forEach(emp => {
@@ -193,6 +230,14 @@
         let opt = document.createElement('option');
         opt.value = `${ord.order_no} [ID:${ord.id_order}]`;
         orderDatalist.appendChild(opt);
+      });
+
+      const reasonSelect = document.getElementById('id_reason');
+      globalReasons.forEach(r => {
+        let opt = document.createElement('option');
+        opt.value = r.id_reason;
+        opt.textContent = r.reason_detail;
+        reasonSelect.appendChild(opt);
       });
 
       addTaskRow();
@@ -210,7 +255,9 @@
         <input type="text" class="order-search" list="order_datalist" placeholder="พิมพ์ค้นหารหัส/เลขที่ใบสั่งงาน..." autocomplete="off">
         <input type="number" class="order-qty" placeholder="ยอดรวม (ชิ้น)">
       </div>
-      <button type="button" class="remove-task-btn" onclick="this.parentElement.remove()"><i class="fa-solid fa-trash"></i></button>
+      <div style="text-align: right; margin-top: 5px;">
+        <button type="button" class="remove-task-btn" onclick="this.closest('.task-row-box').remove()"><i class="fa-solid fa-trash"></i> ลบแถวนี้</button>
+      </div>
     `;
     container.appendChild(div);
   }
@@ -255,6 +302,13 @@
   }
 
   function generatePreview() {
+    const deptVal = document.getElementById('department_select').value;
+    if(!deptVal) {
+      alert("⚠️ กรุณาเลือกแผนกทำงานก่อนครับ!");
+      document.getElementById('department_select').focus();
+      return;
+    }
+
     const dateVal = document.getElementById('batch_date').value;
     const totalHoursPerEmp = parseFloat(document.getElementById('batch_hours').value) || 8;
 
@@ -264,11 +318,18 @@
     }
 
     let tasks = [];
+    let isValidTasks = true;
+
     document.querySelectorAll('.task-row-box').forEach(box => {
       let searchText = box.querySelector('.order-search').value.trim();
       let qty = parseFloat(box.querySelector('.order-qty').value) || 0;
 
-      if(searchText && qty > 0) {
+      if(searchText || qty > 0) {
+        if(!searchText || qty <= 0) {
+          isValidTasks = false;
+          return;
+        }
+
         let orderId = null;
         let match = searchText.match(/\[ID:(\d+)\]/);
         if(match) {
@@ -278,53 +339,123 @@
           if(found) orderId = found.id_order;
         }
 
-        if(orderId) {
-          tasks.push({ id_order: orderId, order_text: searchText, total_qty: qty });
+        if(!orderId) {
+          isValidTasks = false;
+          return;
         }
+
+        const orderObj = globalOrders.find(o => o.id_order === orderId);
+        // ค้นหา Target ที่ตรงกับงานนี้และแผนกที่เลือก
+        let targetObj = null;
+        if(orderObj && orderObj.id_work) {
+          let possibleTargets = globalTargets.filter(t => String(t.id_work) === String(orderObj.id_work));
+          // พยายามหา Target ที่ตรงกับชื่อแผนก
+          targetObj = possibleTargets.find(t => {
+            const step = globalSteps.find(s => String(s.id_step) === String(t.id_step));
+            return step && step.step_name && step.step_name.includes(deptVal);
+          });
+          // ถ้าไม่เจอให้เอาอันแรกสุดสำรองไว้
+          if(!targetObj && possibleTargets.length > 0) targetObj = possibleTargets[0];
+        }
+
+        tasks.push({
+          id_order: orderId,
+          order_text: searchText,
+          id_work: orderObj ? orderObj.id_work : null,
+          id_target: targetObj ? targetObj.id_target : null,
+          target_amount: targetObj ? targetObj.target_amount : 0,
+          total_qty: qty
+        });
       }
     });
 
-    if(tasks.length === 0) {
-      alert("⚠️ กรุณาระบุใบสั่งงาน (จากรายการค้นหา) และยอดผลิตให้ถูกต้องอย่างน้อย 1 รายการครับ!");
+    if(!isValidTasks || tasks.length === 0) {
+      alert("⚠️ กรุณาระบุใบสั่งงานและใส่ยอดผลิตให้ถูกต้องครบถ้วนครับ!");
       return;
     }
 
+    // คำนวณสัดส่วนชั่วโมงตามน้ำหนักเป้าหมาย
+    let taskLoadWeights = tasks.map(task => {
+      let hoursNeeded = task.target_amount > 0 ? (task.total_qty / task.target_amount) : 1;
+      return hoursNeeded;
+    });
+
+    let totalLoadWeight = taskLoadWeights.reduce((a, b) => a + b, 0);
+
     preparedPayload = [];
-    let hoursPerTask = totalHoursPerEmp / tasks.length;
+    requiresReason = false;
     let previewHtml = '';
 
     selectedEmployeeList.forEach(emp => {
-      tasks.forEach(task => {
+      tasks.forEach((task, idx) => {
         let assignedQty = Math.round(task.total_qty / selectedEmployeeList.length);
+        
+        let proportion = totalLoadWeight > 0 ? (taskLoadWeights[idx] / totalLoadWeight) : (1 / tasks.length);
+        let empAssignedHours = totalHoursPerEmp * proportion;
+
+        // คำนวณ EFF%
+        let totalTargetForEmp = task.target_amount * empAssignedHours;
+        let eff = totalTargetForEmp > 0 ? (assignedQty / totalTargetForEmp) * 100 : 0;
+        
+        if (eff < 85) {
+          requiresReason = true;
+        }
+
+        let effColor = eff >= 85 ? '#10b981' : '#ef4444';
 
         preparedPayload.push({
           record_date: dateVal,
           id_order: task.id_order,
+          id_work: task.id_work,
+          id_target: task.id_target,
           id_name: emp.id_name,
-          hour_work: parseFloat(hoursPerTask.toFixed(2)),
+          hour_work: parseFloat(empAssignedHours.toFixed(2)),
           work_period: "ปกติ",
           produced_amount: assignedQty,
           nogoods_amount: 0,
-          remark: "Batch Packing Smart-Allocated"
+          remark: `[แผนก: ${deptVal}] Batch Smart-Allocated`
         });
 
         previewHtml += `<tr>
           <td>${emp.name}</td>
           <td style="text-align: left; padding-left: 8px;">${task.order_text}</td>
-          <td>${hoursPerTask.toFixed(1)}</td>
+          <td>${empAssignedHours.toFixed(2)}</td>
           <td style="color: #059669; font-weight: bold;">${assignedQty.toLocaleString()}</td>
+          <td style="color: ${effColor}; font-weight: bold;">${eff.toFixed(1)}%</td>
         </tr>`;
       });
     });
 
+    document.getElementById('previewDeptDisplay').innerText = `แผนก: ${deptVal} | พนักงานรวม: ${selectedEmployeeList.length} คน`;
     document.getElementById('previewTbody').innerHTML = previewHtml;
     document.getElementById('previewSection').style.display = 'block';
+
+    if (requiresReason) {
+      document.getElementById('reasonGroup').style.display = 'block';
+    } else {
+      document.getElementById('reasonGroup').style.display = 'none';
+      document.getElementById('id_reason').value = '';
+    }
+
     document.getElementById('previewSection').scrollIntoView({ behavior: 'smooth' });
   }
 
   async function executeBatchSubmit() {
+    let reasonVal = document.getElementById('id_reason').value;
+    if (requiresReason && !reasonVal) {
+      alert("⚠️ ประสิทธิภาพการผลิตต่ำกว่า 85% กรุณาเลือกสาเหตุยอดตกก่อนบันทึกครับ!");
+      document.getElementById('id_reason').focus();
+      return;
+    }
+
     if(preparedPayload.length === 0) return;
     if(!confirm(`ยืนยันการบันทึกข้อมูลชุดนี้ทั้งหมด ${preparedPayload.length} รายการ ใช่หรือไม่?`)) return;
+
+    if (reasonVal) {
+      preparedPayload.forEach(item => {
+        item.id_reason = parseInt(reasonVal);
+      });
+    }
 
     const btn = document.getElementById('confirmSubmitBtn');
     btn.disabled = true;
