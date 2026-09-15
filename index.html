@@ -213,6 +213,7 @@
         empDatalist.appendChild(opt);
       });
 
+      // เติมข้อมูลลง Smart Datalist สำหรับค้นหาเลขออเดอร์
       const orderDatalist = document.getElementById('order_datalist');
       globalOrders.forEach(ord => {
         let opt = document.createElement('option');
@@ -240,9 +241,9 @@
     div.className = 'task-row-box';
     div.innerHTML = `
       <div class="task-row-grid">
-        <input type="text" class="order-search" list="order_datalist" placeholder="พิมพ์เลขออเดอร์..." autocomplete="off" oninput="handleOrderInput(this)" onchange="handleOrderInput(this)">
+        <input type="text" class="order-search" list="order_datalist" placeholder="พิมพ์ค้นหาเลขออเดอร์..." autocomplete="off" oninput="handleOrderInput(this)" onchange="handleOrderInput(this)">
         <select class="target-select" required>
-          <option value="">👉 เลือกขั้นตอน / ชิ้นงาน / เป้า</option>
+          <option value="">👉 เลือกขั้นตอนการผลิต</option>
         </select>
         <input type="number" class="order-qty" placeholder="ยอดรวม (ชิ้น)">
       </div>
@@ -253,31 +254,32 @@
     container.appendChild(div);
   }
 
+  // ⚡ ฟังก์ชันเชื่อมโยง Smart Dropdown ออเดอร์ ➡️ ดึงขั้นตอนและเป้าหมายที่สัมพันธ์กัน
   function handleOrderInput(inputEl) {
     let orderNoVal = inputEl.value.trim().toLowerCase();
     const box = inputEl.closest('.task-row-box');
     const targetSelect = box.querySelector('.target-select');
     
-    targetSelect.innerHTML = '<option value="">👉 เลือกขั้นตอน / ชิ้นงาน / เป้า</option>';
+    targetSelect.innerHTML = '<option value="">👉 เลือกขั้นตอนการผลิต</option>';
 
     if(!orderNoVal) return;
 
-    // 1. ค้นหา Order เพื่อดึง id_work ออกมา
+    // 1. ค้นหาเลขออเดอร์เพื่อดึง id_work (รหัสชิ้นงาน)
     const foundOrd = globalOrders.find(o => String(o.order_no).toLowerCase() === orderNoVal);
     if(!foundOrd || !foundOrd.id_work) return;
 
-    // 2. นำ id_work ไปค้นหาในตาราง targets เพื่อดึงขั้นตอนและเป้าหมายทั้งหมดของชิ้นงานนี้
+    // 2. นำ id_work ไปค้นหาในตาราง targets เพื่อดึงขั้นตอนและเป้าหมายที่ตรงกัน
     const targetsForThisWork = globalTargets.filter(t => String(t.id_work) === String(foundOrd.id_work));
 
     if(targetsForThisWork.length === 0) {
       let opt = document.createElement('option');
       opt.value = "";
-      opt.textContent = "⚠️ ไม่พบเป้าหมาย/ขั้นตอนของชิ้นงานนี้";
+      opt.textContent = "⚠️ ไม่พบขั้นตอน/เป้าหมายของชิ้นงานนี้";
       targetSelect.appendChild(opt);
       return;
     }
 
-    // 3. แสดงชื่อชิ้นงาน ขั้นตอน และเป้าหมายรายชั่วโมงให้ผู้ใช้งานเลือกตรวจสอบ
+    // 3. แสดงรหัสชิ้นงานและขั้นตอนใน Dropdown ให้เลือก
     const foundWork = globalWorkItems.find(w => String(w.id_work) === String(foundOrd.id_work));
     const workCode = foundWork ? foundWork.work_code : foundOrd.id_work;
 
