@@ -262,19 +262,21 @@
 
     if(!orderNoVal) return;
 
-    const foundOrd = globalOrders.find(o => String(o.order_no).toLowerCase() === orderNoVal);
+    // ค้นหาออเดอร์โดยเทียบ String ตัวพิมพ์เล็ก-ใหญ่ให้ตรงกัน
+    const foundOrd = globalOrders.find(o => String(o.order_no).trim().toLowerCase() === orderNoVal);
     if(!foundOrd) return;
 
-    // ตรวจสอบว่าออเดอร์นี้ผูกกับ id_work หรือไม่
-    if(!foundOrd.id_work) {
+    if(foundOrd.id_work === null || foundOrd.id_work === undefined || foundOrd.id_work === "") {
       let opt = document.createElement('option');
       opt.value = "";
-      opt.textContent = "⚠️ ออเดอร์นี้ยังไม่ได้ผูกรหัสชิ้นงาน (id_work เป็นค่าว่าง)";
+      opt.textContent = "⚠️ ออเดอร์นี้ยังไม่ได้ผูกรหัสชิ้นงาน (id_work ว่าง)";
       targetSelect.appendChild(opt);
       return;
     }
 
-    const targetsForThisWork = globalTargets.filter(t => String(t.id_work) === String(foundOrd.id_work));
+    // แปลงรหัสชิ้นงานเป็น String เพื่อใช้กรองตาราง targets ได้อย่างแม่นยำ 100%
+    const targetWorkIdStr = String(foundOrd.id_work).trim();
+    const targetsForThisWork = globalTargets.filter(t => String(t.id_work).trim() === targetWorkIdStr);
 
     if(targetsForThisWork.length === 0) {
       let opt = document.createElement('option');
@@ -284,11 +286,11 @@
       return;
     }
 
-    const foundWork = globalWorkItems.find(w => String(w.id_work) === String(foundOrd.id_work));
-    const workCode = foundWork ? foundWork.work_code : foundOrd.id_work;
+    const foundWork = globalWorkItems.find(w => String(w.id_work).trim() === targetWorkIdStr);
+    const workCode = foundWork ? foundWork.work_code : `ID:${targetWorkIdStr}`;
 
     targetsForThisWork.forEach(t => {
-      const foundStep = globalSteps.find(s => String(s.id_step) === String(t.id_step));
+      const foundStep = globalSteps.find(s => String(s.id_step).trim() === String(t.id_step).trim());
       const stepName = foundStep ? foundStep.step_name : `ขั้นตอน #${t.id_step}`;
 
       let opt = document.createElement('option');
@@ -368,7 +370,7 @@
           return;
         }
 
-        const foundOrd = globalOrders.find(o => String(o.order_no).toLowerCase() === orderNoVal.toLowerCase());
+        const foundOrd = globalOrders.find(o => String(o.order_no).trim().toLowerCase() === orderNoVal.toLowerCase());
         let orderId = foundOrd ? foundOrd.id_order : null;
 
         if(!orderId) {
@@ -377,13 +379,13 @@
         }
 
         let targetData = JSON.parse(targetValStr);
-        let foundWork = globalWorkItems.find(w => String(w.id_work) === String(targetData.id_work));
+        let foundWork = globalWorkItems.find(w => String(w.id_work).trim() === String(targetData.id_work).trim());
         let workCodeText = foundWork ? foundWork.work_code : targetData.id_work;
 
-        let foundTargetObj = globalTargets.find(t => String(t.id_target) === String(targetData.id_target));
+        let foundTargetObj = globalTargets.find(t => String(t.id_target).trim() === String(targetData.id_target).trim());
         let stepNameText = "";
         if (foundTargetObj) {
-          let foundStep = globalSteps.find(s => String(s.id_step) === String(foundTargetObj.id_step));
+          let foundStep = globalSteps.find(s => String(s.id_step).trim() === String(foundTargetObj.id_step).trim());
           if (foundStep) stepNameText = foundStep.step_name;
         }
 
