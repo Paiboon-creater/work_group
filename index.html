@@ -179,6 +179,7 @@
   let globalReasons = [];
   let globalWorkItems = [];
   let globalSteps = [];
+  let globalOrderSteps = [];
   let selectedEmployeeList = [];
   let preparedPayload = [];
   let requiresReason = false;
@@ -187,13 +188,14 @@
     document.getElementById('batch_date').value = new Date().toISOString().split('T')[0];
 
     try {
-      const [ordersRes, empsRes, targetsRes, reasonsRes, worksRes, stepsRes] = await Promise.all([
+      const [ordersRes, empsRes, targetsRes, reasonsRes, worksRes, stepsRes, orderStepsRes] = await Promise.all([
         fetch(SUPABASE_URL + "/orders?select=*", { headers }),
         fetch(SUPABASE_URL + "/employees?select=*", { headers }),
         fetch(SUPABASE_URL + "/targets?select=*", { headers }),
         fetch(SUPABASE_URL + "/reasons?select=*", { headers }),
         fetch(SUPABASE_URL + "/work_items?select=*", { headers }),
-        fetch(SUPABASE_URL + "/production_steps?select=*", { headers })
+        fetch(SUPABASE_URL + "/production_steps?select=*", { headers }),
+        fetch(SUPABASE_URL + "/order_steps?select=*", { headers })
       ]);
 
       if(ordersRes.ok) globalOrders = await ordersRes.json();
@@ -205,6 +207,7 @@
       if(reasonsRes.ok) globalReasons = await reasonsRes.json();
       if(worksRes.ok) globalWorkItems = await worksRes.json();
       if(stepsRes.ok) globalSteps = await stepsRes.json();
+      if(orderStepsRes.ok) globalOrderSteps = await orderStepsRes.json();
 
       const empDatalist = document.getElementById('emp_datalist');
       globalEmployees.forEach(emp => {
@@ -262,37 +265,47 @@
 
     if(!orderNoVal) return;
 
-    // ค้นหาออเดอร์แบบยืดหยุ่น (รองรับทั้งพิมพ์ตัวพิมพ์เล็ก/ใหญ่)
+    // 1. ค้นหา Order จาก order_no
     const foundOrd = globalOrders.find(o => String(o.order_no).toLowerCase() === orderNoVal);
-    if(!foundOrd || !foundOrd.id_work) return;
+    if(!foundOrd) return;
 
-    // ดึง Targets ที่มี id_work ตรงกับออเดอร์นี้
-    const targets = globalTargets.filter(t => String(t.id_work) === String(foundOrd.id_work));
-    
-    if(targets.length === 0) {
+    // 2. ดึง Steps จากตาราง order_steps ที่ตรงกับ id_order นี้
+    const stepsForThisOrder = globalOrderSteps.filter(os => String(os.id_order) === String(foundOrd.id_order));
+
+    if(stepsForThisOrder.length === 0) {
       let opt = document.createElement('option');
       opt.value = "";
-      opt.textContent = "⚠️ ไม่พบข้ามขั้นตอน/เป้าหมายของสินค้านี้";
+      opt.textContent = "⚠️ ไม่พบขั้นตอนการทำงานของออเดอร์นี้ใน order_steps";
       targetSelect.appendChild(opt);
       return;
     }
 
-    targets.forEach(t => {
-      let stepName = t.id_step;
-      const foundStep = globalSteps.find(s => String(s.id_step) === String(t.id_step));
-      if(foundStep) stepName = foundStep.step_name;
+    // 3. วนลูปจับคู่หา Target ที่ตรงกับ id_work และ id_step
+    stepsForThisOrder.forEach(os => {
+      const foundStep = globalSteps.find(s => String(s.id_step) === String(os.id_step));
+      const stepName = foundStep ? foundStep.step_name : `ขั้นตอน #${os.id_step}`;
 
-      let workCode = foundOrd.id_work;
       const foundWork = globalWorkItems.find(w => String(w.id_work) === String(foundOrd.id_work));
-      if(foundWork) workCode = foundWork.work_code;
+      const workCode = foundWork ? foundWork.work_code : foundOrd.id_work;
+
+      // ค้นหาเป้าหมายจากตาราง targets โดยใช้ id_work และ id_step
+      const foundTarget = globalTargets.find(t => String(t.id_work) === String(foundOrd.id_work) && String(t.id_step) === String(os.id_step));
+
+      let targetAmount = foundTarget ? foundTarget.target_amount : 0;
+      let idTarget = foundTarget ? foundTarget.id_target : null;
 
       let opt = document.createElement('option');
-      opt.value = JSON.stringify({ id_target: t.id_target, id_work: t.id_work, target_amount: t.target_amount });
-      opt.textContent = `ชิ้นงาน: ${workCode} | ขั้นตอน: ${stepName} (เป้า: ${t.target_amount}/ชม.)`;
+      opt.value = JSON.stringify({ 
+        id_target: idTarget, 
+        id_work: foundOrd.id_work, 
+        id_step: os.id_step,
+        target_amount: targetAmount 
+      });
+      opt.textContent = `ชิ้นงาน: ${workCode} | ขั้นตอน: ${stepName} (เป้า: ${targetAmount}/ชม.)`;
       targetSelect.appendChild(opt);
     });
 
-    if (targets.length === 1) {
+    if (stepsForThisOrder.length === 1) {
       targetSelect.selectedIndex = 1;
     }
   }
@@ -371,12 +384,8 @@
         let foundWork = globalWorkItems.find(w => String(w.id_work) === String(targetData.id_work));
         let workCodeText = foundWork ? foundWork.work_code : targetData.id_work;
 
-        let foundTargetObj = globalTargets.find(t => String(t.id_target) === String(targetData.id_target));
-        let stepNameText = "";
-        if (foundTargetObj) {
-          let foundStep = globalSteps.find(s => String(s.id_step) === String(foundTargetObj.id_step));
-          if (foundStep) stepNameText = foundStep.step_name;
-        }
+        let foundStep = globalSteps.find(s => String(s.id_step) === String(targetData.id_step));
+        let stepNameText = foundStep ? foundStep.step_name : "";
 
         tasks.push({
           id_order: orderId,
