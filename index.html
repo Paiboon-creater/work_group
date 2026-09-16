@@ -568,7 +568,7 @@
   }
 
   // ==========================================
-  // 📂 ฟังก์ชันจัดการประวัติงาน (แก้ไข / ลบ) แบบตรวจจับชื่อคีย์อัติโนมัติ
+  // 📂 ฟังก์ชันจัดการประวัติงาน (แก้ไข / ลบ) ใช้งานฟิลด์ id ตามโครงสร้างจริง
   // ==========================================
   async function loadProductionHistory() {
     const filterDate = document.getElementById('history_date_filter').value;
@@ -592,8 +592,7 @@
 
       let html = "";
       logs.forEach(log => {
-        // ตรวจจับชื่อ Primary Key อัตโนมัติ (รองรับทั้ง id_daily, id, หรือชื่ออื่นๆ)
-        let primaryKeyVal = log.id_daily !== undefined ? log.id_daily : (log.id !== undefined ? log.id : Object.values(log)[0]);
+        const recordId = log.id; // ใช้ฟิลด์ id ตามโครงสร้างจริงใน Supabase
 
         const emp = globalEmployees.find(e => String(e.id_name) === String(log.id_name));
         const empName = emp ? emp.name : `ID: ${log.id_name}`;
@@ -609,8 +608,8 @@
           <td>${log.hour_work}</td>
           <td style="color: #059669; font-weight: bold;">${log.produced_amount.toLocaleString()}</td>
           <td>
-            <button class="btn-row-edit" onclick='editSingleRecord(${JSON.stringify(log)})'><i class="fa-solid fa-pen"></i> แก้ไข</button>
-            <button class="btn-row-delete" onclick='deleteSingleRecord(${JSON.stringify(log)})'><i class="fa-solid fa-trash"></i> ลบ</button>
+            <button class="btn-row-edit" onclick="editSingleRecord(${recordId}, ${log.produced_amount}, ${log.hour_work})"><i class="fa-solid fa-pen"></i> แก้ไข</button>
+            <button class="btn-row-delete" onclick="deleteSingleRecord(${recordId})"><i class="fa-solid fa-trash"></i> ลบ</button>
           </td>
         </tr>`;
       });
@@ -621,11 +620,8 @@
     }
   }
 
-  async function editSingleRecord(logObj) {
-    let pkKey = logObj.id_daily !== undefined ? 'id_daily' : (logObj.id !== undefined ? 'id' : Object.keys(logObj)[0]);
-    let pkVal = logObj[pkKey];
-
-    let newQty = prompt(`แก้ไขยอดผลิต (จำนวนชิ้น):\n(ค่าเดิม: ${logObj.produced_amount})`, logObj.produced_amount);
+  async function editSingleRecord(recordId, currentQty, currentHours) {
+    let newQty = prompt(`แก้ไขยอดผลิต (จำนวนชิ้น):\n(ค่าเดิม: ${currentQty})`, currentQty);
     if(newQty === null) return;
     let parsedQty = parseInt(newQty);
     if(isNaN(parsedQty)) {
@@ -633,7 +629,7 @@
       return;
     }
 
-    let newHrs = prompt(`แก้ไขชั่วโมงทำงาน (ชม.):\n(ค่าเดิม: ${logObj.hour_work})`, logObj.hour_work);
+    let newHrs = prompt(`แก้ไขชั่วโมงทำงาน (ชม.):\n(ค่าเดิม: ${currentHours})`, currentHours);
     if(newHrs === null) return;
     let parsedHrs = parseFloat(newHrs);
     if(isNaN(parsedHrs)) {
@@ -642,7 +638,7 @@
     }
 
     try {
-      const res = await fetch(`${SUPABASE_URL}/daily_production?${pkKey}=eq.${pkVal}`, {
+      const res = await fetch(`${SUPABASE_URL}/daily_production?id=eq.${recordId}`, {
         method: "PATCH",
         headers: headers,
         body: JSON.stringify({ produced_amount: parsedQty, hour_work: parsedHrs })
@@ -660,14 +656,11 @@
     }
   }
 
-  async function deleteSingleRecord(logObj) {
-    let pkKey = logObj.id_daily !== undefined ? 'id_daily' : (logObj.id !== undefined ? 'id' : Object.keys(logObj)[0]);
-    let pkVal = logObj[pkKey];
-
+  async function deleteSingleRecord(recordId) {
     if(!confirm("⚠️ คุณต้องการลบรายการบันทึกนี้ใช่หรือไม่?")) return;
 
     try {
-      const res = await fetch(`${SUPABASE_URL}/daily_production?${pkKey}=eq.${pkVal}`, {
+      const res = await fetch(`${SUPABASE_URL}/daily_production?id=eq.${recordId}`, {
         method: "DELETE",
         headers: headers
       });
