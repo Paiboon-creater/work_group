@@ -1,529 +1,765 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>⚡ BATCH SMART ENTRY // CYBER BLUE ⚡</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&display=swap');
-    :root {
-      --bg-blue: #1e3a8a; --panel-bg: #ffffff; --blue-primary: #2563eb; 
-      --blue-dark: #1e40af; --blue-light: #eff6ff; --blue-gold: #f59e0b; 
-      --text-main: #1f2937; --text-muted: #6b7280; --input-bg: #fafafa; --border-dim: #e5e7eb;
-    }
-    body {
-      font-family: 'Kanit', sans-serif;
-      background: linear-gradient(135deg, #0f172a, #1e3a8a, #3b82f6);
-      background-attachment: fixed; color: var(--text-main);
-      margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; min-height: 100vh;
-    }
-    .terminal-container {
-      width: 100%; max-width: 650px; background: var(--panel-bg);
-      padding: 20px 15px; border-radius: 12px; border: 3px solid var(--blue-gold);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 15px rgba(245, 158, 11, 0.4);
-      margin-bottom: 15px; box-sizing: border-box;
-    }
-    .app-header {
-      display: flex; align-items: center; justify-content: center; gap: 15px;
-      border-bottom: 3px solid var(--blue-gold); padding-bottom: 12px; margin-bottom: 15px;
-    }
-    .emblem {
-      width: 50px; height: 50px; background: var(--blue-primary); border: 3px solid var(--blue-gold);
-      border-radius: 50%; display: flex; justify-content: center; align-items: center;
-      box-shadow: 0 0 15px rgba(245, 158, 11, 0.6);
-    }
-    .emblem i { font-size: 24px; color: var(--blue-gold); }
-    .app-title { font-size: 1.3rem; font-weight: 800; font-style: italic; color: var(--blue-primary); margin: 0; text-transform: uppercase; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JAGUAR_PRODUCTION - STAINLESS STEEL FACTORY</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    .form-group { margin-bottom: 15px; }
-    .form-group label { display: block; margin-bottom: 6px; font-size: 15px; font-weight: 700; color: var(--blue-dark); }
-    input, select {
-      width: 100%; padding: 12px; background-color: var(--input-bg); border: 2px solid var(--border-dim); 
-      color: var(--text-main); font-weight: 600; border-radius: 8px; box-sizing: border-box; font-family: inherit; font-size: 15px;
-    }
-    input[type="date"] { text-align: center; }
-    input:focus, select:focus { border-color: var(--blue-gold); outline: none; box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.2); background-color: #fff; }
+    <style>
+        :root {
+            --steel-bg: #0b131e;
+            --steel-panel: #162233;
+            --steel-border: #889bb3;
+            --steel-highlight: #d1dbe8;
+            --text-main: #f0f4f8;
+            
+            /* Button Colors */
+            --c-orange-1: #ff7e5f; --c-orange-2: #feb47b;
+            --c-blue-1: #0072ff; --c-blue-2: #00c6ff;
+            --c-pink-1: #b91d73; --c-pink-2: #f953c6;
+            --c-green-1: #11998e; --c-green-2: #38ef7d;
+            --c-red-1: #c31432; --c-red-2: #240b36;
+            --c-orange2-1: #f12711; --c-orange2-2: #f5af19;
+            --c-yellow-1: #f7971e; --c-yellow-2: #ffd200;
+            --c-purple-1: #4a00e0; --c-purple-2: #8e2de2;
+        }
 
-    .hours-period-grid {
-      display: grid; grid-template-columns: 1.5fr 1fr; gap: 10px;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Prompt', sans-serif;
+        }
 
-    .task-row-box {
-      background: var(--blue-light); border: 2px dashed var(--blue-primary); padding: 10px; border-radius: 8px; margin-bottom: 10px;
-    }
-    .task-row-grid { display: flex; flex-direction: column; gap: 8px; margin-bottom: 6px; }
-    @media(min-width: 480px) {
-      .task-row-grid { display: grid; grid-template-columns: 1.5fr 2fr 1fr; gap: 6px; }
-    }
-    .remove-task-btn {
-      background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: bold;
-    }
+        body {
+            background-color: var(--steel-bg);
+            background-image: 
+                radial-gradient(circle at 50% 0%, #1e2f47 0%, #0b131e 80%);
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            flex-direction: column;
+            padding: 20px;
+            color: var(--text-main);
+        }
 
-    .nav-buttons-wrapper { display: flex; gap: 10px; margin-bottom: 15px; }
-    .nav-btn {
-      display: flex; align-items: center; justify-content: center; gap: 8px; flex: 1;
-      background: #fff; color: var(--blue-primary); border: 2px solid var(--blue-primary);
-      padding: 10px; font-size: 14px; border-radius: 8px; text-decoration: none; font-weight: 700; text-transform: uppercase;
-    }
-    .nav-btn:hover { background: var(--blue-primary); color: #fff; }
+        /* ------------------------------------------
+            แถบวิ่งตลาดหุ้น (Production Ticker)
+        ------------------------------------------ */
+        .ticker-wrap {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            background: linear-gradient(to right, #0b131e, #1a2a40, #0b131e);
+            border-bottom: 2px solid var(--steel-border);
+            overflow: hidden; height: 32px;
+            display: flex; align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
 
-    .emp-input-row { display: flex; gap: 8px; margin-bottom: 8px; }
-    .add-btn {
-      background: var(--blue-primary); color: white; border: none; padding: 0 15px; border-radius: 8px; font-weight: bold; cursor: pointer; white-space: nowrap;
-    }
-    .selected-emp-list {
-      display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px;
-    }
-    .emp-badge {
-      background: var(--blue-light); border: 1px solid var(--blue-primary); color: var(--blue-dark);
-      padding: 5px 10px; border-radius: 20px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px;
-    }
-    .emp-badge span { color: #ef4444; cursor: pointer; font-weight: bold; }
+        .ticker-content {
+            display: inline-block; white-space: nowrap;
+            padding-right: 100%; box-sizing: content-box;
+            animation: ticker 850s linear infinite; 
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold; font-size: 0.85rem; letter-spacing: 1px;
+        }
 
-    .preview-table-wrapper { width: 100%; overflow-x: auto; margin-top: 15px; border-radius: 8px; border: 2px solid var(--blue-primary); }
-    .preview-table { width: 100%; border-collapse: collapse; font-size: 12px; text-align: center; }
-    .preview-table th { background: var(--blue-primary); color: white; padding: 8px 4px; font-weight: 700; }
-    .preview-table td { padding: 6px 4px; border-bottom: 1px solid var(--border-dim); background: #fff; }
+        .ticker-content:hover { animation-play-state: paused; }
+        @keyframes ticker {
+            0% { transform: translate3d(100vw, 0, 0); }
+            100% { transform: translate3d(-100%, 0, 0); }
+        }
+        .ticker-item { display: inline-block; padding: 0 30px; }
+        .t-green { color: #00ff88; }
+        .t-red { color: #ff3366; }
+        .t-white { color: var(--steel-highlight); }
 
-    .action-btn {
-      width: 100%; background: linear-gradient(90deg, var(--blue-dark), var(--blue-primary)); color: #ffffff; border: 2px solid var(--blue-gold); padding: 16px; font-size: 18px;
-      border-radius: 8px; cursor: pointer; font-weight: 800; font-style: italic; margin-top: 15px; font-family: inherit; box-shadow: 0 6px 15px rgba(37, 99, 235, 0.4); text-transform: uppercase;
-    }
-    .action-btn:hover { background: linear-gradient(90deg, var(--blue-primary), var(--blue-gold)); }
-    .preview-btn {
-      background: #10b981; border-color: #059669; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
-    }
-  </style>
+        /* ------------------------------------------
+            ปุ่มคู่มือและสลับหมวดหมู่แบบลอย
+        ------------------------------------------ */
+        .float-buttons {
+            position: fixed; top: 45px; left: 15px;
+            display: flex; flex-direction: column; gap: 8px; z-index: 900;
+        }
+        .btn-float {
+            background: linear-gradient(135deg, #2b3e54, #162233);
+            border: 1px solid var(--steel-border);
+            color: var(--steel-highlight);
+            padding: 8px 12px; border-radius: 4px;
+            font-size: 0.8rem; font-weight: bold; cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            display: flex; align-items: center; gap: 8px; transition: all 0.2s;
+        }
+        .btn-float:hover {
+            background: var(--steel-border); color: #000;
+            box-shadow: 0 0 15px rgba(136, 155, 179, 0.6);
+        }
+
+        /* ------------------------------------------
+            ส่วนแอปหลัก (Factory Panel)
+        ------------------------------------------ */
+        .app-container {
+            width: 100%; max-width: 1100px; 
+            margin-top: 40px; margin-bottom: 40px;
+            background: rgba(22, 34, 51, 0.85);
+            border: 1px solid var(--steel-border);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.8), inset 0 0 30px rgba(0, 0, 0, 0.5);
+            padding: 25px 30px; border-radius: 8px;
+            backdrop-filter: blur(10px);
+            position: relative;
+        }
+
+        /* น็อตตกแต่ง 4 มุม */
+        .bolt {
+            position: absolute; width: 12px; height: 12px;
+            background: radial-gradient(circle, #d1dbe8, #5a6e85);
+            border-radius: 50%; box-shadow: 1px 1px 3px #000, inset -1px -1px 2px rgba(0,0,0,0.5);
+        }
+        .bolt-1 { top: 15px; left: 15px; } .bolt-2 { top: 15px; right: 15px; }
+        .bolt-3 { bottom: 15px; left: 15px; } .bolt-4 { bottom: 15px; right: 15px; }
+
+        header { text-align: center; margin-bottom: 25px; }
+
+        .logo-container {
+            width: 90px; height: 90px; margin: 0 auto 10px;
+            background: #000; border-radius: 50%;
+            border: 2px solid var(--steel-border);
+            box-shadow: 0 0 15px rgba(136, 155, 179, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.2);
+            display: flex; justify-content: center; align-items: center; overflow: hidden;
+        }
+        .logo-container img {
+            width: 100%; height: 100%; object-fit: cover;
+            filter: grayscale(100%) sepia(20%) hue-rotate(200deg) saturate(300%) brightness(0.9);
+        }
+
+        h1 { 
+            color: var(--steel-highlight); font-size: 1.6rem; font-weight: 700; 
+            letter-spacing: 4px; text-transform: uppercase; 
+            text-shadow: 0 0 10px rgba(136, 155, 179, 0.5); 
+        }
+        .subtitle { 
+            color: #889bb3; font-size: 0.8rem; margin-top: 2px; 
+            letter-spacing: 3px; font-weight: bold;
+        }
+
+        /* ------------------------------------------
+            โครงสร้างโซน
+        ------------------------------------------ */
+        .zone-container {
+            margin-bottom: 25px;
+            padding: 20px;
+            border-radius: 6px;
+            background: rgba(11, 19, 30, 0.6);
+            border: 1px solid #2b3e54;
+            border-left: 4px solid var(--steel-border);
+            position: relative;
+        }
+        .zone-container.hidden-zone {
+            display: none !important;
+        }
+        
+        .zone-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            border-bottom: 1px solid #2b3e54;
+            padding-bottom: 8px;
+            color: var(--steel-highlight);
+        }
+        .auth-badge {
+            font-size: 0.65rem; padding: 2px 8px; border-radius: 12px;
+            background: #ff3333; color: white; letter-spacing: 1px;
+            box-shadow: 0 0 5px rgba(255, 51, 51, 0.5);
+        }
+        .public-badge {
+            font-size: 0.65rem; padding: 2px 8px; border-radius: 12px;
+            background: #00ff88; color: black; letter-spacing: 1px;
+            box-shadow: 0 0 5px rgba(0, 255, 136, 0.5);
+        }
+        
+        .menu-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px;
+        }
+
+        /* ------------------------------------------
+            สไตล์ปุ่มต่างๆ
+        ------------------------------------------ */
+        .menu-btn {
+            border: 1px solid rgba(255,255,255,0.2); 
+            border-radius: 6px; padding: 12px 10px; text-decoration: none;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+            transition: all 0.2s ease; position: relative; overflow: hidden; z-index: 1; height: 100%;
+            cursor: pointer; min-height: 90px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.4), inset 1px 1px 2px rgba(255,255,255,0.3);
+        }
+        
+        .menu-btn::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%);
+            transform: skewX(-25deg); transition: all 0.4s; z-index: -1;
+        }
+        .menu-btn:hover::before { left: 200%; transition: all 0.5s ease-in-out; }
+        
+        .menu-btn i { font-size: 1.4rem; margin-bottom: 8px; color: #fff; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); transition: all 0.3s ease; }
+        .menu-btn span { font-size: 0.8rem; font-weight: 600; line-height: 1.2; color: #fff; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
+        .menu-btn:active { transform: translateY(2px); box-shadow: inset 0px 3px 6px rgba(0,0,0,0.6); }
+        .menu-btn:hover { transform: translateY(-2px); border-color: #fff; }
+        .menu-btn:hover i { transform: scale(1.1); }
+
+        /* สีปุ่ม */
+        .btn-orange { background: linear-gradient(135deg, var(--c-orange-1), var(--c-orange-2)); }
+        .btn-orange:hover { box-shadow: 0 0 15px rgba(255, 126, 95, 0.6); }
+        .btn-blue { background: linear-gradient(135deg, var(--c-blue-1), var(--c-blue-2)); }
+        .btn-blue:hover { box-shadow: 0 0 15px rgba(0, 198, 255, 0.6); }
+        .btn-pink { background: linear-gradient(135deg, var(--c-pink-1), var(--c-pink-2)); }
+        .btn-pink:hover { box-shadow: 0 0 15px rgba(249, 83, 198, 0.6); }
+        .btn-green { background: linear-gradient(135deg, var(--c-green-1), var(--c-green-2)); }
+        .btn-green:hover { box-shadow: 0 0 15px rgba(56, 239, 125, 0.6); }
+        .btn-red { background: linear-gradient(135deg, #ff416c, #ff4b2b); }
+        .btn-red:hover { box-shadow: 0 0 15px rgba(255, 65, 108, 0.6); }
+        .btn-orange2 { background: linear-gradient(135deg, var(--c-orange2-1), var(--c-orange2-2)); }
+        .btn-orange2:hover { box-shadow: 0 0 15px rgba(245, 175, 25, 0.6); }
+        .btn-green2 { background: linear-gradient(135deg, #00b09b, #96c93d); }
+        .btn-green2:hover { box-shadow: 0 0 15px rgba(150, 201, 61, 0.6); }
+        .btn-yellow { background: linear-gradient(135deg, var(--c-yellow-1), var(--c-yellow-2)); }
+        .btn-yellow i, .btn-yellow span { color: #333; text-shadow: none; }
+        .btn-yellow:hover { box-shadow: 0 0 15px rgba(255, 210, 0, 0.6); }
+        .btn-purple { background: linear-gradient(135deg, var(--c-purple-1), var(--c-purple-2)); }
+        .btn-purple:hover { box-shadow: 0 0 15px rgba(142, 45, 226, 0.6); }
+        .btn-wip { background: linear-gradient(135deg, #1d8cf8, #3358f4); }
+        .btn-wip:hover { box-shadow: 0 0 15px rgba(29, 140, 248, 0.6); }
+        .btn-cyan { background: linear-gradient(135deg, #00d2ff, #3a7bd5); }
+        .btn-cyan:hover { box-shadow: 0 0 15px rgba(0, 210, 255, 0.6); }
+        .btn-pink2 { background: linear-gradient(135deg, #ec008c, #fc6767); }
+        .btn-pink2:hover { box-shadow: 0 0 15px rgba(236, 0, 140, 0.6); }
+
+        /* ------------------------------------------
+            หน้าต่าง Modal เลือกหมวดหมู่ตอนเปิดเว็บ
+        ------------------------------------------ */
+        .selector-overlay {
+            display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 10, 18, 0.92); z-index: 3000; justify-content: center; align-items: center;
+            backdrop-filter: blur(8px);
+        }
+        .selector-content {
+            background: var(--steel-panel); border: 2px solid var(--steel-border); border-radius: 8px;
+            width: 90%; max-width: 650px; padding: 35px 30px; box-shadow: 0 0 40px rgba(0, 198, 255, 0.2);
+            color: var(--text-main); text-align: center;
+        }
+        .selector-title {
+            color: var(--steel-highlight); font-size: 1.4rem; font-weight: 700; margin-bottom: 10px; letter-spacing: 1px;
+        }
+        .selector-desc {
+            color: #889bb3; font-size: 0.9rem; margin-bottom: 25px; line-height: 1.5;
+        }
+        .selector-options {
+            display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; text-align: left;
+        }
+        .selector-option-btn {
+            background: rgba(11, 19, 30, 0.8); border: 1px solid var(--steel-border);
+            color: var(--text-main); padding: 14px 18px; border-radius: 6px; cursor: pointer;
+            font-size: 0.95rem; font-weight: 600; display: flex; align-items: center; gap: 12px;
+            transition: all 0.2s;
+        }
+        .selector-option-btn i { font-size: 1.2rem; color: var(--c-blue-2); }
+        .selector-option-btn:hover {
+            background: var(--steel-border); color: #000; border-color: #fff;
+            box-shadow: 0 0 15px rgba(136, 155, 179, 0.5); transform: translateY(-2px);
+        }
+        .selector-option-btn:hover i { color: #000; }
+
+        /* ------------------------------------------
+            หน้าต่าง Modal คู่มือการใช้งาน 
+        ------------------------------------------ */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85); z-index: 2000; justify-content: center; align-items: center;
+            backdrop-filter: blur(5px); opacity: 0; transition: opacity 0.3s ease;
+        }
+        .modal-overlay.active { display: flex; opacity: 1; }
+        .modal-content {
+            background: var(--steel-panel); border: 2px solid var(--steel-border); border-radius: 6px;
+            width: 90%; max-width: 800px; max-height: 85vh; overflow-y: auto;
+            padding: 30px; box-shadow: 0 0 30px rgba(136, 155, 179, 0.3); color: var(--text-main); position: relative;
+        }
+        
+        .modal-header-actions {
+            display: flex; justify-content: flex-end; gap: 15px; position: sticky; top: 0; 
+            padding-bottom: 10px; background: var(--steel-panel); z-index: 10; margin-bottom: -20px;
+        }
+        
+        .btn-print-manual {
+            background: #2b3e54; color: #fff; border: 1px solid var(--steel-border); padding: 6px 12px; border-radius: 4px;
+            cursor: pointer; font-size: 0.85rem; transition: 0.2s; display: flex; align-items: center; gap: 5px;
+        }
+        .btn-print-manual:hover { background: var(--steel-highlight); color: #000; }
+
+        .close-modal {
+            background: transparent; border: none; color: #ff3366; font-size: 1.5rem; 
+            cursor: pointer; transition: 0.2s; display: flex; align-items: center;
+        }
+        .close-modal:hover { color: #ff0044; transform: scale(1.1); }
+
+        .manual-header { text-align: center; margin-top: 10px; margin-bottom: 25px; border-bottom: 1px dashed var(--steel-border); padding-bottom: 15px; }
+        .manual-header h2 { color: var(--steel-highlight); letter-spacing: 1px; }
+        .manual-section { margin-bottom: 20px; }
+        .manual-section h3 { color: #d1dbe8; font-size: 1.1rem; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #2b3e54; padding-bottom: 5px;}
+        .manual-section p { font-size: 0.85rem; line-height: 1.6; margin-bottom: 8px; color: #a5b6c9; }
+        .manual-section strong { color: #fff; }
+        
+        .modal-content::-webkit-scrollbar { width: 8px; }
+        .modal-content::-webkit-scrollbar-track { background: #0b131e; }
+        .modal-content::-webkit-scrollbar-thumb { background: var(--steel-border); border-radius: 4px; }
+
+        @media print {
+            body * { visibility: hidden; }
+            #manualModal, #manualModal * { visibility: visible; }
+            #manualModal {
+                position: absolute; left: 0; top: 0; width: 100%; height: auto;
+                background: white; display: block !important; opacity: 1 !important;
+            }
+            .modal-content {
+                background: white; color: black; border: none; box-shadow: none;
+                width: 100%; max-width: 100%; padding: 0; overflow: visible;
+            }
+            .modal-header-actions { display: none; }
+            .manual-header h2 { color: black; border-bottom: 2px solid black; }
+            .manual-header p { color: #333 !important; }
+            .manual-section h3 { color: black; border-bottom: 1px solid #ccc; padding-bottom: 5px; }
+            .manual-section p, .manual-section strong { color: black !important; }
+        }
+    </style>
 </head>
 <body>
 
-<div class="terminal-container">
-  <div class="nav-buttons-wrapper">
-    <a href="https://paiboon-creater.github.io/daily-production/" class="nav-btn"><i class="fa-solid fa-house"></i> หน้าหลัก</a>
-    <a href="#" class="nav-btn" style="background: var(--blue-primary); color: #fff;"><i class="fa-solid fa-users-gear"></i> งานกลุ่ม (Active)</a>
-  </div>
-
-  <div class="app-header">
-    <div class="emblem"><i class="fa-solid fa-industry"></i></div>
-    <div><h1 class="app-title">⚡ บันทึกงานกลุ่ม (SMART BATCH)</h1></div>
-  </div>
-
-  <form id="batchForm" onsubmit="event.preventDefault();">
-
-    <div class="form-group">
-      <label>📅 1. วันที่ทำงาน</label>
-      <input type="date" id="batch_date" required>
+    <!-- 📌 หน้าต่างเลือกหมวดหมู่ตอนเปิดเว็บครั้งแรก -->
+    <div class="selector-overlay" id="categorySelectorModal">
+        <div class="selector-content">
+            <div class="logo-container" style="width: 70px; height: 70px; margin-bottom: 15px;">
+                <img src="https://img.freepik.com/premium-vector/black-golden-aura-unique-golden-roaring-lion-face-front-view-logo-vector-radiating-luxury_764382-146929.jpg?w=2000" alt="Jaguar Logo">
+            </div>
+            <div class="selector-title">JAGUAR PRODUCTION SYSTEM</div>
+            <div class="selector-desc">กรุณาเลือกหมวดหมู่การใช้งานระบบตามสิทธิ์และวัตถุประสงค์ของคุณ</div>
+            <div class="selector-options">
+                <button class="selector-option-btn hover-sound" onclick="selectCategory(1)">
+                    <i class="fa-solid fa-magnifying-glass-chart"></i>
+                    <span>1. คุณต้องการดูรายงานการผลิตทั้งหมด (เพื่อติดตามและช่วยการตัดสินใจในการบริหารงานผลิต)</span>
+                </button>
+                <button class="selector-option-btn hover-sound" onclick="selectCategory(2)">
+                    <i class="fa-solid fa-gears"></i>
+                    <span>2. คุณต้องการกรอกข้อมูลการผลิต (เฉพาะผู้กรอกข้อมูลการผลิต)</span>
+                </button>
+                <button class="selector-option-btn hover-sound" onclick="selectCategory(3)">
+                    <i class="fa-solid fa-sliders"></i>
+                    <span>3. คุณต้องการวางแผนงานการผลิต และตั้งค่ามาตรฐานการผลิต (เฉพาะฝ่ายวางแผนงาน)</span>
+                </button>
+            </div>
+        </div>
     </div>
 
-    <div class="form-group">
-      <label>⏱️ 2. ช่วงเวลา และชั่วโมงทำงาน / คน</label>
-      <div class="hours-period-grid">
-        <select id="batch_work_period" required>
-          <option value="ปกติ" selected>🟢 ช่วงเวลา: ปกติ</option>
-          <option value="โอที">🟠 ช่วงเวลา: โอที</option>
-        </select>
-        <input type="number" id="batch_hours" value="8" step="0.5" required placeholder="จำนวน ชม.">
-      </div>
+    <!-- แถบวิ่งโชว์ยอดผลิต -->
+    <div class="ticker-wrap">
+        <div class="ticker-content" id="stockTicker">
+            <span class="ticker-item t-white">CONNECTING TO FACTORY MAINFRAME... STANDBY.</span>
+        </div>
     </div>
 
-    <div class="form-group">
-      <label>🏃 3. เพิ่มรายชื่อพนักงาน (พิมพ์ค้นหาและกดเพิ่มทีละคน)</label>
-      <div class="emp-input-row">
-        <input type="text" id="emp_search_input" list="emp_datalist" placeholder="พิมพ์ชื่อพนักงาน..." autocomplete="off">
-        <button type="button" class="add-btn" onclick="addEmployee()"><i class="fa-solid fa-plus"></i> เพิ่ม</button>
-      </div>
-      <datalist id="emp_datalist"></datalist>
-      <div class="selected-emp-list" id="selectedEmpContainer"></div>
+    <!-- ปุ่มลอย (คู่มือ & เลือกหมวดหมู่ใหม่) -->
+    <div class="float-buttons">
+        <button class="btn-float hover-sound" onclick="openCategorySelector()">
+            <i class="fa-solid fa-list"></i> เลือกหมวดหมู่
+        </button>
+        <button class="btn-float hover-sound" onclick="openManual(event)">
+            <i class="fa-solid fa-book"></i> คู่มือระบบ
+        </button>
     </div>
 
-    <div class="form-group">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-        <label style="margin:0;">📦 4. รายการใบสั่งงาน ขั้นตอน และยอดผลิตรวม</label>
-        <button type="button" class="add-btn" style="padding: 6px 12px; font-size: 13px;" onclick="addTaskRow()"><i class="fa-solid fa-plus"></i> เพิ่มใบสั่งงาน</button>
-      </div>
-      
-      <div id="taskRowsContainer"></div>
-      <datalist id="order_datalist"></datalist>
+    <div class="app-container">
+        <!-- น็อตตกแต่ง 4 มุม -->
+        <div class="bolt bolt-1"></div>
+        <div class="bolt bolt-2"></div>
+        <div class="bolt bolt-3"></div>
+        <div class="bolt bolt-4"></div>
+
+        <header>
+            <div class="logo-container">
+                <img src="https://img.freepik.com/premium-vector/black-golden-aura-unique-golden-roaring-lion-face-front-view-logo-vector-radiating-luxury_764382-146929.jpg?w=2000" alt="Jaguar Logo">
+            </div>
+            <h1>JAGUAR PRODUCTION</h1>
+            <div class="subtitle">STAINLESS STEEL MANUFACTURING</div>
+        </header>
+
+        <!-- หมวดที่ 1: รายงานและติดตามงาน (Public Access) -->
+        <div class="zone-container" id="zone1">
+            <div class="zone-title">
+                <span><i class="fa-solid fa-magnifying-glass-chart"></i> หมวดที่ 1: รายงานและติดตามงาน</span>
+                <span class="public-badge"><i class="fa-solid fa-eye"></i> PUBLIC ACCESS</span>
+            </div>
+            <div class="menu-grid">
+                <a href="https://paiboon-creater.github.io/scandal_report/" class="menu-btn btn-purple hover-sound">
+                    <i class="fa-solid fa-clipboard-list"></i><span>ติดตามยอดผลิต<br>รายใบสั่ง</span>
+                </a>
+                <a href="https://paiboon-creater.github.io/status_report/" class="menu-btn btn-orange2 hover-sound">
+                    <i class="fa-solid fa-list-check"></i><span>สถานะการผลิตรวม</span>
+                </a>
+                <a href="https://paiboon-creater.github.io/report_bord/" class="menu-btn btn-green2 hover-sound">
+                    <i class="fa-solid fa-chart-line"></i><span>สรุปรายงาน<br>ประจำงวด</span>
+                </a>
+                <a href="https://paiboon-creater.github.io/cost_per_unit_report/" class="menu-btn btn-yellow hover-sound">
+                    <i class="fa-solid fa-sack-dollar"></i><span>รายงานต้นทุนการผลิต<br>(Cost Report)</span>
+                </a>
+                <a href="https://paiboon-creater.github.io/-/" class="menu-btn btn-red hover-sound">
+                    <i class="fa-solid fa-calendar-check"></i><span>ติดตามการผลิต<br>ตามแผนงาน</span>
+                </a>
+                <a href="https://paiboon-creater.github.io/work_in_process/" class="menu-btn btn-wip hover-sound">
+                    <i class="fa-solid fa-layer-group"></i><span>งานในมือ<br>แยกตามขั้นตอนผลิต</span>
+                </a>
+                <a href="https://paiboon-creater.github.io/waitfor_beetween_process/" class="menu-btn btn-pink2 hover-sound">
+                    <i class="fa-solid fa-hourglass-half"></i><span>ติดตาม งานรอผลิต<br>แต่ละแผนก</span>
+                </a>
+                <a href="https://paiboon-creater.github.io/productivity_reports/" class="menu-btn btn-cyan hover-sound">
+                    <i class="fa-solid fa-chart-pie"></i><span>ยอดงานที่ผลิตได้รวม<br>แยกตามขั้นตอน</span>
+                </a>
+                <a href="https://paiboon-creater.github.io/ef_operator/" class="menu-btn btn-blue hover-sound">
+                    <i class="fa-solid fa-user-gear"></i><span>ประสิทธิภาพการผลิต<br>พนักงาน</span>
+                </a>
+                <a href="https://paiboon-creater.github.io/wast_report_/" class="menu-btn btn-red hover-sound" style="background: linear-gradient(135deg, #ff416c, #8b0000);">
+                    <i class="fa-solid fa-triangle-exclamation"></i><span>รายงานของเสีย<br>(Waste & NG Report)</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- หมวดที่ 2: การปฏิบัติงานประจำวัน (Authorized Only) -->
+        <div class="zone-container" id="zone2">
+            <div class="zone-title">
+                <span><i class="fa-solid fa-gears"></i> หมวดที่ 2: การปฏิบัติงานประจำวัน</span>
+                <span class="auth-badge"><i class="fa-solid fa-lock"></i> AUTHORIZED ONLY</span>
+            </div>
+            <div class="menu-grid">
+                <!-- ปุ่มที่ 1: ป้อนข้อมูลด่วน (Fast Form) สีแดง -->
+                <a href="javascript:void(0)" onclick="secureNavigate('https://paiboon-creater.github.io/fast_form_daily/')" class="menu-btn btn-red hover-sound">
+                    <i class="fa-solid fa-bolt"></i><span>ป้อนข้อมูลด่วน<br>(Fast Form)</span>
+                </a>
+                <!-- ปุ่มที่ 2: คีย์งานกลุ่ม -->
+                <a href="javascript:void(0)" onclick="secureNavigate('https://paiboon-creater.github.io/work_group/')" class="menu-btn btn-blue hover-sound">
+                    <i class="fa-solid fa-users-gear"></i><span>คีย์งานกลุ่ม</span>
+                </a>
+                <a href="javascript:void(0)" onclick="secureNavigate('https://paiboon-creater.github.io/daily-production/')" class="menu-btn btn-green hover-sound">
+                    <div style="display: flex; gap: 8px; align-items: center; justify-content: center; margin-bottom: 5px;">
+                        <i class="fa-solid fa-book-open" style="margin-bottom: 0;"></i>
+                        <i class="fa-solid fa-pencil" style="margin-bottom: 0;"></i>
+                    </div>
+                    <span>ป้อนข้อมูลผลิตรายวัน<br>(พิมพ์ใบมิเตอร์)</span>
+                </a>
+                <a href="javascript:void(0)" onclick="secureNavigate('https://paiboon-creater.github.io/edit_data/')" class="menu-btn btn-orange hover-sound">
+                    <i class="fa-solid fa-pen-to-square"></i><span>แก้ไขข้อมูล<br>(Edit Data)</span>
+                </a>
+                <a href="javascript:void(0)" onclick="secureNavigate('https://paiboon-creater.github.io/meter_smart-print/')" class="menu-btn btn-pink hover-sound">
+                    <i class="fa-solid fa-print"></i><span>พริ๊นต์ใบมิเตอร์<br>ออกใบสั่ง</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- หมวดที่ 3: การวางแผนและการตั้งค่า (Authorized Only) -->
+        <div class="zone-container" id="zone3">
+            <div class="zone-title">
+                <span><i class="fa-solid fa-sliders"></i> หมวดที่ 3: การวางแผนและการตั้งค่า</span>
+                <span class="auth-badge"><i class="fa-solid fa-lock"></i> AUTHORIZED ONLY</span>
+            </div>
+            <div class="menu-grid">
+                <a href="javascript:void(0)" onclick="secureNavigate('https://paiboon-creater.github.io/Operation/')" class="menu-btn btn-orange hover-sound">
+                    <i class="fa-solid fa-address-book"></i><span>เพิ่มชื่อพนักงานใหม่</span>
+                </a>
+                <a href="javascript:void(0)" onclick="secureNavigate('https://paiboon-creater.github.io/new_product/')" class="menu-btn btn-orange hover-sound">
+                    <i class="fa-solid fa-box-open"></i><span>เพิ่มรหัสชิ้นงานใหม่</span>
+                </a>
+                <a href="javascript:void(0)" onclick="secureNavigate('https://paiboon-creater.github.io/target/')" class="menu-btn btn-orange hover-sound">
+                    <i class="fa-solid fa-chart-column"></i><span>ตั้งยอดมาตรฐาน</span>
+                </a>
+                <a href="javascript:void(0)" onclick="secureNavigate('https://paiboon-creater.github.io/gantt_chart/')" class="menu-btn btn-orange hover-sound">
+                    <i class="fa-solid fa-chart-gantt"></i><span>แกนต์ชาร์ต<br>วางแผนงาน</span>
+                </a>
+                <a href="javascript:void(0)" onclick="secureNavigate('https://paiboon-creater.github.io/Plan_Step/')" class="menu-btn btn-orange hover-sound">
+                    <i class="fa-solid fa-folder-tree"></i><span>วางแผน<br>ขั้นตอนทำงาน</span>
+                </a>
+                <a href="javascript:void(0)" onclick="secureNavigate('https://paiboon-creater.github.io/new_order/')" class="menu-btn btn-orange hover-sound">
+                    <i class="fa-solid fa-file-pen"></i><span>เพิ่มใบสั่ง</span>
+                </a>
+            </div>
+        </div>
+
     </div>
 
-    <button type="button" class="action-btn preview-btn" onclick="generatePreview()"><i class="fa-solid fa-eye"></i> พรีวิวตารางงานก่อนบันทึก</button>
-  </form>
-
-  <div id="previewSection" style="display: none;">
-    <h3 style="color: var(--blue-primary); font-size: 1.1rem; text-align: center; margin: 20px 0 10px 0; font-weight: 800; font-style: italic;">⚡ พรีวิวข้อมูลก่อนบันทึกจริง</h3>
-    <div class="preview-table-wrapper">
-      <table class="preview-table">
-        <thead>
-          <tr>
-            <th>พนักงาน</th>
-            <th>รหัส 5 หลัก / ใบสั่ง / ขั้นตอน</th>
-            <th>ช่วงเวลา</th>
-            <th>ชม.</th>
-            <th>ยอดผลิต</th>
-            <th>EFF%</th>
-          </tr>
-        </thead>
-        <tbody id="previewTbody"></tbody>
-      </table>
+    <!-- 📌 หน้าต่าง Modal สำหรับคู่มือการใช้งาน -->
+    <div class="modal-overlay" id="manualModal" onclick="closeManualOnOutside(event)">
+        <div class="modal-content">
+            <div class="modal-header-actions">
+                <button class="btn-print-manual hover-sound" onclick="window.print()">
+                    <i class="fa-solid fa-print"></i> พิมพ์คู่มือ
+                </button>
+                <button class="close-modal hover-sound" onclick="closeManual()">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <div class="manual-header">
+                <h2>JAGUAR FACTORY MANUAL</h2>
+                <p style="color: #889bb3; margin-top: 5px;">คู่มือการใช้งานระบบส่วนกลาง</p>
+            </div>
+            <div class="manual-section">
+                <p><strong><i class="fa-solid fa-key" style="color: #ff3333;"></i> สิทธิ์การเข้าถึง:</strong> หมวดที่ 2 และ 3 จำเป็นต้องทำการ Login ก่อนเข้าใช้งาน ส่วนหมวดที่ 1 สามารถเข้าดูรายงานได้ทันที</p>
+            </div>
+            <div class="manual-section">
+                <h3>📈 หมวดที่ 1: รายงานและติดตามงาน (Reports & Monitoring)</h3>
+                <p><strong>📅 ติดตามการผลิตตามแผนงาน:</strong> เช็คระยะเวลา เดดไลน์ งานในแต่ละขั้นตอน</p>
+                <p><strong>🔍 สถานะการผลิตรวม:</strong> ดูสถานะภาพรวมของงานแต่ละชิ้น</p>
+                <p><strong>🖥️ สรุปรายงานประจำงวด:</strong> แดชบอร์ดสรุปผลการทำงาน</p>
+                <p><strong>💰 รายงานต้นทุนการผลิต:</strong> ดูรายงานต้นทุน (Cost per unit)</p>
+                <p><strong>📋 ติดตามยอดผลิตรายใบสั่ง:</strong> เจาะลึกประวัติการผลิตเฉพาะ Order</p>
+                <p><strong>📚 งานในมือแยกตามขั้นตอนผลิต:</strong> ตรวจสอบยอดชิ้นงานที่ยังค้างอยู่ในแต่ละขั้นตอนการผลิต</p>
+                <p><strong>⏳ ติดตาม งานรอผลิต แต่ละแผนก:</strong> ตรวจสอบรายการชิ้นงานที่กำลังรอคิวเข้าผลิตในแต่ละแผนก</p>
+                <p><strong>📊 ยอดงานที่ผลิตได้รวม แยกตามขั้นตอน:</strong> ตรวจสอบยอดการผลิตสรุปรายวันและรายเดือนแยกตามแผนกหรือขั้นตอน</p>
+                <p><strong>⚙️ ประสิทธิภาพการผลิตพนักงาน:</strong> ตรวจสอบประสิทธิภาพและอัตราการผลิตของพนักงานแต่ละคน</p>
+                <p><strong>⚠️ รายงานของเสีย (Waste & NG Report):</strong> ตรวจสอบและวิเคราะห์สถิติของเสีย (NG) แยกตามรหัสชิ้นงานและขั้นตอนการผลิต</p>
+            </div>
+            <div class="manual-section">
+                <h3>⚙️ หมวดที่ 2: การปฏิบัติงานประจำวัน (Daily Operations)</h3>
+                <p><strong>⚡ ป้อนข้อมูลด่วน:</strong> ฟอร์มสำหรับบันทึกข้อมูลการผลิตอย่างรวดเร็ว</p>
+                <p><strong>👥 คีย์งานกลุ่ม:</strong> ฟอร์มบันทึกข้อมูลการผลิตเป็นกลุ่ม/ทีม พร้อมระบบกระจายชั่วโมงและคำนวณอัตโนมัติ</p>
+                <p><strong>🟩 ป้อนข้อมูลผลิตรายวัน:</strong> ปุ่มหลักสำหรับสแกนคิวอาร์โค้ดและบันทึกยอดผลิต</p>
+                <p><strong>✏️ แก้ไขข้อมูล (Edit Data):</strong> แก้ไขข้อมูลที่เจ้าหน้าที่อาจกรอกผิดพลาด หรือปรับปรุงข้อมูลย้อนหลัง</p>
+                <p><strong>🖨️ พริ๊นต์ใบมิเตอร์ออกใบสั่ง:</strong> สั่งพิมพ์ใบงานพร้อม QR Code</p>
+            </div>
+            <div class="manual-section">
+                <h3>🗂️ หมวดที่ 3: การวางแผนและการตั้งค่า (Planning & Setup)</h3>
+                <p><strong>👤 เพิ่มชื่อพนักงานใหม่:</strong> เพิ่มรายชื่อพนักงานเข้าสู่ระบบ</p>
+                <p><strong>📦 เพิ่มรหัสชิ้นงานใหม่:</strong> บันทึกและจัดการรหัสชิ้นงานใหม่ลงในฐานข้อมูล</p>
+                <p><strong>📊 ตั้งยอดมาตรฐาน:</strong> ตั้งค่าเป้าหมาย (Target) ว่าในแต่ละขั้นตอนควรผลิตได้กี่ชิ้น/ชั่วโมง</p>
+                <p><strong>📅 แกนต์ชาร์ต วางแผนงาน (Gantt Chart):</strong> ดูแผนการผลิตโดยรวมทั้งหมดในรูปแบบกราฟแท่ง</p>
+                <p><strong>📂 วางแผนขั้นตอนทำงาน:</strong> กำหนดกระบวนการหรือขั้นตอนที่ชิ้นงานต้องผ่าน</p>
+                <p><strong>📝 เพิ่มใบสั่ง:</strong> ใช้สำหรับสร้างหรือเปิด Order งานใหม่เข้าสู่ระบบ</p>
+            </div>
+        </div>
     </div>
-
-    <div class="form-group" id="reasonGroup" style="display: none; margin-top: 15px;">
-      <label style="color: var(--blue-dark);">ℹ️ มีพนักงานประสิทธิภาพต่ำกว่า 85% (ไม่บังคับเลือก สามารถเว้นว่างได้)</label>
-      <select id="id_reason">
-        <option value="">-- ไม่ระบุสาเหตุ (ปล่อยว่างได้) --</option>
-      </select>
-    </div>
-
-    <button type="button" class="action-btn" id="confirmSubmitBtn" onclick="executeBatchSubmit()"><i class="fa-solid fa-bolt"></i> ยืนยันบันทึกข้อมูลด้วยความเร็วแสง!</button>
-  </div>
-</div>
 
 <script>
-  const SUPABASE_URL = "https://siiiifesdjuunwmwozfb.supabase.co/rest/v1";
-  const SUPABASE_KEY = "sb_publishable_ohToE8Z_Fzo87uBtzdPDIg_cqHCi3HT";
-  const headers = { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY, "Content-Type": "application/json", "Prefer": "return=representation" };
+    // ---- ระบบเลือกหมวดหมู่แสดงผล ----
+    function selectCategory(catNum) {
+        const zone1 = document.getElementById('zone1');
+        const zone2 = document.getElementById('zone2');
+        const zone3 = document.getElementById('zone3');
+        const selectorModal = document.getElementById('categorySelectorModal');
 
-  let globalOrders = [];
-  let globalEmployees = [];
-  let globalTargets = [];
-  let globalReasons = [];
-  let globalWorkItems = [];
-  let globalSteps = [];
-  let selectedEmployeeList = [];
-  let preparedPayload = [];
+        // ซ่อนทั้งหมดก่อน
+        zone1.classList.add('hidden-zone');
+        zone2.classList.add('hidden-zone');
+        zone3.classList.add('hidden-zone');
 
-  window.onload = async function() {
-    document.getElementById('batch_date').value = new Date().toISOString().split('T')[0];
-
-    try {
-      const [ordersRes, empsRes, targetsRes, reasonsRes, worksRes, stepsRes] = await Promise.all([
-        fetch(SUPABASE_URL + "/orders?select=*", { headers }),
-        fetch(SUPABASE_URL + "/employees?select=*", { headers }),
-        fetch(SUPABASE_URL + "/targets?select=*", { headers }),
-        fetch(SUPABASE_URL + "/reasons?select=*", { headers }),
-        fetch(SUPABASE_URL + "/work_items?select=*", { headers }),
-        fetch(SUPABASE_URL + "/production_steps?select=*", { headers })
-      ]);
-
-      if(ordersRes.ok) globalOrders = await ordersRes.json();
-      if(empsRes.ok) {
-        globalEmployees = await empsRes.json();
-        globalEmployees.sort((a, b) => (a.name || '').localeCompare(b.name || '', 'th'));
-      }
-      if(targetsRes.ok) globalTargets = await targetsRes.json();
-      if(reasonsRes.ok) globalReasons = await reasonsRes.json();
-      if(worksRes.ok) globalWorkItems = await worksRes.json();
-      if(stepsRes.ok) globalSteps = await stepsRes.json();
-
-      const empDatalist = document.getElementById('emp_datalist');
-      globalEmployees.forEach(emp => {
-        let opt = document.createElement('option');
-        opt.value = emp.name;
-        empDatalist.appendChild(opt);
-      });
-
-      const orderDatalist = document.getElementById('order_datalist');
-      globalOrders.forEach(ord => {
-        let opt = document.createElement('option');
-        opt.value = `${ord.order_no} (ID: ${ord.id_order})`;
-        orderDatalist.appendChild(opt);
-      });
-
-      const reasonSelect = document.getElementById('id_reason');
-      globalReasons.forEach(r => {
-        let opt = document.createElement('option');
-        opt.value = r.id_reason;
-        opt.textContent = r.reason_detail;
-        reasonSelect.appendChild(opt);
-      });
-
-      addTaskRow();
-    } catch(e) {
-      alert("⚠️ โหลดข้อมูลไม่สำเร็จ: " + e.message);
-    }
-  };
-
-  function addTaskRow() {
-    const container = document.getElementById('taskRowsContainer');
-    const div = document.createElement('div');
-    div.className = 'task-row-box';
-    // แถวย่อยเหลือแค่ ออเดอร์, ขั้นตอน, ยอดรวม (ช่องเลือกช่วงเวลาถูกย้ายไปข้างบนแล้ว)
-    div.innerHTML = `
-      <div class="task-row-grid">
-        <input type="text" class="order-search" list="order_datalist" placeholder="พิมพ์ค้นหาเลขออเดอร์ หรือ ID..." autocomplete="off" oninput="handleOrderInput(this)" onchange="handleOrderInput(this)">
-        <select class="target-select" required>
-          <option value="">👉 เลือกขั้นตอนการผลิต</option>
-        </select>
-        <input type="number" class="order-qty" placeholder="ยอดรวม (ชิ้น)">
-      </div>
-      <div style="text-align: right; margin-top: 5px;">
-        <button type="button" class="remove-task-btn" onclick="this.closest('.task-row-box').remove()"><i class="fa-solid fa-trash"></i> ลบแถวนี้</button>
-      </div>
-    `;
-    container.appendChild(div);
-  }
-
-  function handleOrderInput(inputEl) {
-    let rawVal = inputEl.value.trim();
-    const box = inputEl.closest('.task-row-box');
-    const targetSelect = box.querySelector('.target-select');
-    
-    targetSelect.innerHTML = '<option value="">👉 เลือกขั้นตอนการผลิต</option>';
-
-    if(!rawVal) return;
-
-    let orderNoClean = rawVal.split('(')[0].trim().toLowerCase();
-    const foundOrd = globalOrders.find(o => String(o.order_no).trim().toLowerCase() === orderNoClean);
-    if(!foundOrd) return;
-
-    if(foundOrd.id_work === null || foundOrd.id_work === undefined || foundOrd.id_work === "") {
-      let opt = document.createElement('option');
-      opt.value = "";
-      opt.textContent = "⚠️ ออเดอร์นี้ยังไม่ได้ผูกรหัสชิ้นงาน (id_work ว่าง)";
-      targetSelect.appendChild(opt);
-      return;
-    }
-
-    const targetWorkIdStr = String(foundOrd.id_work).trim();
-    const targetsForThisWork = globalTargets.filter(t => String(t.id_work).trim() === targetWorkIdStr);
-
-    if(targetsForThisWork.length === 0) {
-      let opt = document.createElement('option');
-      opt.value = "";
-      opt.textContent = "⚠️ ชิ้นงานนี้ยังไม่ได้ตั้งค่าเป้าหมาย (Targets) ในระบบ";
-      targetSelect.appendChild(opt);
-      return;
-    }
-
-    const foundWork = globalWorkItems.find(w => String(w.id_work).trim() === targetWorkIdStr);
-    const workCode = foundWork ? foundWork.work_code : `ID:${targetWorkIdStr}`;
-
-    targetsForThisWork.forEach(t => {
-      const foundStep = globalSteps.find(s => String(s.id_step).trim() === String(t.id_step).trim());
-      const stepName = foundStep ? foundStep.step_name : `ขั้นตอน #${t.id_step}`;
-
-      let opt = document.createElement('option');
-      opt.value = JSON.stringify({ 
-        id_target: parseInt(t.id_target), 
-        id_work: parseInt(t.id_work), 
-        target_amount: t.target_amount 
-      });
-      opt.textContent = `[รหัส 5 หลัก: #${t.id_target}] ${workCode} | ขั้นตอน: ${stepName} (เป้า: ${t.target_amount}/ชม.)`;
-      targetSelect.appendChild(opt);
-    });
-
-    if (targetsForThisWork.length === 1) {
-      targetSelect.selectedIndex = 1;
-    }
-  }
-
-  function addEmployee() {
-    const input = document.getElementById('emp_search_input');
-    const nameVal = input.value.trim();
-    if(!nameVal) return;
-
-    const empObj = globalEmployees.find(e => e.name === nameVal);
-    if(!empObj) {
-      alert("⚠️ ไม่พบชื่อพนักงานนี้ในระบบ กรุณาเลือกจากรายการค้นหา");
-      return;
-    }
-
-    if(selectedEmployeeList.some(e => e.id_name === empObj.id_name)) {
-      alert("⚠️ พนักงานคนนี้ถูกเพิ่มไปแล้วครับ");
-      input.value = '';
-      return;
-    }
-
-    selectedEmployeeList.push(empObj);
-    renderSelectedEmployees();
-    input.value = '';
-    input.focus();
-  }
-
-  function removeEmployee(id_name) {
-    selectedEmployeeList = selectedEmployeeList.filter(e => e.id_name !== id_name);
-    renderSelectedEmployees();
-  }
-
-  function renderSelectedEmployees() {
-    const container = document.getElementById('selectedEmpContainer');
-    container.innerHTML = '';
-    selectedEmployeeList.forEach(emp => {
-      let badge = document.createElement('div');
-      badge.className = 'emp-badge';
-      badge.innerHTML = `${emp.name} <span onclick="removeEmployee(${emp.id_name})">&times;</span>`;
-      container.appendChild(badge);
-    });
-  }
-
-  function generatePreview() {
-    const dateVal = document.getElementById('batch_date').value;
-    const workPeriodVal = document.getElementById('batch_work_period').value; // ดึงค่าช่วงเวลาจากด้านบนสุด
-    const totalHoursPerEmp = parseFloat(document.getElementById('batch_hours').value) || 8;
-
-    if(selectedEmployeeList.length === 0) {
-      alert("⚠️ กรุณาเพิ่มรายชื่อพนักงานอย่างน้อย 1 คนครับ!");
-      return;
-    }
-
-    let tasks = [];
-    let isValidTasks = true;
-
-    document.querySelectorAll('.task-row-box').forEach(box => {
-      let rawVal = box.querySelector('.order-search').value.trim();
-      let targetValStr = box.querySelector('.target-select').value;
-      let qty = parseFloat(box.querySelector('.order-qty').value) || 0;
-
-      if(rawVal || targetValStr || qty > 0) {
-        if(!rawVal || !targetValStr || qty <= 0) {
-          isValidTasks = false;
-          return;
+        // แสดงเฉพาะหมวดที่เลือก
+        if (catNum === 1) {
+            zone1.classList.remove('hidden-zone');
+        } else if (catNum === 2) {
+            zone2.classList.remove('hidden-zone');
+        } else if (catNum === 3) {
+            zone3.classList.remove('hidden-zone');
         }
 
-        let orderNoClean = rawVal.split('(')[0].trim().toLowerCase();
-        const foundOrd = globalOrders.find(o => String(o.order_no).trim().toLowerCase() === orderNoClean);
-        let orderId = foundOrd ? foundOrd.id_order : null;
-
-        if(!orderId) {
-          isValidTasks = false;
-          return;
-        }
-
-        let targetData = JSON.parse(targetValStr);
-        let foundWork = globalWorkItems.find(w => String(w.id_work).trim() === String(targetData.id_work).trim());
-        let workCodeText = foundWork ? foundWork.work_code : targetData.id_work;
-
-        let foundTargetObj = globalTargets.find(t => String(t.id_target).trim() === String(targetData.id_target).trim());
-        let stepNameText = "";
-        if (foundTargetObj) {
-          let foundStep = globalSteps.find(s => String(s.id_step).trim() === String(foundTargetObj.id_step).trim());
-          if (foundStep) stepNameText = foundStep.step_name;
-        }
-
-        tasks.push({
-          id_order: orderId,
-          order_text: foundOrd.order_no,
-          work_code: workCodeText,
-          step_name: stepNameText,
-          id_target: parseInt(targetData.id_target),
-          id_work: parseInt(targetData.id_work),
-          target_amount: targetData.target_amount,
-          total_qty: qty
-        });
-      }
-    });
-
-    if(!isValidTasks || tasks.length === 0) {
-      alert("⚠️ กรุณากรอกเลขออเดอร์ เลือกขั้นตอน และใส่ยอดผลิตให้ครบถ้วนทุกช่องครับ!");
-      return;
+        // ปิด Modal เลือกหมวดหมู่
+        selectorModal.style.display = 'none';
     }
 
-    let taskLoadWeights = tasks.map(task => {
-      let hoursNeeded = task.target_amount > 0 ? (task.total_qty / task.target_amount) : 1;
-      return hoursNeeded;
+    function openCategorySelector() {
+        document.getElementById('categorySelectorModal').style.display = 'flex';
+    }
+
+    // ---- ระบบเสียงปุ่มคลิก ----
+    let audioCtx = null;
+    function initAudio() {
+        if (!audioCtx) { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+    }
+    function playClickSound() {
+        if (!audioCtx) return;
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        osc.type = 'sine'; 
+        osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1000, audioCtx.currentTime + 0.05);
+        gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+        osc.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.05);
+    }
+    document.querySelectorAll('.hover-sound').forEach(btn => {
+        btn.addEventListener('mouseenter', () => { initAudio(); playClickSound(); });
     });
+    document.body.addEventListener('click', initAudio, { once: true });
+    document.body.addEventListener('mousemove', initAudio, { once: true });
 
-    let totalLoadWeight = taskLoadWeights.reduce((a, b) => a + b, 0);
+    // ---- ระบบ Authentication สำหรับหมวด 2 และ 3 ----
+    let isAuthorized = sessionStorage.getItem('jaguar_auth') === 'true';
 
-    preparedPayload = [];
-    let hasLowEff = false;
-    let previewHtml = '';
+    function secureNavigate(url) {
+        if (isAuthorized) {
+            window.location.href = url;
+            return;
+        }
 
-    selectedEmployeeList.forEach(emp => {
-      tasks.forEach((task, idx) => {
-        let assignedQty = Math.round(task.total_qty / selectedEmployeeList.length);
+        let user = prompt("🔒 ระบบจำกัดสิทธิ์การเข้าถึง\nกรุณากรอก Username (หรือใส่รหัสลับที่ช่อง Password):");
+        if (user === null) return;
         
-        let proportion = totalLoadWeight > 0 ? (taskLoadWeights[idx] / totalLoadWeight) : (1 / tasks.length);
-        let empAssignedHours = totalHoursPerEmp * proportion;
+        let pass = prompt("🔑 กรุณากรอก Password:");
+        if (pass === null) return;
 
-        let totalTargetForEmp = task.target_amount * empAssignedHours;
-        let eff = totalTargetForEmp > 0 ? (assignedQty / totalTargetForEmp) * 100 : 0;
-        
-        if (eff < 85) {
-          hasLowEff = true;
+        if ((user === 'user1' && pass === '1111') || pass === 'paioon') {
+            alert("✅ เข้าสู่ระบบสำเร็จ!");
+            sessionStorage.setItem('jaguar_auth', 'true');
+            isAuthorized = true;
+            window.location.href = url;
+        } else {
+            alert("❌ Username หรือ Password ไม่ถูกต้อง!");
         }
-
-        let effColor = eff >= 85 ? '#10b981' : '#ef4444';
-
-        preparedPayload.push({
-          record_date: dateVal,
-          id_order: parseInt(task.id_order),
-          id_work: parseInt(task.id_work),
-          id_target: parseInt(task.id_target),
-          id_name: parseInt(emp.id_name),
-          hour_work: parseFloat(empAssignedHours.toFixed(2)),
-          work_period: workPeriodVal, // ใช้ค่าช่วงเวลาหลักด้านบน
-          produced_amount: parseInt(assignedQty),
-          nogoods_amount: 0,
-          remark: `Batch Smart-Allocated`
-        });
-
-        previewHtml += `<tr>
-          <td>${emp.name}</td>
-          <td style="text-align: left; padding-left: 8px;">
-            <b style="color:var(--blue-dark);">[#${task.id_target}]</b> <b>${task.order_text}</b><br>
-            <span style="font-size:11px; color:#6b7280;">ชิ้นงาน: ${task.work_code} | ขั้นตอน: ${task.step_name} (เป้า: ${task.target_amount}/ชม.)</span>
-          </td>
-          <td><span style="background: ${workPeriodVal === 'โอที' ? '#f59e0b' : '#2563eb'}; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 11px;">${workPeriodVal}</span></td>
-          <td>${empAssignedHours.toFixed(2)}</td>
-          <td style="color: #059669; font-weight: bold;">${assignedQty.toLocaleString()}</td>
-          <td style="color: ${effColor}; font-weight: bold;">${eff.toFixed(1)}%</td>
-        </tr>`;
-      });
-    });
-
-    document.getElementById('previewTbody').innerHTML = previewHtml;
-    document.getElementById('previewSection').style.display = 'block';
-
-    if (hasLowEff) {
-      document.getElementById('reasonGroup').style.display = 'block';
-    } else {
-      document.getElementById('reasonGroup').style.display = 'none';
-      document.getElementById('id_reason').value = '';
     }
 
-    document.getElementById('previewSection').scrollIntoView({ behavior: 'smooth' });
-  }
+    // ---- ระบบเปิด/ปิด Modal คู่มือ ----
+    function openManual(e) {
+        e.preventDefault(); 
+        document.getElementById('manualModal').classList.add('active');
+    }
+    function closeManual() { document.getElementById('manualModal').classList.remove('active'); }
+    function closeManualOnOutside(e) { if(e.target === document.getElementById('manualModal')) { closeManual(); } }
 
-  async function executeBatchSubmit() {
-    if(preparedPayload.length === 0) return;
-    if(!confirm(`ยืนยันการบันทึกข้อมูลชุดนี้ทั้งหมด ${preparedPayload.length} รายการ ใช่หรือไม่?`)) return;
+    // ---- ระบบดึงข้อมูล Ticker ----
+    const SUPABASE_URL = "https://siiiifesdjuunwmwozfb.supabase.co/rest/v1";
+    const SUPABASE_KEY = "sb_publishable_ohToE8Z_Fzo87uBtzdPDIg_cqHCi3HT";
+    const headers = { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY, "Content-Type": "application/json" };
 
-    let reasonVal = document.getElementById('id_reason').value;
-    if (reasonVal) {
-      let parsedReason = parseInt(reasonVal);
-      preparedPayload.forEach(item => {
-        item.id_reason = parsedReason;
-      });
+    async function fetchTickerData() {
+        try {
+            let d = new Date();
+            d.setDate(d.getDate() - 5);
+            let pastDateStr = d.toISOString().split('T')[0];
+
+            const recentRes = await fetch(`${SUPABASE_URL}/daily_production?record_date=gte.${pastDateStr}&select=id_order,id_target`, { headers });
+            const recentData = await recentRes.json();
+
+            if (!recentData || recentData.length === 0) {
+                document.getElementById('stockTicker').innerHTML = `<span class="ticker-item t-white">NO PRODUCTION DATA IN THE LAST 5 DAYS</span>`;
+                return;
+            }
+
+            const activeMap = new Map();
+            const activeOrderIds = new Set();
+            recentData.forEach(r => {
+                let key = r.id_order + '_' + r.id_target;
+                if(!activeMap.has(key)) {
+                    activeMap.set(key, { id_order: r.id_order, id_target: r.id_target });
+                }
+                activeOrderIds.add(r.id_order);
+            });
+
+            const activePairs = Array.from(activeMap.values());
+            const orderIdQuery = Array.from(activeOrderIds).join(',');
+
+            const [ordersRes, targetsRes, stepsRes, orderStepsRes, allProdRes, workItemsRes] = await Promise.all([
+                fetch(`${SUPABASE_URL}/orders?id_order=in.(${orderIdQuery})&select=id_order,order_no,quantity,id_work`, { headers }),
+                fetch(`${SUPABASE_URL}/targets?select=id_target,id_step,id_work`, { headers }),
+                fetch(`${SUPABASE_URL}/production_steps?select=id_step,step_name`, { headers }),
+                fetch(`${SUPABASE_URL}/order_steps?id_order=in.(${orderIdQuery})&select=id_order,id_step,end_date`, { headers }),
+                fetch(`${SUPABASE_URL}/daily_production?id_order=in.(${orderIdQuery})&select=id_order,id_target,produced_amount`, { headers }),
+                fetch(`${SUPABASE_URL}/work_items?select=id_work,work_code`, { headers })
+            ]);
+
+            const orders = await ordersRes.json();
+            const targets = await targetsRes.json();
+            const steps = await stepsRes.json();
+            const orderSteps = await orderStepsRes.json();
+            const allProd = await allProdRes.json();
+            const workItems = await workItemsRes.json();
+
+            let tickerString = "";
+            let today = new Date();
+            today.setHours(0,0,0,0);
+
+            activePairs.forEach((pair) => {
+                let orderInfo = orders.find(o => String(o.id_order) === String(pair.id_order));
+                let orderNo = orderInfo ? orderInfo.order_no : "UNKNOWN";
+                let orderQty = (orderInfo && orderInfo.quantity) ? parseInt(orderInfo.quantity) : 0;
+
+                let targetInfo = targets.find(t => String(t.id_target) === String(pair.id_target));
+                let stepName = "PROCESS";
+                let stepId = null;
+                if (targetInfo) {
+                    stepId = targetInfo.id_step;
+                    let stepInfo = steps.find(s => String(s.id_step) === String(stepId));
+                    if (stepInfo) stepName = stepInfo.step_name;
+                }
+
+                let workCodeText = "-";
+                let idWork = (orderInfo && orderInfo.id_work) ? orderInfo.id_work : null;
+                if (!idWork && targetInfo) { idWork = targetInfo.id_work; }
+                if (idWork) {
+                    let wItem = workItems.find(w => String(w.id_work) === String(idWork));
+                    if (wItem) workCodeText = wItem.work_code;
+                }
+
+                let totalProduced = 0;
+                allProd.forEach(p => {
+                    if (String(p.id_order) === String(pair.id_order) && String(p.id_target) === String(pair.id_target)) {
+                        totalProduced += (p.produced_amount || 0);
+                    }
+                });
+
+                let percent = 0;
+                if (orderQty > 0) { percent = (totalProduced / orderQty) * 100; }
+
+                let deadlineText = "";
+                let orderStepInfo = orderSteps.find(os => String(os.id_order) === String(pair.id_order) && String(os.id_step) === String(stepId));
+                
+                if (orderStepInfo && orderStepInfo.end_date) {
+                    let endDate = new Date(orderStepInfo.end_date);
+                    endDate.setHours(0,0,0,0);
+                    let diffTime = endDate.getTime() - today.getTime();
+                    let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                    if (diffDays < 0) {
+                        deadlineText = `<span class="t-red">OVERDUE ${Math.abs(diffDays)} DAYS</span>`;
+                    } else if (diffDays > 0) {
+                        deadlineText = `<span class="t-green">${diffDays} DAYS LEFT</span>`;
+                    } else {
+                        deadlineText = `<span style="color: #ffd200;">DUE TODAY</span>`;
+                    }
+                } else {
+                    deadlineText = `<span style="color: #889bb3;">N/A</span>`;
+                }
+
+                tickerString += `<span class="ticker-item t-white">[ ORDER: <span style="color:#00c6ff;">${orderNo}</span> | CODE: <span style="color:#d1dbe8;">${workCodeText}</span> | STEP: <span style="color:#f953c6;">${stepName}</span> ] TARGET: ${orderQty.toLocaleString()} / COMPLETED: ${totalProduced.toLocaleString()} (<span style="color:#00ff88;">${percent.toFixed(1)}%</span>) DEADLINE: ${deadlineText}</span>`;
+                tickerString += `<span class="ticker-item" style="color: #2b3e54;">   ///   </span>`;
+            });
+            
+            document.getElementById('stockTicker').innerHTML = tickerString + tickerString;
+
+        } catch (error) {
+            console.error("Ticker Error:", error);
+            document.getElementById('stockTicker').innerHTML = `<span class="ticker-item t-red">ERROR: SYSTEM CONNECTION FAILED</span>`;
+        }
     }
 
-    const btn = document.getElementById('confirmSubmitBtn');
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึกข้อมูลลงฐานข้อมูล...';
-
-    try {
-      const res = await fetch(SUPABASE_URL + "/daily_production", {
-        method: "POST",
-        headers: headers,
-        body: JSON.stringify(preparedPayload)
-      });
-
-      if(res.ok) {
-        alert("⚡ บันทึกข้อมูลกลุ่มลง Supabase สำเร็จเรียบร้อยแล้ว!");
-        location.reload();
-      } else {
-        const err = await res.json();
-        alert("❌ บันทึกล้มเหลว: " + (err.message || JSON.stringify(err)));
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fa-solid fa-bolt"></i> ยืนยันบันทึกข้อมูลด้วยความเร็วแสง!';
-      }
-    } catch(err) {
-      alert("⚠️ ข้อผิดพลาด: " + err.message);
-      btn.disabled = false;
-      btn.innerHTML = '<i class="fa-solid fa-bolt"></i> ยืนยันบันทึกข้อมูลด้วยความเร็วแสง!';
-    }
-  }
+    document.addEventListener("DOMContentLoaded", fetchTickerData);
 </script>
 </body>
 </html>
