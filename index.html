@@ -19,7 +19,7 @@
       margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; min-height: 100vh;
     }
     .terminal-container {
-      width: 100%; max-width: 650px; background: var(--panel-bg);
+      width: 100%; max-width: 750px; background: var(--panel-bg);
       padding: 20px 15px; border-radius: 12px; border: 3px solid var(--blue-gold);
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 15px rgba(245, 158, 11, 0.4);
       margin-bottom: 15px; box-sizing: border-box;
@@ -94,6 +94,18 @@
     .preview-btn {
       background: #10b981; border-color: #059669; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
     }
+
+    /* สไตล์สำหรับส่วนจัดการประวัติงานเก่า */
+    .history-card {
+      background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 8px; padding: 15px; margin-top: 25px;
+    }
+    .history-card h3 { color: var(--blue-dark); margin-top: 0; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
+    .history-filters { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; flex-wrap: wrap; }
+    .btn-history-load { background: var(--blue-gold); color: #000; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    .btn-history-load:hover { background: #d97706; color: #fff; }
+    .history-table-wrapper { max-height: 350px; overflow-y: auto; margin-top: 10px; border-radius: 6px; border: 1px solid #cbd5e1; }
+    .btn-row-edit { background: #3b82f6; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold; }
+    .btn-row-delete { background: #ef4444; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold; margin-left: 4px; }
   </style>
 </head>
 <body>
@@ -177,6 +189,39 @@
 
     <button type="button" class="action-btn" id="confirmSubmitBtn" onclick="executeBatchSubmit()"><i class="fa-solid fa-bolt"></i> ยืนยันบันทึกข้อมูลด้วยความเร็วแสง!</button>
   </div>
+
+  <!-- 📂 ส่วนดึงประวัติงานกลุ่มตามวันที่เพื่อแก้ไข/ลบ -->
+  <div class="history-card">
+    <h3><i class="fa-solid fa-clock-rotate-left"></i> จัดการประวัติงานที่บันทึกแล้ว (แก้ไข / ลบ)</h3>
+    <div class="history-filters">
+      <div style="flex: 1; min-width: 180px;">
+        <label style="font-size: 12px; font-weight: bold; color: var(--text-muted); display: block; margin-bottom: 4px;">เลือกวันที่ต้องการดูประวัติ</label>
+        <input type="date" id="history_date_filter">
+      </div>
+      <div style="align-self: flex-end;">
+        <button type="button" class="btn-history-load" onclick="loadProductionHistory()"><i class="fa-solid fa-search"></i> โหลดประวัติงาน</button>
+      </div>
+    </div>
+    <div class="history-table-wrapper">
+      <table class="preview-table" style="font-size: 11px;">
+        <thead>
+          <tr>
+            <th>วันที่</th>
+            <th>พนักงาน</th>
+            <th>ใบสั่ง / ขั้นตอน</th>
+            <th>ช่วงเวลา</th>
+            <th>ชม.</th>
+            <th>ยอดผลิต</th>
+            <th>จัดการ</th>
+          </tr>
+        </thead>
+        <tbody id="historyTbody">
+          <tr><td colspan="7" style="padding: 15px; color: var(--text-muted);">กรุณาเลือกวันที่แล้วกด "โหลดประวัติงาน"</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
 </div>
 
 <script>
@@ -194,7 +239,9 @@
   let preparedPayload = [];
 
   window.onload = async function() {
-    document.getElementById('batch_date').value = new Date().toISOString().split('T')[0];
+    const todayStr = new Date().toISOString().split('T')[0];
+    document.getElementById('batch_date').value = todayStr;
+    document.getElementById('history_date_filter').value = todayStr;
 
     try {
       const [ordersRes, empsRes, targetsRes, reasonsRes, worksRes, stepsRes] = await Promise.all([
@@ -239,6 +286,7 @@
       });
 
       addTaskRow();
+      loadProductionHistory(); // โหลดประวัติของวันนี้ขึ้นมาแสดงทันที
     } catch(e) {
       alert("⚠️ โหลดข้อมูลไม่สำเร็จ: " + e.message);
     }
@@ -248,7 +296,6 @@
     const container = document.getElementById('taskRowsContainer');
     const div = document.createElement('div');
     div.className = 'task-row-box';
-    // แถวย่อยเหลือแค่ ออเดอร์, ขั้นตอน, ยอดรวม (ช่องเลือกช่วงเวลาถูกย้ายไปข้างบนแล้ว)
     div.innerHTML = `
       <div class="task-row-grid">
         <input type="text" class="order-search" list="order_datalist" placeholder="พิมพ์ค้นหาเลขออเดอร์ หรือ ID..." autocomplete="off" oninput="handleOrderInput(this)" onchange="handleOrderInput(this)">
@@ -359,7 +406,7 @@
 
   function generatePreview() {
     const dateVal = document.getElementById('batch_date').value;
-    const workPeriodVal = document.getElementById('batch_work_period').value; // ดึงค่าช่วงเวลาจากด้านบนสุด
+    const workPeriodVal = document.getElementById('batch_work_period').value;
     const totalHoursPerEmp = parseFloat(document.getElementById('batch_hours').value) || 8;
 
     if(selectedEmployeeList.length === 0) {
@@ -440,9 +487,7 @@
         let totalTargetForEmp = task.target_amount * empAssignedHours;
         let eff = totalTargetForEmp > 0 ? (assignedQty / totalTargetForEmp) * 100 : 0;
         
-        if (eff < 85) {
-          hasLowEff = true;
-        }
+        if (eff < 85) { hasLowEff = true; }
 
         let effColor = eff >= 85 ? '#10b981' : '#ef4444';
 
@@ -453,7 +498,7 @@
           id_target: parseInt(task.id_target),
           id_name: parseInt(emp.id_name),
           hour_work: parseFloat(empAssignedHours.toFixed(2)),
-          work_period: workPeriodVal, // ใช้ค่าช่วงเวลาหลักด้านบน
+          work_period: workPeriodVal,
           produced_amount: parseInt(assignedQty),
           nogoods_amount: 0,
           remark: `Batch Smart-Allocated`
@@ -493,9 +538,7 @@
     let reasonVal = document.getElementById('id_reason').value;
     if (reasonVal) {
       let parsedReason = parseInt(reasonVal);
-      preparedPayload.forEach(item => {
-        item.id_reason = parsedReason;
-      });
+      preparedPayload.forEach(item => { item.id_reason = parsedReason; });
     }
 
     const btn = document.getElementById('confirmSubmitBtn');
@@ -522,6 +565,114 @@
       alert("⚠️ ข้อผิดพลาด: " + err.message);
       btn.disabled = false;
       btn.innerHTML = '<i class="fa-solid fa-bolt"></i> ยืนยันบันทึกข้อมูลด้วยความเร็วแสง!';
+    }
+  }
+
+  // ==========================================
+  // 📂 ฟังก์ชันจัดการประวัติงาน (โหลด, แก้ไข, ลบ)
+  // ==========================================
+  async function loadProductionHistory() {
+    const filterDate = document.getElementById('history_date_filter').value;
+    const tbody = document.getElementById('historyTbody');
+    if(!filterDate) {
+      alert("กรุณาเลือกวันที่ต้องการดูก่อนครับ");
+      return;
+    }
+
+    tbody.innerHTML = `<tr><td colspan="7" style="padding: 15px; color: var(--blue-primary);"><i class="fa-solid fa-spinner fa-spin"></i> กำลังดึงข้อมูลประวัติ...</td></tr>`;
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/daily_production?record_date=eq.${filterDate}&select=*`, { headers });
+      if(!res.ok) throw new Error("ไม่สามารถดึงข้อมูลได้");
+      const logs = await res.json();
+
+      if(logs.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" style="padding: 15px; color: var(--text-muted);">ไม่พบประวัติการบันทึกในวันที่ ${filterDate}</td></tr>`;
+        return;
+      }
+
+      let html = "";
+      logs.forEach(log => {
+        const emp = globalEmployees.find(e => String(e.id_name) === String(log.id_name));
+        const empName = emp ? emp.name : `ID: ${log.id_name}`;
+
+        const ord = globalOrders.find(o => String(o.id_order) === String(log.id_order));
+        const ordNo = ord ? ord.order_no : `Order #${log.id_order}`;
+
+        html += `<tr>
+          <td>${log.record_date}</td>
+          <td style="text-align: left; padding-left: 6px;">${empName}</td>
+          <td style="text-align: left; padding-left: 6px;"><b>${ordNo}</b> (Target: #${log.id_target})</td>
+          <td>${log.work_period || 'ปกติ'}</td>
+          <td>${log.hour_work}</td>
+          <td style="color: #059669; font-weight: bold;">${log.produced_amount.toLocaleString()}</td>
+          <td>
+            <button class="btn-row-edit" onclick="editSingleRecord(${log.id_daily}, ${log.produced_amount}, ${log.hour_work})"><i class="fa-solid fa-pen"></i> แก้ไข</button>
+            <button class="btn-row-delete" onclick="deleteSingleRecord(${log.id_daily})"><i class="fa-solid fa-trash"></i> ลบ</button>
+          </td>
+        </tr>`;
+      });
+
+      tbody.innerHTML = html;
+    } catch(err) {
+      tbody.innerHTML = `<tr><td colspan="7" style="padding: 15px; color: #ef4444;">เกิดข้อผิดพลาด: ${err.message}</td></tr>`;
+    }
+  }
+
+  async function editSingleRecord(idDaily, currentQty, currentHours) {
+    let newQty = prompt(`แก้ไขยอดผลิต (จำนวนชิ้น):\n(ค่าเดิม: ${currentQty})`, currentQty);
+    if(newQty === null) return;
+    let parsedQty = parseInt(newQty);
+    if(isNaN(parsedQty)) {
+      alert("กรุณากรอกตัวเลขจำนวนชิ้นให้ถูกต้อง");
+      return;
+    }
+
+    let newHrs = prompt(`แก้ไขชั่วโมงทำงาน (ชม.):\n(ค่าเดิม: ${currentHours})`, currentHours);
+    if(newHrs === null) return;
+    let parsedHrs = parseFloat(newHrs);
+    if(isNaN(parsedHrs)) {
+      alert("กรุณากรอกตัวเลขชั่วโมงให้ถูกต้อง");
+      return;
+    }
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/daily_production?id_daily=eq.${idDaily}`, {
+        method: "PATCH",
+        headers: headers,
+        body: JSON.stringify({ produced_amount: parsedQty, hour_work: parsedHrs })
+      });
+
+      if(res.ok) {
+        alert("✅ อัปเดตข้อมูลสำเร็จ!");
+        loadProductionHistory();
+      } else {
+        const err = await res.json();
+        alert("❌ อัปเดตไม่สำเร็จ: " + (err.message || JSON.stringify(err)));
+      }
+    } catch(err) {
+      alert("⚠️ ข้อผิดพลาด: " + err.message);
+    }
+  }
+
+  async function deleteSingleRecord(idDaily) {
+    if(!confirm("⚠️ คุณต้องการลบรายการบันทึกนี้ใช่หรือไม่?")) return;
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/daily_production?id_daily=eq.${idDaily}`, {
+        method: "DELETE",
+        headers: headers
+      });
+
+      if(res.ok) {
+        alert("🗑️ ลบรายการสำเร็จ!");
+        loadProductionHistory();
+      } else {
+        const err = await res.json();
+        alert("❌ ลบไม่สำเร็จ: " + (err.message || JSON.stringify(err)));
+      }
+    } catch(err) {
+      alert("⚠️ ข้อผิดพลาด: " + err.message);
     }
   }
 </script>
