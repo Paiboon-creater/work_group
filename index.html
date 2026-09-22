@@ -217,7 +217,7 @@
           <tr>
             <th>วันที่</th>
             <th>พนักงาน</th>
-            <th>ใบสั่ง / ขั้นตอน</th>
+            <th>รหัสชิ้นงาน / ใบสั่ง / ขั้นตอน</th>
             <th>ช่วงเวลา</th>
             <th>ชม.</th>
             <th>ยอดผลิต</th>
@@ -625,7 +625,6 @@
 
     tbody.innerHTML = `<tr><td colspan="7" style="padding: 15px; color: var(--blue-primary);"><i class="fa-solid fa-spinner fa-spin"></i> กำลังค้นหาข้อมูลประวัติ...</td></tr>`;
 
-    // กรอง Targets ตามขั้นตอนที่เลือก
     let targetFilterIds = [];
     if (selectedStepId) {
       targetFilterIds = globalTargets.filter(t => String(t.id_step) === String(selectedStepId)).map(t => t.id_target);
@@ -639,7 +638,6 @@
     }
 
     try {
-      // ดึงข้อมูลผ่าน Supabase โดยใช้เงื่อนไขช่วงวันที่ (gte, lte) และ Target IDs
       let queryUrl = `${SUPABASE_URL}/daily_production?record_date=gte.${startDate}&record_date=lte.${endDate}&id_target=in.(${targetFilterIds.join(',')})&select=*&order=record_date.desc`;
       
       const res = await fetch(queryUrl, { headers });
@@ -655,13 +653,29 @@
       logs.forEach(log => {
         const emp = globalEmployees.find(e => String(e.id_name) === String(log.id_name));
         const empName = emp ? emp.name : `ID: ${log.id_name}`;
+        
         const ord = globalOrders.find(o => String(o.id_order) === String(log.id_order));
         const ordNo = ord ? ord.order_no : `Order #${log.id_order}`;
+
+        // ค้นหารหัสชิ้นงาน (Work Code) จาก id_work ในตาราง work_items
+        const workItem = globalWorkItems.find(w => String(w.id_work) === String(log.id_work));
+        const workCodeText = workItem ? workItem.work_code : `-`;
+
+        // ค้นหาชื่อขั้นตอนการผลิต
+        const targetObj = globalTargets.find(t => String(t.id_target) === String(log.id_target));
+        let stepNameText = "";
+        if (targetObj) {
+          const stepObj = globalSteps.find(s => String(s.id_step) === String(targetObj.id_step));
+          if (stepObj) stepNameText = stepObj.step_name;
+        }
 
         html += `<tr id="row-${log.id}">
           <td class="val-date">${log.record_date}</td>
           <td class="val-emp" data-val="${log.id_name}" style="text-align: left; padding-left: 6px;">${empName}</td>
-          <td style="text-align: left; padding-left: 6px;"><b>${ordNo}</b> (Target: #${log.id_target})</td>
+          <td style="text-align: left; padding-left: 6px;">
+            <b style="color: var(--blue-dark);">${workCodeText}</b><br>
+            <span style="font-size: 10px; color: var(--text-muted);">ออเดอร์: ${ordNo} (Target: #${log.id_target} - ${stepNameText})</span>
+          </td>
           <td>${log.work_period || 'ปกติ'}</td>
           <td>${log.hour_work}</td>
           <td class="val-qty" data-val="${log.produced_amount}" style="color: #059669; font-weight: bold;">${log.produced_amount.toLocaleString()}</td>
