@@ -85,8 +85,8 @@
 
     .history-card { background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 8px; padding: 15px; margin-top: 25px; transition: 0.3s; }
     .history-card h3 { color: var(--blue-dark); margin-top: 0; font-size: 1.1rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;}
-    .history-filters { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; flex-wrap: wrap; }
-    .btn-history-load { background: var(--blue-gold); color: #000; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    .history-filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; align-items: center; margin-bottom: 10px; }
+    .btn-history-load { background: var(--blue-gold); color: #000; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; height: 100%; }
     .btn-history-load:hover { background: #d97706; color: #fff; }
     .btn-fullscreen { background: #3b82f6; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; }
     .history-table-wrapper { max-height: 350px; overflow-y: auto; margin-top: 10px; border-radius: 6px; border: 1px solid #cbd5e1; }
@@ -100,7 +100,7 @@
       z-index: 10000; margin: 0 !important; padding: 30px !important;
       border-radius: 0 !important; overflow-y: auto;
     }
-    .fullscreen-active .history-table-wrapper { max-height: calc(100vh - 140px) !important; }
+    .fullscreen-active .history-table-wrapper { max-height: calc(100vh - 160px) !important; }
   </style>
 </head>
 <body>
@@ -186,19 +186,29 @@
     <button type="button" class="action-btn" id="confirmSubmitBtn" onclick="executeBatchSubmit()"><i class="fa-solid fa-bolt"></i> ยืนยันบันทึกข้อมูลด้วยความเร็วแสง!</button>
   </div>
 
-  <!-- 📂 ส่วนดึงประวัติงานกลุ่มตามวันที่เพื่อแก้ไข/ลบ -->
+  <!-- 📂 ส่วนดึงประวัติงานกลุ่มตามช่วงวันที่และขั้นตอน -->
   <div class="history-card" id="historyCardContainer">
     <h3>
-      <span><i class="fa-solid fa-box-open"></i> ประวัติเฉพาะงาน "แพ็คกิ้ง" (แก้ไข / ลบ)</span>
+      <span><i class="fa-solid fa-box-open"></i> จัดการประวัติการทำงาน (กรองตามช่วงเวลาและขั้นตอน)</span>
       <button class="btn-fullscreen" onclick="toggleFullscreen()"><i class="fa-solid fa-expand" id="fs-icon"></i> ขยายเต็มจอ</button>
     </h3>
     <div class="history-filters">
-      <div style="flex: 1; min-width: 180px;">
-        <label style="font-size: 12px; font-weight: bold; color: var(--text-muted); display: block; margin-bottom: 4px;">เลือกวันที่ (ดึงค่าล่าสุดมาให้แล้ว)</label>
-        <input type="date" id="history_date_filter">
+      <div>
+        <label style="font-size: 11px; font-weight: bold; color: var(--text-muted); display: block; margin-bottom: 2px;">วันที่เริ่มต้น</label>
+        <input type="date" id="history_date_start">
+      </div>
+      <div>
+        <label style="font-size: 11px; font-weight: bold; color: var(--text-muted); display: block; margin-bottom: 2px;">วันที่สิ้นสุด</label>
+        <input type="date" id="history_date_end">
+      </div>
+      <div>
+        <label style="font-size: 11px; font-weight: bold; color: var(--text-muted); display: block; margin-bottom: 2px;">เลือกขั้นตอนการผลิต</label>
+        <select id="history_step_filter">
+          <option value="">-- ทุกขั้นตอน --</option>
+        </select>
       </div>
       <div style="align-self: flex-end;">
-        <button type="button" class="btn-history-load" onclick="loadProductionHistory()"><i class="fa-solid fa-search"></i> โหลดประวัติแพ็คกิ้ง</button>
+        <button type="button" class="btn-history-load" onclick="loadProductionHistory()"><i class="fa-solid fa-search"></i> ค้นหาประวัติ</button>
       </div>
     </div>
     <div class="history-table-wrapper">
@@ -215,7 +225,7 @@
           </tr>
         </thead>
         <tbody id="historyTbody">
-          <tr><td colspan="7" style="padding: 15px; color: var(--text-muted);">กำลังโหลดข้อมูลล่าสุด...</td></tr>
+          <tr><td colspan="7" style="padding: 15px; color: var(--text-muted);">กำลังโหลดข้อมูล...</td></tr>
         </tbody>
       </table>
     </div>
@@ -244,24 +254,20 @@
     if (e.key === 'Enter') {
       const target = e.target;
       
-      // ยกเลิกการ Submit ฟอร์มดั้งเดิม
       if(target.tagName === 'INPUT' || target.tagName === 'SELECT' || target.tagName === 'BUTTON') {
         e.preventDefault();
       }
 
-      // ถ้ากด Enter ตรงปุ่ม ให้สั่งคลิกปุ่มนั้นเลย
       if (target.tagName === 'BUTTON') {
         target.click();
         return;
       }
 
-      // ถ้ากด Enter ในช่องค้นหาพนักงาน ให้เรียกฟังก์ชัน Add แล้วโฟกัสที่เดิมเพื่อพิมพ์คนต่อไป
       if (target.id === 'emp_search_input') {
         addEmployee();
         return;
       }
       
-      // ถ้ากด Enter ที่ช่อง "ยอดผลิต" ในแถวใบสั่ง ให้เพิ่มแถวใหม่แล้วโฟกัสช่องค้นหาออเดอร์
       if (target.classList.contains('order-qty')) {
         addTaskRow();
         const rows = document.querySelectorAll('.task-row-box');
@@ -270,7 +276,6 @@
         return;
       }
 
-      // หากเป็นช่องอื่นๆ ให้ข้าม Focus ไปยัง Input/Select/Button ตัวถัดไป
       const focusables = Array.from(document.querySelectorAll('input:not([type="hidden"]), select, button:not([disabled])'))
                               .filter(el => el.offsetWidth > 0 && el.offsetHeight > 0);
       const index = focusables.indexOf(target);
@@ -281,7 +286,6 @@
   });
 
   window.onload = async function() {
-    // ปล่อยช่องวันที่ด้านบนให้ว่างไว้ เพื่อบังคับให้ผู้ใช้ระบุเอง
     document.getElementById('batch_date').value = '';
 
     try {
@@ -326,17 +330,29 @@
         reasonSelect.appendChild(opt);
       });
 
+      // เติมตัวเลือกขั้นตอนลงในตัวกรองประวัติ
+      const stepSelectFilter = document.getElementById('history_step_filter');
+      globalSteps.forEach(s => {
+        let opt = document.createElement('option');
+        opt.value = s.id_step;
+        opt.textContent = s.step_name;
+        stepSelectFilter.appendChild(opt);
+      });
+
+      // ค้นหาและตั้งค่าเริ่มต้นให้เป็นขั้นตอน "แพ็ค/แพค"
+      let defaultPackingStep = globalSteps.find(s => s.step_name && (s.step_name.includes('แพ็ค') || s.step_name.includes('แพค')));
+      if (defaultPackingStep) {
+        stepSelectFilter.value = defaultPackingStep.id_step;
+      }
+
       addTaskRow();
 
-      // ดึงวันที่ล่าสุดของขั้นตอนแพ็คกิ้งเพื่อแสดงในตารางประวัติ
-      const latestDate = await fetchLatestPackingDate();
-      if (latestDate) {
-        document.getElementById('history_date_filter').value = latestDate;
-        loadProductionHistory(latestDate);
-      } else {
-        document.getElementById('history_date_filter').value = new Date().toISOString().split('T')[0];
-        loadProductionHistory();
-      }
+      // ตั้งค่าวันที่เริ่มต้นและสิ้นสุดเป็นวันปัจจุบัน พร้อมดึงประวัติ
+      const todayStr = new Date().toISOString().split('T')[0];
+      document.getElementById('history_date_start').value = todayStr;
+      document.getElementById('history_date_end').value = todayStr;
+      
+      loadProductionHistory();
 
     } catch(e) {
       alert("⚠️ โหลดข้อมูลไม่สำเร็จ: " + e.message);
@@ -587,7 +603,7 @@
   }
 
   // ==========================================
-  // 📂 ประวัติแพ็คกิ้ง & ระบบแก้ไข (Inline Edit)
+  // 📂 ประวัติการทำงาน & ระบบกรองช่วงเวลาและขั้นตอน
   // ==========================================
   function toggleFullscreen() {
     const card = document.getElementById('historyCardContainer');
@@ -596,40 +612,42 @@
     icon.className = card.classList.contains('fullscreen-active') ? 'fa-solid fa-compress' : 'fa-solid fa-expand';
   }
 
-  async function fetchLatestPackingDate() {
-    let packingSteps = globalSteps.filter(s => s.step_name && (s.step_name.includes('แพ็ค') || s.step_name.includes('แพค'))).map(s => s.id_step);
-    if (packingSteps.length === 0) return null;
-    let packingTargets = globalTargets.filter(t => packingSteps.includes(t.id_step)).map(t => t.id_target);
-    if (packingTargets.length === 0) return null;
-
-    try {
-      const res = await fetch(`${SUPABASE_URL}/daily_production?id_target=in.(${packingTargets.join(',')})&select=record_date&order=record_date.desc&limit=1`, { headers });
-      if (res.ok) {
-        const data = await res.json();
-        if (data.length > 0) return data[0].record_date;
-      }
-    } catch(e) {}
-    return null;
-  }
-
-  async function loadProductionHistory(autoDate = null) {
-    const filterDate = autoDate || document.getElementById('history_date_filter').value;
+  async function loadProductionHistory() {
+    const startDate = document.getElementById('history_date_start').value;
+    const endDate = document.getElementById('history_date_end').value;
+    const selectedStepId = document.getElementById('history_step_filter').value;
     const tbody = document.getElementById('historyTbody');
-    if(!filterDate) { alert("กรุณาเลือกวันที่ก่อนครับ"); return; }
 
-    tbody.innerHTML = `<tr><td colspan="7" style="padding: 15px; color: var(--blue-primary);"><i class="fa-solid fa-spinner fa-spin"></i> กำลังดึงข้อมูลประวัติ...</td></tr>`;
+    if(!startDate || !endDate) {
+      alert("กรุณาระบุช่วงวันที่เริ่มต้นและสิ้นสุดให้ครบถ้วน");
+      return;
+    }
 
-    let packingSteps = globalSteps.filter(s => s.step_name && (s.step_name.includes('แพ็ค') || s.step_name.includes('แพค'))).map(s => s.id_step);
-    let packingTargets = globalTargets.filter(t => packingSteps.includes(t.id_step)).map(t => t.id_target);
-    let targetFilter = packingTargets.length > 0 ? `&id_target=in.(${packingTargets.join(',')})` : '&id_target=eq.-1';
+    tbody.innerHTML = `<tr><td colspan="7" style="padding: 15px; color: var(--blue-primary);"><i class="fa-solid fa-spinner fa-spin"></i> กำลังค้นหาข้อมูลประวัติ...</td></tr>`;
+
+    // กรอง Targets ตามขั้นตอนที่เลือก
+    let targetFilterIds = [];
+    if (selectedStepId) {
+      targetFilterIds = globalTargets.filter(t => String(t.id_step) === String(selectedStepId)).map(t => t.id_target);
+    } else {
+      targetFilterIds = globalTargets.map(t => t.id_target);
+    }
+
+    if(targetFilterIds.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="7" style="padding: 15px; color: var(--text-muted);">ไม่พบเป้าหมายที่ตรงกับขั้นตอนที่เลือก</td></tr>`;
+      return;
+    }
 
     try {
-      const res = await fetch(`${SUPABASE_URL}/daily_production?record_date=eq.${filterDate}${targetFilter}&select=*`, { headers });
+      // ดึงข้อมูลผ่าน Supabase โดยใช้เงื่อนไขช่วงวันที่ (gte, lte) และ Target IDs
+      let queryUrl = `${SUPABASE_URL}/daily_production?record_date=gte.${startDate}&record_date=lte.${endDate}&id_target=in.(${targetFilterIds.join(',')})&select=*&order=record_date.desc`;
+      
+      const res = await fetch(queryUrl, { headers });
       if(!res.ok) throw new Error("ไม่สามารถดึงข้อมูลได้");
       const logs = await res.json();
 
       if(logs.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" style="padding: 15px; color: var(--text-muted);">ไม่พบประวัติงานแพ็คกิ้งในวันที่ ${filterDate}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" style="padding: 15px; color: var(--text-muted);">ไม่พบประวัติการทำงานในช่วงวันที่เลือก</td></tr>`;
         return;
       }
 
