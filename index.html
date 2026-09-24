@@ -40,7 +40,7 @@
     .form-group label { display: block; margin-bottom: 6px; font-size: 15px; font-weight: 700; color: var(--blue-dark); }
     input, select {
       width: 100%; padding: 12px; background-color: var(--input-bg); border: 2px solid var(--border-dim); 
-      color: var(--text-main); font-weight: 600; border-radius: 8px; box-sizing: border-box; font-family: inherit; font-size: 15px;
+      color: var(--text-main); font-weight: 600; border-radius: 8px; box-sizing: border-box; font-family: inherit; font-size: 14px;
     }
     input[type="date"] { text-align: center; }
     input:focus, select:focus { border-color: var(--blue-gold); outline: none; box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.2); background-color: #fff; }
@@ -50,7 +50,8 @@
     .task-row-box { background: var(--blue-light); border: 2px dashed var(--blue-primary); padding: 10px; border-radius: 8px; margin-bottom: 10px; }
     .task-row-grid { display: flex; flex-direction: column; gap: 8px; margin-bottom: 6px; }
     @media(min-width: 480px) {
-      .task-row-grid { display: grid; grid-template-columns: 1.5fr 2fr 1fr; gap: 6px; }
+      /* ปรับเป็น 4 คอลัมน์ให้สวยงาม */
+      .task-row-grid { display: grid; grid-template-columns: 1.5fr 1.5fr 0.8fr 1.2fr; gap: 6px; }
     }
     .remove-task-btn { background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: bold; }
 
@@ -107,7 +108,7 @@
 
 <div class="terminal-container">
   <div class="nav-buttons-wrapper">
-    <a href="https://paiboon-creater.github.io/daily-production/" class="nav-btn"><i class="fa-solid fa-house"></i> หน้าหลัก</a>
+    <a href="https://paiboon-creater.github.io/fast_form_daily/" class="nav-btn"><i class="fa-solid fa-house"></i> หน้าหลัก</a>
     <a href="#" class="nav-btn" style="background: var(--blue-primary); color: #fff;"><i class="fa-solid fa-users-gear"></i> งานกลุ่ม (Active)</a>
   </div>
 
@@ -146,13 +147,13 @@
 
     <div class="form-group">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-        <label style="margin:0;">📦 4. รายการใบสั่งงาน ขั้นตอน และยอดผลิตรวม</label>
+        <label style="margin:0;">📦 4. รายการใบสั่งงาน ขั้นตอน ยอดผลิต และหมายเหตุ</label>
         <button type="button" class="add-btn" style="padding: 6px 12px; font-size: 13px;" onclick="addTaskRow()"><i class="fa-solid fa-plus"></i> เพิ่มใบสั่งงาน</button>
       </div>
       
       <div id="taskRowsContainer"></div>
       <datalist id="order_datalist"></datalist>
-      <div style="font-size: 12px; color: var(--blue-primary); margin-top: 5px;">* พิมพ์ยอดรวมเสร็จ กด <kbd>Enter</kbd> เพื่อเพิ่มใบสั่งงานใหม่ได้ทันที</div>
+      <div style="font-size: 12px; color: var(--blue-primary); margin-top: 5px;">* พิมพ์ช่องหมายเหตุเสร็จ กด <kbd>Enter</kbd> เพื่อเพิ่มบรรทัดใหม่ได้ทันที</div>
     </div>
 
     <button type="button" class="action-btn preview-btn" onclick="generatePreview()"><i class="fa-solid fa-eye"></i> พรีวิวตารางงานก่อนบันทึก</button>
@@ -170,6 +171,7 @@
             <th>ชม.</th>
             <th>ยอดผลิต</th>
             <th>EFF%</th>
+            <th>หมายเหตุ</th>
           </tr>
         </thead>
         <tbody id="previewTbody"></tbody>
@@ -268,7 +270,8 @@
         return;
       }
       
-      if (target.classList.contains('order-qty')) {
+      // อัปเดตให้กด Enter ที่ช่องหมายเหตุแล้วเพิ่มบรรทัดใหม่
+      if (target.classList.contains('task-remark')) {
         addTaskRow();
         const rows = document.querySelectorAll('.task-row-box');
         const lastRow = rows[rows.length - 1];
@@ -365,11 +368,12 @@
     div.className = 'task-row-box';
     div.innerHTML = `
       <div class="task-row-grid">
-        <input type="text" class="order-search" list="order_datalist" placeholder="พิมพ์ค้นหาเลขออเดอร์..." autocomplete="off" oninput="handleOrderInput(this)" onchange="handleOrderInput(this)">
+        <input type="text" class="order-search" list="order_datalist" placeholder="ค้นหาใบสั่ง..." autocomplete="off" oninput="handleOrderInput(this)" onchange="handleOrderInput(this)">
         <select class="target-select" required>
-          <option value="">👉 เลือกขั้นตอนการผลิต</option>
+          <option value="">👉 เลือกขั้นตอน</option>
         </select>
-        <input type="number" class="order-qty" placeholder="ยอดรวม (ชิ้น)">
+        <input type="number" class="order-qty" placeholder="ยอดรวม">
+        <input type="text" class="task-remark" placeholder="หมายเหตุ/M/C" autocomplete="off">
       </div>
       <div style="text-align: right; margin-top: 5px;">
         <button type="button" class="remove-task-btn" onclick="this.closest('.task-row-box').remove()"><i class="fa-solid fa-trash"></i> ลบแถวนี้</button>
@@ -383,7 +387,7 @@
     const box = inputEl.closest('.task-row-box');
     const targetSelect = box.querySelector('.target-select');
     
-    targetSelect.innerHTML = '<option value="">👉 เลือกขั้นตอนการผลิต</option>';
+    targetSelect.innerHTML = '<option value="">👉 เลือกขั้นตอน</option>';
 
     if(!rawVal) return;
 
@@ -484,6 +488,7 @@
       let rawVal = box.querySelector('.order-search').value.trim();
       let targetValStr = box.querySelector('.target-select').value;
       let qty = parseFloat(box.querySelector('.order-qty').value) || 0;
+      let remarkVal = box.querySelector('.task-remark').value.trim(); // ดึงหมายเหตุของแต่ละแถว
 
       if(rawVal || targetValStr || qty > 0) {
         if(!rawVal || !targetValStr || qty <= 0) { isValidTasks = false; return; }
@@ -508,7 +513,8 @@
         tasks.push({
           id_order: orderId, order_text: foundOrd.order_no, work_code: workCodeText,
           step_name: stepNameText, id_target: parseInt(targetData.id_target),
-          id_work: parseInt(targetData.id_work), target_amount: targetData.target_amount, total_qty: qty
+          id_work: parseInt(targetData.id_work), target_amount: targetData.target_amount, total_qty: qty,
+          remark: remarkVal
         });
       }
     });
@@ -541,7 +547,8 @@
           record_date: dateVal, id_order: parseInt(task.id_order), id_work: parseInt(task.id_work),
           id_target: parseInt(task.id_target), id_name: parseInt(emp.id_name),
           hour_work: parseFloat(empAssignedHours.toFixed(2)), work_period: workPeriodVal,
-          produced_amount: parseInt(assignedQty), nogoods_amount: 0, remark: `Batch Smart-Allocated`
+          produced_amount: parseInt(assignedQty), nogoods_amount: 0, 
+          remark: task.remark ? task.remark : `Batch Smart-Allocated`
         });
 
         previewHtml += `<tr>
@@ -554,6 +561,7 @@
           <td>${empAssignedHours.toFixed(2)}</td>
           <td style="color: #059669; font-weight: bold;">${assignedQty.toLocaleString()}</td>
           <td style="color: ${effColor}; font-weight: bold;">${eff.toFixed(1)}%</td>
+          <td style="font-size: 11px;">${task.remark || '-'}</td>
         </tr>`;
       });
     });
