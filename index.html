@@ -142,13 +142,14 @@
     </div>
 
     <div class="form-group">
-      <label>⏱️ 2. ช่วงเวลา และชั่วโมงทำงาน / คน</label>
+      <label>⏱️️ 2. ช่วงเวลา และชั่วโมงทำงาน / คน</label>
       <div class="hours-period-grid">
         <select id="batch_work_period" required>
           <option value="ปกติ" selected>🟢 ช่วงเวลา: ปกติ</option>
           <option value="โอที">🟠 ช่วงเวลา: โอที</option>
         </select>
-        <input type="number" id="batch_hours" value="8" step="0.5" required placeholder="จำนวน ชม.">
+        <!-- เพิ่ม onfocus="this.select()" เพื่อให้ถมดำตอนคลิก -->
+        <input type="number" id="batch_hours" value="8" step="0.5" required placeholder="จำนวน ชม." onfocus="this.select()">
       </div>
     </div>
 
@@ -275,12 +276,10 @@
     if (e.key === 'Enter') {
       const target = e.target;
       
-      // ป้องกันการ Submit Form อัตโนมัติ
       if(target.tagName === 'INPUT' || target.tagName === 'SELECT' || target.tagName === 'BUTTON') {
         e.preventDefault();
       }
 
-      // ถ้าหน้าต่างพรีวิวเปิดอยู่ และกด Enter ที่ปุ่มยืนยัน หรือช่องเหตุผล ให้กดบันทึกเลย
       if (document.getElementById('previewSection').style.display === 'block') {
           if (target.id === 'confirmSubmitBtn' || target.id === 'id_reason' || target.id === 'generatePreviewBtn') {
               executeBatchSubmit();
@@ -290,22 +289,27 @@
           return;
       }
 
-      // การเลื่อนโฟกัสฟอร์มส่วนบน
       if (target.id === 'batch_date') { document.getElementById('batch_work_period').focus(); return; }
-      if (target.id === 'batch_work_period') { document.getElementById('batch_hours').focus(); return; }
+      
+      // ปรับระบบ Enter จากช่วงเวลา ให้มาที่ชั่วโมงแล้ว "ถมดำ" ให้ด้วย
+      if (target.id === 'batch_work_period') { 
+          let hrInput = document.getElementById('batch_hours');
+          hrInput.focus(); 
+          hrInput.select();
+          return; 
+      }
+      
       if (target.id === 'batch_hours') { document.getElementById('emp_search_input').focus(); return; }
-      if (target.id === 'emp_search_input') { addEmployee(); return; } // เพิ่มพนักงานแล้วอยู่ที่เดิม
+      if (target.id === 'emp_search_input') { addEmployee(); return; } 
 
-      // การเลื่อนโฟกัสในแถว (Task Row)
       if (target.classList.contains('order-search')) {
-          // หน่วงเวลาให้ข้อมูล Dropdown เตรียมเสร็จ
           setTimeout(() => { target.closest('.task-row-box').querySelector('.target-input').focus(); }, 100);
           return;
       }
       if (target.classList.contains('target-input')) {
           const dropdown = target.nextElementSibling.nextElementSibling;
           if (dropdown && dropdown.style.display === 'block' && dropdown.firstChild) {
-              dropdown.firstChild.click(); // ถ้ามี dropdown ให้เลือกอันแรก
+              dropdown.firstChild.click(); 
           }
           setTimeout(() => { target.closest('.task-row-box').querySelector('.order-qty').focus(); }, 50);
           return;
@@ -317,17 +321,15 @@
       if (target.classList.contains('task-remark')) {
           let qty = target.closest('.task-row-box').querySelector('.order-qty').value;
           if (qty && qty > 0) {
-              addTaskRow(); // สร้างบรรทัดใหม่
+              addTaskRow();
               const rows = document.querySelectorAll('.task-row-box');
-              rows[rows.length - 1].querySelector('.order-search').focus(); // ไปบรรทัดใหม่
+              rows[rows.length - 1].querySelector('.order-search').focus();
           } else {
-              // ถ้าช่องว่าง แสดงว่าหมดแล้ว ให้ไปปุ่มพรีวิว
               document.getElementById('generatePreviewBtn').focus();
           }
           return;
       }
 
-      // ถ้าอยู่ที่ปุ่มพรีวิว ให้กดเลย
       if (target.id === 'generatePreviewBtn') {
           generatePreview();
           return;
@@ -335,7 +337,6 @@
     }
   });
 
-  // ปิด Custom Dropdown เมื่อคลิกที่อื่น
   document.addEventListener('click', function(e) {
     if (!e.target.classList.contains('target-input')) {
       document.querySelectorAll('.target-dropdown').forEach(dd => {
@@ -347,16 +348,11 @@
   });
 
   window.onload = async function() {
-    // บังคับกำหนดค่าเริ่มต้นวันที่เป็นปี ค.ศ. 2026 ตาม context
     const d = new Date();
     const yyyy = '2026';
     const mm = String(d.getMonth() + 1).padStart(2, '0');
     const dd = String(d.getDate()).padStart(2, '0');
     const dateToday = `${yyyy}-${mm}-${dd}`;
-    
-    document.getElementById('batch_date').value = dateToday;
-    document.getElementById('history_date_start').value = dateToday;
-    document.getElementById('history_date_end').value = dateToday;
 
     try {
       const [ordersRes, empsRes, targetsRes, reasonsRes, worksRes, stepsRes] = await Promise.all([
@@ -400,7 +396,6 @@
         reasonSelect.appendChild(opt);
       });
 
-      // เติมตัวเลือกขั้นตอนลงในตัวกรองประวัติ
       const stepSelectFilter = document.getElementById('history_step_filter');
       globalSteps.forEach(s => {
         let opt = document.createElement('option');
@@ -409,9 +404,36 @@
         stepSelectFilter.appendChild(opt);
       });
 
-      let defaultPackingStep = globalSteps.find(s => s.step_name && (s.step_name.includes('แพ็ค') || s.step_name.includes('แพค')));
-      if (defaultPackingStep) {
-        stepSelectFilter.value = defaultPackingStep.id_step;
+      let defaultDate = dateToday;
+      let defaultStepId = "";
+
+      try {
+        const latestRes = await fetch(SUPABASE_URL + "/daily_production?select=record_date,id_target&order=id.desc&limit=1", { headers });
+        if(latestRes.ok) {
+           const latestData = await latestRes.json();
+           if(latestData.length > 0) {
+               defaultDate = latestData[0].record_date;
+               const latestTarget = globalTargets.find(t => String(t.id_target) === String(latestData[0].id_target));
+               if(latestTarget) {
+                   defaultStepId = latestTarget.id_step;
+               }
+           }
+        }
+      } catch (err) {
+         console.log("ไม่สามารถดึงข้อมูลล่าสุดได้ ใช้ค่าเริ่มต้นแทน");
+      }
+
+      document.getElementById('batch_date').value = defaultDate;
+      document.getElementById('history_date_start').value = defaultDate;
+      document.getElementById('history_date_end').value = defaultDate;
+
+      if (defaultStepId) {
+          stepSelectFilter.value = defaultStepId;
+      } else {
+          let defaultPackingStep = globalSteps.find(s => s.step_name && (s.step_name.includes('แพ็ค') || s.step_name.includes('แพค')));
+          if (defaultPackingStep) {
+              stepSelectFilter.value = defaultPackingStep.id_step;
+          }
       }
 
       addTaskRow();
@@ -541,13 +563,13 @@
     if(!empObj) { alert("⚠️ ไม่พบชื่อพนักงานนี้ กรุณาเลือกจากรายการค้นหา"); return; }
 
     if(selectedEmployeeList.some(e => e.id_name === empObj.id_name)) {
-      input.value = ''; return; // มีแล้วแค่เคลียร์ช่อง
+      input.value = ''; return;
     }
 
     selectedEmployeeList.push(empObj);
     renderSelectedEmployees();
     input.value = '';
-    input.focus(); // ให้อยู่ที่เดิมเผื่อพิมพ์คนต่อไป
+    input.focus();
   }
 
   function removeEmployee(id_name) {
@@ -571,8 +593,8 @@
     const workPeriodVal = document.getElementById('batch_work_period').value;
     const totalHoursPerEmp = parseFloat(document.getElementById('batch_hours').value) || 8;
 
-    if(!dateVal) { alert("⚠️️ กรุณาระบุวันที่ทำงานด้านบนด้วยครับ"); return; }
-    if(selectedEmployeeList.length === 0) { alert("⚠️ กรุณาเพิ่มรายชื่อพนักงานอย่างน้อย 1 คนครับ!"); return; }
+    if(!dateVal) { alert("⚠ กรุณาระบุวันที่ทำงานด้านบนด้วยครับ"); return; }
+    if(selectedEmployeeList.length === 0) { alert("⚠ กรุณาเพิ่มรายชื่อพนักงานอย่างน้อย 1 คนครับ!"); return; }
 
     let tasks = [];
     let isValidTasks = true;
@@ -679,7 +701,6 @@
 
   async function executeBatchSubmit() {
     if(preparedPayload.length === 0) return;
-    // ปิด Confirm หากต้องการความรวดเร็ว แต่ควรมีเผื่อกดลั่น
     if(!confirm(`ยืนยันการบันทึกข้อมูล ${preparedPayload.length} รายการ ใช่หรือไม่?`)) return;
 
     let reasonVal = document.getElementById('id_reason').value;
@@ -745,7 +766,6 @@
     }
 
     try {
-      // 1. ดึงประวัติรายการล่าสุดตามฟิลเตอร์ (เรียงวันที่ลงมา และ id ลงมาเพื่อให้ตัวล่าสุดอยู่บน)
       let queryUrl = `${SUPABASE_URL}/daily_production?record_date=gte.${startDate}&record_date=lte.${endDate}&id_target=in.(${targetFilterIds.join(',')})&select=*&order=record_date.desc,id.desc&limit=50`;
       
       const res = await fetch(queryUrl, { headers });
@@ -757,12 +777,10 @@
         return;
       }
 
-      // 2. หารหัสเป้าหมาย (id_target) ทั้งหมดในหน้านี้ เพื่อคิวรี่ยอดสะสมแยกตาม "ขั้นตอน" ของออเดอร์นั้น
       const uniqueTargetsInPage = [...new Set(logs.map(l => l.id_target))];
-      let accumulatedTotals = {}; // เก็บยอดรวมของ id_target (เจาะจงใบสั่ง + ขั้นตอน)
+      let accumulatedTotals = {}; 
 
       if (uniqueTargetsInPage.length > 0) {
-        // คิวรี่ยอดทั้งหมดของ Target (ขั้นตอนเฉพาะของใบสั่งนั้น) จาก daily_production
         const sumRes = await fetch(`${SUPABASE_URL}/daily_production?id_target=in.(${uniqueTargetsInPage.join(',')})&select=id_target,produced_amount`, { headers });
         const allProds = await sumRes.json();
         
@@ -772,7 +790,6 @@
         });
       }
 
-      // 3. แสดงผลตารางพร้อมยอดสะสมเฉพาะขั้นตอน
       let html = "";
       logs.forEach(log => {
         const emp = globalEmployees.find(e => String(e.id_name) === String(log.id_name));
@@ -780,7 +797,7 @@
         
         const ord = globalOrders.find(o => String(o.id_order) === String(log.id_order));
         const ordNo = ord ? ord.order_no : `Order #${log.id_order}`;
-        const orderTargetQty = ord ? (ord.quantity || 0) : 0; // ยอดสั่งรวมของใบสั่งนี้
+        const orderTargetQty = ord ? (ord.quantity || 0) : 0; 
 
         const workItem = globalWorkItems.find(w => String(w.id_work) === String(log.id_work));
         const workCodeText = workItem ? workItem.work_code : `-`;
@@ -792,7 +809,6 @@
           if (stepObj) stepNameText = stepObj.step_name;
         }
 
-        // คำนวณเปอร์เซ็นต์สะสม (แยกตามขั้นตอน)
         const totalAccumulated = accumulatedTotals[log.id_target] || 0;
         let accPercent = orderTargetQty > 0 ? (totalAccumulated / orderTargetQty) * 100 : 0;
         let pBarWidth = Math.min(accPercent, 100);
@@ -877,7 +893,7 @@
       const res = await fetch(`${SUPABASE_URL}/daily_production?id=eq.${recordId}`, { method: "DELETE", headers: headers });
       if(res.ok) { loadProductionHistory(); } 
       else { alert("❌ ลบไม่สำเร็จ"); }
-    } catch(err) { alert("⚠️ ข้อผิดพลาด: " + err.message); }
+    } catch(err) { alert("⚠ ข้อผิดพลาด: " + err.message); }
   }
 </script>
 </body>
