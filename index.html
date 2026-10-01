@@ -7,6 +7,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap');
+    
     :root {
       --bg-blue: #1e3a8a; --panel-bg: #ffffff; --blue-primary: #2563eb; 
       --blue-dark: #1e40af; --blue-light: #eff6ff; --blue-gold: #f59e0b; 
@@ -94,7 +96,6 @@
     .btn-row-edit { background: #3b82f6; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold; }
     .btn-row-delete { background: #ef4444; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold; margin-left: 4px; }
     
-    /* Smart Dropdown for Targets */
     .smart-dropdown-menu {
       position: absolute; top: 100%; left: 0; right: 0; background: #fff;
       border: 2px solid var(--blue-primary); border-top: none; z-index: 1000;
@@ -108,7 +109,6 @@
     .smart-dropdown-item:hover, .smart-dropdown-item.active { background: var(--blue-light); color: var(--blue-primary); }
     .smart-dropdown-item:last-child { border-bottom: none; }
 
-    /* Fullscreen Mode */
     .fullscreen-active {
       position: fixed !important; top: 0; left: 0; right: 0; bottom: 0;
       width: 100vw; height: 100vh; background-color: #f8fafc !important;
@@ -120,15 +120,32 @@
     .progress-bar-bg { background: #e2e8f0; border-radius: 10px; height: 8px; width: 100%; margin-top: 4px; overflow: hidden; }
     .progress-bar-fill { background: #10b981; height: 100%; border-radius: 10px; transition: width 0.3s; }
 
-    /* Meter Modal CSS */
-    .meter-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(15, 23, 42, 0.85); z-index: 20000; display: none; justify-content: center; align-items: center; padding: 15px; box-sizing: border-box; backdrop-filter: blur(4px); }
-    .meter-modal-content { background: #fff; width: 100%; max-width: 600px; border-radius: 12px; padding: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.6); max-height: 90vh; overflow-y: auto; border: 3px solid var(--blue-primary); }
-    .meter-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px dashed var(--border-dim); padding-bottom: 15px; margin-bottom: 15px; }
-    .meter-header h2 { margin: 0; color: var(--blue-dark); font-size: 1.25rem; display: flex; align-items: center; gap: 8px; }
-    .close-modal { background: #ef4444; color: white; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-weight: bold; font-size: 16px; display: flex; justify-content: center; align-items: center; }
-    .close-modal:hover { background: #dc2626; }
-    .meter-item { margin-bottom: 15px; background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; border-left: 4px solid var(--blue-primary); }
-    .meter-title { font-size: 14px; font-weight: bold; color: var(--text-main); margin-bottom: 8px; }
+    /* 📄 Meter Modal - สไตล์กระดาษรายงาน A4 */
+    .meter-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.75); z-index: 20000; display: none; justify-content: center; align-items: center; padding: 15px; box-sizing: border-box; backdrop-filter: blur(3px); }
+    .meter-modal-content { width: 100%; max-width: 800px; max-height: 95vh; overflow-y: auto; background: #d1d5db; border-radius: 8px; padding: 20px 20px 10px 20px; position: relative; border: 2px solid #9ca3af; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+    
+    .close-modal-btn { position: sticky; top: 0; float: right; background: #ef4444; color: white; border: 2px solid #fff; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-weight: bold; font-size: 20px; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.4); z-index: 10; margin-bottom: -40px; margin-right: -10px; transition: 0.2s; }
+    .close-modal-btn:hover { background: #dc2626; transform: scale(1.1); }
+    
+    .paper-sheet { background: #fff; padding: 30px 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); margin-top: 20px; margin-bottom: 25px; color: #000; position: relative; font-family: 'Sarabun', 'Kanit', sans-serif; border-radius: 2px; }
+    .paper-title { text-align: center; font-size: 20px; font-weight: bold; margin-top: 0; margin-bottom: 20px; text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 4px; }
+    
+    .paper-header-grid { display: grid; grid-template-columns: 1.2fr 1fr; column-gap: 15px; row-gap: 12px; margin-bottom: 20px; font-size: 15px; }
+    .paper-field { display: flex; align-items: flex-end; }
+    .paper-field span:first-child { margin-right: 8px; white-space: nowrap; font-weight: bold; }
+    .field-value { flex: 1; border-bottom: 1px dotted #000; padding-bottom: 2px; min-height: 20px; font-family: 'Courier New', monospace; font-size: 16px; color: #1e3a8a; font-weight: bold; text-align: center;}
+    
+    .paper-table { width: 100%; border-collapse: collapse; border: 2px solid #000; font-size: 14px; text-align: center; }
+    .paper-table th, .paper-table td { border: 1px solid #000; padding: 8px 4px; }
+    .paper-table th { background: #f9fafb; font-weight: bold; font-size: 13px; }
+    .paper-table td { color: #1f2937; }
+    
+    @media(max-width: 600px) {
+      .paper-header-grid { grid-template-columns: 1fr; }
+      .paper-sheet { padding: 20px 10px; }
+      .paper-table { font-size: 12px; }
+      .paper-table th, .paper-table td { padding: 4px 2px; }
+    }
   </style>
 </head>
 <body>
@@ -145,7 +162,6 @@
   </div>
 
   <form id="batchForm" onsubmit="event.preventDefault();">
-
     <div class="form-group">
       <label>📅 1. วันที่ทำงาน</label>
       <input type="date" id="batch_date" required autofocus>
@@ -218,7 +234,7 @@
     </div>
   </div>
 
-  <!-- 📂 ส่วนดึงประวัติงานกลุ่มตามช่วงวันที่และขั้นตอน -->
+  <!-- 📂 ส่วนดึงประวัติงานกลุ่ม -->
   <div class="history-card" id="historyCardContainer">
     <h3>
       <span><i class="fa-solid fa-box-open"></i> ประวัติล่าสุด & ยอดสะสม</span>
@@ -245,10 +261,9 @@
         </select>
       </div>
     </div>
-    <!-- ปุ่มควบคุมประวัติแยกแถวลงมาให้กดง่ายขึ้น -->
     <div style="display: flex; gap: 8px; margin-bottom: 10px;">
         <button type="button" class="btn-history-load" onclick="loadProductionHistory()" style="flex: 1;"><i class="fa-solid fa-search"></i> ค้นหาประวัติ</button>
-        <button type="button" class="btn-history-load" onclick="showMeterPreview()" style="flex: 1; background: linear-gradient(90deg, #8b5cf6, #6d28d9); color: white; border: 2px solid #a78bfa;"><i class="fa-solid fa-gauge-high"></i> พรีวิวใบมิเตอร์</button>
+        <button type="button" class="btn-history-load" onclick="showMeterPreview()" style="flex: 1; background: linear-gradient(90deg, #10b981, #059669); color: white; border: 2px solid #047857;"><i class="fa-solid fa-file-lines"></i> พรีวิวใบมิเตอร์</button>
     </div>
 
     <div class="history-table-wrapper">
@@ -272,15 +287,12 @@
 
 </div>
 
-<!-- 📊 Modal ใบมิเตอร์ความก้าวหน้า -->
+<!-- 📄 Modal ใบมิเตอร์ความก้าวหน้า สไตล์แบบฟอร์มกระดาษ A4 -->
 <div id="meterModal" class="meter-modal">
   <div class="meter-modal-content">
-    <div class="meter-header">
-      <h2><i class="fa-solid fa-gauge-high" style="color:var(--blue-primary);"></i> ใบมิเตอร์ความก้าวหน้าการผลิต</h2>
-      <button onclick="document.getElementById('meterModal').style.display='none'" class="close-modal"><i class="fa-solid fa-xmark"></i></button>
-    </div>
-    <div id="meterBody" style="min-height: 150px;">
-      <!-- ข้อมูลใบมิเตอร์จะถูกสร้างที่นี่ -->
+    <button onclick="document.getElementById('meterModal').style.display='none'" class="close-modal-btn" title="ปิดหน้าต่าง"><i class="fa-solid fa-xmark"></i></button>
+    <div id="meterBody" style="min-height: 200px;">
+      <!-- ใบความก้าวหน้าของการผลิตจะถูกแทรกลงที่นี่ -->
     </div>
   </div>
 </div>
@@ -306,10 +318,8 @@
     if (e.key === 'Enter') {
       const target = e.target;
       
-      // ข้ามระบบ Enter แบบปกติตอนกรอกฟอร์ม
       if(target.tagName === 'INPUT' || target.tagName === 'SELECT' || target.tagName === 'BUTTON') {
         if(target.id === 'history_order_filter') {
-          // กด Enter ในช่องกรองประวัติให้ค้นหาเลย
           loadProductionHistory();
           return;
         }
@@ -384,7 +394,7 @@
 
   window.onload = async function() {
     const d = new Date();
-    const yyyy = d.getFullYear(); // ปรับให้ใช้ปีปัจจุบันอัตโนมัติ
+    const yyyy = d.getFullYear();
     const mm = String(d.getMonth() + 1).padStart(2, '0');
     const dd = String(d.getDate()).padStart(2, '0');
     const dateToday = `${yyyy}-${mm}-${dd}`;
@@ -439,32 +449,22 @@
         stepSelectFilter.appendChild(opt);
       });
 
-      let defaultDate = dateToday;
-      let defaultStepId = "";
+      document.getElementById('batch_date').value = dateToday;
+      document.getElementById('history_date_start').value = dateToday;
+      document.getElementById('history_date_end').value = dateToday;
 
-      try {
-        const latestRes = await fetch(SUPABASE_URL + "/daily_production?select=record_date,id_target&order=id.desc&limit=1", { headers });
-        if(latestRes.ok) {
-           const latestData = await latestRes.json();
-           if(latestData.length > 0) {
-               defaultDate = latestData[0].record_date;
-               const latestTarget = globalTargets.find(t => String(t.id_target) === String(latestData[0].id_target));
-               if(latestTarget) {
-                   defaultStepId = latestTarget.id_step;
-               }
-           }
-        }
-      } catch (err) {
-         console.log("ไม่สามารถดึงข้อมูลล่าสุดได้ ใช้ค่าเริ่มต้นแทน");
-      }
+      // ⚡ เช็คว่าเพิ่งบันทึกข้อมูลไปหรือไม่ เพื่อทำ Auto-Filter ให้ประวัติแสดงเฉพาะออเดอร์ล่าสุด
+      let savedOrder = sessionStorage.getItem('lastSavedOrder');
+      let savedStep = sessionStorage.getItem('lastSavedStep');
 
-      document.getElementById('batch_date').value = defaultDate;
-      document.getElementById('history_date_start').value = defaultDate;
-      document.getElementById('history_date_end').value = defaultDate;
-
-      if (defaultStepId) {
-          stepSelectFilter.value = defaultStepId;
+      if (savedOrder && savedStep) {
+          document.getElementById('history_order_filter').value = savedOrder;
+          stepSelectFilter.value = savedStep;
+          
+          sessionStorage.removeItem('lastSavedOrder');
+          sessionStorage.removeItem('lastSavedStep');
       } else {
+          // หากไม่มีการบันทึกล่าสุด ให้ใช้ค่าเริ่มต้น
           let defaultPackingStep = globalSteps.find(s => s.step_name && (s.step_name.includes('แพ็ค') || s.step_name.includes('แพค')));
           if (defaultPackingStep) {
               stepSelectFilter.value = defaultPackingStep.id_step;
@@ -698,7 +698,7 @@
           id_target: parseInt(task.id_target), id_name: parseInt(emp.id_name),
           hour_work: parseFloat(empAssignedHours.toFixed(2)), work_period: workPeriodVal,
           produced_amount: parseInt(assignedQty), nogoods_amount: 0, 
-          remark: task.remark ? task.remark : `Batch Smart-Allocated`
+          remark: task.remark ? task.remark : ''
         });
 
         previewHtml += `<tr>
@@ -711,7 +711,7 @@
           <td>${empAssignedHours.toFixed(2)}</td>
           <td style="color: #059669; font-weight: bold;">${assignedQty.toLocaleString()}</td>
           <td style="color: ${effColor}; font-weight: bold;">${eff.toFixed(1)}%</td>
-          <td style="font-size: 11px;">${task.remark || '-'}</td>
+          <td style="font-size: 11px;">${task.remark}</td>
         </tr>`;
       });
     });
@@ -755,6 +755,19 @@
 
       if(res.ok) {
         alert("⚡ บันทึกข้อมูลสำเร็จ!");
+        
+        // ⚡ ก่อนโหลดหน้าจอใหม่ ให้เก็บข้อมูลใบสั่งและขั้นตอนล่าสุดลง Session Storage
+        if (preparedPayload.length > 0) {
+            let lastItem = preparedPayload[0];
+            const savedOrderObj = globalOrders.find(o => o.id_order === lastItem.id_order);
+            const savedTargetObj = globalTargets.find(t => t.id_target === lastItem.id_target);
+            
+            if (savedOrderObj && savedTargetObj) {
+                sessionStorage.setItem('lastSavedOrder', savedOrderObj.order_no);
+                sessionStorage.setItem('lastSavedStep', savedTargetObj.id_step);
+            }
+        }
+        
         location.reload();
       } else {
         const err = await res.json();
@@ -770,7 +783,7 @@
   }
 
   // ==========================================
-  // 📂 ตารางประวัติ: กรอง + แสดงยอดสะสม + มิเตอร์
+  // 📂 ตารางประวัติ: กรอง + แสดงยอดสะสม
   // ==========================================
   function toggleFullscreen() {
     const card = document.getElementById('historyCardContainer');
@@ -789,7 +802,6 @@
     if(!startDate || !endDate) { alert("ระบุช่วงวันที่ให้ครบถ้วน"); return; }
     tbody.innerHTML = `<tr><td colspan="6" style="padding: 15px; color: var(--blue-primary);"><i class="fa-solid fa-spinner fa-spin"></i> กำลังโหลดประวัติ และคำนวณยอดสะสม...</td></tr>`;
 
-    // 1. หา ID Order จากช่องกรอง (ถ้ามี)
     let selectedOrderId = null;
     if (orderFilterText) {
         let orderNoClean = orderFilterText.split('(')[0].trim().toLowerCase();
@@ -797,7 +809,6 @@
         if(foundOrd) selectedOrderId = foundOrd.id_order;
     }
 
-    // 2. จัดการ Target IDs (กรณีไม่ได้กรอง Order)
     let targetFilterIds = [];
     if (selectedStepId) {
       targetFilterIds = globalTargets.filter(t => String(t.id_step) === String(selectedStepId)).map(t => t.id_target);
@@ -811,7 +822,6 @@
     }
 
     try {
-      // 3. สร้าง URL Query รองรับการกรอง Order
       let queryUrl = `${SUPABASE_URL}/daily_production?record_date=gte.${startDate}&record_date=lte.${endDate}&id_target=in.(${targetFilterIds.join(',')})`;
       
       if(selectedOrderId) {
@@ -900,10 +910,12 @@
   }
 
   // ==========================================
-  // 📊 ฟังก์ชั่นแสดง Modal พรีวิวใบมิเตอร์ความก้าวหน้า
+  // 📄 ฟังก์ชั่นแสดง Modal พรีวิวใบมิเตอร์ "ใบความก้าวหน้าของการผลิต"
   // ==========================================
   async function showMeterPreview() {
     const orderFilterText = document.getElementById('history_order_filter').value.trim();
+    const stepFilterVal = document.getElementById('history_step_filter').value;
+    
     if (!orderFilterText) {
         alert("⚠️ กรุณาระบุ 'ตัวกรอง: เลขที่ใบสั่ง' ให้ชัดเจนก่อนกดดูพรีวิวใบมิเตอร์ครับ");
         document.getElementById('history_order_filter').focus();
@@ -921,76 +933,105 @@
     const modal = document.getElementById('meterModal');
     const body = document.getElementById('meterBody');
     
-    // โชว์ Modal พร้อม Loading
     body.innerHTML = `
-      <div style="text-align:center; padding: 30px;">
-        <i class="fa-solid fa-spinner fa-spin fa-3x" style="color:var(--blue-primary); margin-bottom: 15px;"></i>
-        <h3 style="color:var(--blue-dark); margin:0;">กำลังประมวลผลมิเตอร์...</h3>
+      <div style="text-align:center; padding: 40px; color: #4b5563;">
+        <i class="fa-solid fa-spinner fa-spin fa-3x" style="margin-bottom: 15px;"></i>
+        <h3 style="margin:0;">กำลังรวบรวมข้อมูลใบรายงาน...</h3>
       </div>
     `;
     modal.style.display = 'flex';
 
     try {
-        // ดึงยอดสะสมทั้งหมด ของออเดอร์นี้
-        const res = await fetch(`${SUPABASE_URL}/daily_production?id_order=eq.${foundOrd.id_order}&select=id_target,produced_amount`, { headers });
+        // ดึงข้อมูลการผลิตทั้งหมดของออเดอร์นี้ เพื่อเรียงตามวันที่ (เอามาทำตารางสะสม)
+        const res = await fetch(`${SUPABASE_URL}/daily_production?id_order=eq.${foundOrd.id_order}&select=*&order=record_date.asc,id.asc`, { headers });
         if (!res.ok) throw new Error("โหลดข้อมูลไม่สำเร็จ");
         const prodData = await res.json();
 
-        // กรุ๊ปปิ้งยอดรวมตาม id_target (รวมยอดผลิตจากทุกวัน/ทุกคน ของขั้นตอนนั้นๆ)
-        let targetTotals = {};
-        prodData.forEach(p => {
-            if (!targetTotals[p.id_target]) targetTotals[p.id_target] = 0;
-            targetTotals[p.id_target] += (p.produced_amount || 0);
-        });
-
-        // หากลุ่มขั้นตอน (Targets) ทั้งหมดที่ถูกผูกกับชิ้นงานนี้ (id_work)
         const workId = foundOrd.id_work;
         const orderTargets = globalTargets.filter(t => String(t.id_work) === String(workId));
 
         const workItem = globalWorkItems.find(w => String(w.id_work) === String(workId));
         const workCode = workItem ? workItem.work_code : '-';
 
-        if (orderTargets.length === 0) {
-            body.innerHTML = '<div style="color:#ef4444; text-align:center; padding: 20px; font-weight: bold;">⚠️ ไม่พบขั้นตอนเป้าหมายสำหรับใบสั่งนี้ หรือยังไม่ได้ตั้งค่า Targets</div>';
+        // กรองแสดงเฉพาะกระดาษใบของขั้นตอนที่เลือกไว้ใน Filter (ถ้าไม่ได้เลือก = แสดงทุกใบของออเดอร์นี้)
+        let targetsToShow = orderTargets;
+        if (stepFilterVal) {
+            targetsToShow = orderTargets.filter(t => String(t.id_step) === String(stepFilterVal));
+        }
+
+        if (targetsToShow.length === 0) {
+            body.innerHTML = '<div style="color:#ef4444; text-align:center; padding: 20px; font-weight: bold; font-size: 16px;">⚠️ ไม่พบขั้นตอนเป้าหมายสำหรับใบสั่งนี้ หรือไม่ตรงกับขั้นตอนที่กรองไว้</div>';
             return;
         }
 
-        let html = `
-          <div style="background: var(--blue-light); padding: 10px; border-radius: 8px; border: 2px solid var(--blue-primary); margin-bottom: 15px;">
-            <h4 style="margin:0 0 5px 0; color:var(--blue-dark); font-size:16px;">
-              <i class="fa-solid fa-file-invoice"></i> ใบสั่ง: <span style="color:var(--blue-primary);">${foundOrd.order_no}</span>
-            </h4>
-            <div style="font-size: 13px; color: var(--text-main); font-weight: 600;">
-              ชิ้นงาน: ${workCode} <br>
-              เป้ายอดสั่งผลิต: <span style="color:#059669;">${(foundOrd.quantity || 0).toLocaleString()} ชิ้น</span>
-            </div>
-          </div>
-        `;
+        let html = '';
 
-        // วนลูปสร้างมิเตอร์สำหรับแต่ละขั้นตอนการผลิต
-        orderTargets.forEach(t => {
+        targetsToShow.forEach(t => {
             const stepObj = globalSteps.find(s => String(s.id_step) === String(t.id_step));
             const stepName = stepObj ? stepObj.step_name : `ขั้นตอน #${t.id_step}`;
-            const accumulated = targetTotals[t.id_target] || 0;
-            const orderQty = foundOrd.quantity || 0;
-            const percent = orderQty > 0 ? (accumulated / orderQty) * 100 : 0;
             
-            let pBarWidth = Math.min(percent, 100);
-            let color = percent >= 100 ? '#10b981' : (percent >= 75 ? '#f59e0b' : '#2563eb');
+            // กรองข้อมูลเฉพาะ Target (ขั้นตอน) นี้
+            const targetData = prodData.filter(p => String(p.id_target) === String(t.id_target));
+            
+            let tableRows = '';
+            let accumulated = 0;
+            
+            if (targetData.length === 0) {
+                tableRows = `<tr><td colspan="8" style="text-align:center; padding: 15px; color: #6b7280; font-style: italic;">ยังไม่มีบันทึกการทำงานในขั้นตอนนี้</td></tr>`;
+            } else {
+                targetData.forEach(row => {
+                    accumulated += (row.produced_amount || 0);
+                    const emp = globalEmployees.find(e => String(e.id_name) === String(row.id_name));
+                    const empName = emp ? emp.name : '';
+                    
+                    tableRows += `
+                    <tr>
+                        <td style="white-space: nowrap;">${row.record_date}</td>
+                        <td>-</td>
+                        <td style="font-weight: bold; color: #059669;">${(row.produced_amount || 0).toLocaleString()}</td>
+                        <td style="font-weight: bold;">${accumulated.toLocaleString()}</td>
+                        <td>${row.nogoods_amount || '-'}</td>
+                        <td>${row.hour_work || '-'}</td>
+                        <td style="text-align: left; padding-left: 10px;">${empName}</td>
+                        <td style="font-size: 12px; text-align: left; padding-left: 5px;">${row.remark || ''}</td>
+                    </tr>
+                    `;
+                });
+            }
 
             html += `
-            <div class="meter-item">
-                <div class="meter-title"><i class="fa-solid fa-caret-right" style="color:var(--blue-primary);"></i> ${stepName} (Target #${t.id_target})</div>
-                <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:bold; margin-bottom: 5px;">
-                    <span style="color: ${color};">ยอดที่ทำได้: ${accumulated.toLocaleString()}</span>
-                    <span style="color: var(--text-muted);">เป้า: ${orderQty.toLocaleString()}</span>
+            <div class="paper-sheet">
+                <h3 class="paper-title">ใบความก้าวหน้าของการผลิต</h3>
+                
+                <div class="paper-header-grid">
+                    <div class="paper-field"><span>ใบสั่งงานเลขที่</span> <span class="field-value">${foundOrd.order_no}</span></div>
+                    <div class="paper-field"><span>แผนกงาน</span> <span class="field-value">${stepName}</span></div>
+                    
+                    <div class="paper-field"><span>ชนิดงาน</span> <span class="field-value">${workCode}</span></div>
+                    <div class="paper-field"><span>เครื่องเลขที่</span> <span class="field-value">-</span></div>
+                    
+                    <div class="paper-field" style="grid-column: 1 / -1; width: 70%;"><span>จำนวนชิ้นงานสั่งผลิต</span> <span class="field-value">${(foundOrd.quantity || 0).toLocaleString()}</span></div>
                 </div>
-                <div class="progress-bar-bg" style="height: 16px; border-radius: 12px; background:#e2e8f0; border: 1px solid #cbd5e1;">
-                    <div class="progress-bar-fill" style="width: ${pBarWidth}%; background-color: ${color}; height: 100%; border-radius: 12px; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; color: white; font-size: 11px; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.4);">
-                        ${percent > 8 ? percent.toFixed(1) + '%' : ''}
-                    </div>
+
+                <div style="overflow-x: auto;">
+                  <table class="paper-table">
+                      <thead>
+                          <tr>
+                              <th style="width: 12%;">วันที่</th>
+                              <th style="width: 14%;">ตัวเลขตอน<br>เลิกงาน</th>
+                              <th style="width: 12%;">ผลิตได้/วัน</th>
+                              <th style="width: 12%;">สะสม</th>
+                              <th style="width: 8%;">เสีย</th>
+                              <th style="width: 8%;">เวลา</th>
+                              <th style="width: 20%;">ชื่อคนทำ</th>
+                              <th style="width: 14%;">หมายเหตุ</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          ${tableRows}
+                      </tbody>
+                  </table>
                 </div>
-                ${percent <= 8 ? `<div style="text-align:right; font-size:11px; color:${color}; font-weight:bold; margin-top:3px;">${percent.toFixed(1)}%</div>` : ''}
             </div>
             `;
         });
@@ -998,7 +1039,7 @@
         body.innerHTML = html;
 
     } catch(e) {
-        body.innerHTML = `<div style="color:#ef4444; text-align:center; font-weight:bold; padding: 20px;">เกิดข้อผิดพลาด: ${e.message}</div>`;
+        body.innerHTML = `<div style="color:#ef4444; text-align:center; font-weight:bold; padding: 20px;">เกิดข้อผิดพลาดของระบบ: ${e.message}</div>`;
     }
   }
 
