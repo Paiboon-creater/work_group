@@ -261,9 +261,12 @@
         </select>
       </div>
     </div>
-    <div style="display: flex; gap: 8px; margin-bottom: 10px;">
-        <button type="button" class="btn-history-load" onclick="loadProductionHistory()" style="flex: 1;"><i class="fa-solid fa-search"></i> ค้นหาประวัติ</button>
-        <button type="button" class="btn-history-load" onclick="showMeterPreview()" style="flex: 1; background: linear-gradient(90deg, #10b981, #059669); color: white; border: 2px solid #047857;"><i class="fa-solid fa-file-lines"></i> พรีวิวใบมิเตอร์</button>
+    
+    <!-- ปุ่มควบคุมการค้นหา + พรีวิวใบมิเตอร์ + ปุ่มเคลียร์หมายเหตุเก่า -->
+    <div style="display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap;">
+        <button type="button" class="btn-history-load" onclick="loadProductionHistory()" style="flex: 1; min-width: 120px;"><i class="fa-solid fa-search"></i> ค้นหาประวัติ</button>
+        <button type="button" class="btn-history-load" onclick="showMeterPreview()" style="flex: 1; min-width: 120px; background: linear-gradient(90deg, #10b981, #059669); color: white; border: 2px solid #047857;"><i class="fa-solid fa-file-lines"></i> พรีวิวใบมิเตอร์</button>
+        <button type="button" class="btn-history-load" onclick="clearOldBatchRemarks()" style="flex: 1; min-width: 150px; background: linear-gradient(90deg, #f59e0b, #d97706); color: white; border: 2px solid #b45309;" title="ล้างคำว่า Batch Smart-Allocated ในฐานข้อมูลเก่าออกให้หมด"><i class="fa-solid fa-eraser"></i> เคลียร์หมายเหตุเก่า</button>
     </div>
 
     <div class="history-table-wrapper">
@@ -291,9 +294,7 @@
 <div id="meterModal" class="meter-modal">
   <div class="meter-modal-content">
     <button onclick="document.getElementById('meterModal').style.display='none'" class="close-modal-btn" title="ปิดหน้าต่าง"><i class="fa-solid fa-xmark"></i></button>
-    <div id="meterBody" style="min-height: 200px;">
-      <!-- ใบความก้าวหน้าของการผลิตจะถูกแทรกลงที่นี่ -->
-    </div>
+    <div id="meterBody" style="min-height: 200px;"></div>
   </div>
 </div>
 
@@ -453,7 +454,6 @@
       document.getElementById('history_date_start').value = dateToday;
       document.getElementById('history_date_end').value = dateToday;
 
-      // ⚡ เช็คว่าเพิ่งบันทึกข้อมูลไปหรือไม่ เพื่อทำ Auto-Filter ให้ประวัติแสดงเฉพาะออเดอร์ล่าสุด
       let savedOrder = sessionStorage.getItem('lastSavedOrder');
       let savedStep = sessionStorage.getItem('lastSavedStep');
 
@@ -464,7 +464,6 @@
           sessionStorage.removeItem('lastSavedOrder');
           sessionStorage.removeItem('lastSavedStep');
       } else {
-          // หากไม่มีการบันทึกล่าสุด ให้ใช้ค่าเริ่มต้น
           let defaultPackingStep = globalSteps.find(s => s.step_name && (s.step_name.includes('แพ็ค') || s.step_name.includes('แพค')));
           if (defaultPackingStep) {
               stepSelectFilter.value = defaultPackingStep.id_step;
@@ -693,12 +692,13 @@
         if (eff < 85) { hasLowEff = true; }
         let effColor = eff >= 85 ? '#10b981' : '#ef4444';
 
+        // บันทึกเฉพาะข้อความที่ผู้ใช้พิมพ์จริง หากไม่พิมพ์ให้เป็นค่าว่าง "" ทันที
         preparedPayload.push({
           record_date: dateVal, id_order: parseInt(task.id_order), id_work: parseInt(task.id_work),
           id_target: parseInt(task.id_target), id_name: parseInt(emp.id_name),
           hour_work: parseFloat(empAssignedHours.toFixed(2)), work_period: workPeriodVal,
           produced_amount: parseInt(assignedQty), nogoods_amount: 0, 
-          remark: task.remark ? task.remark : ''
+          remark: task.remark ? task.remark : ""
         });
 
         previewHtml += `<tr>
@@ -756,7 +756,6 @@
       if(res.ok) {
         alert("⚡ บันทึกข้อมูลสำเร็จ!");
         
-        // ⚡ ก่อนโหลดหน้าจอใหม่ ให้เก็บข้อมูลใบสั่งและขั้นตอนล่าสุดลง Session Storage
         if (preparedPayload.length > 0) {
             let lastItem = preparedPayload[0];
             const savedOrderObj = globalOrders.find(o => o.id_order === lastItem.id_order);
@@ -779,6 +778,30 @@
       alert("⚠️ ข้อผิดพลาด: " + err.message);
       btn.disabled = false;
       btn.innerHTML = '<i class="fa-solid fa-bolt"></i> ยืนยันบันทึกข้อมูล (Enter)';
+    }
+  }
+
+  // ==========================================
+  // 📂 ปุ่มพิเศษ: เคลียร์คำว่า Batch Smart-Allocated ในฐานข้อมูลเก่า
+  // ==========================================
+  async function clearOldBatchRemarks() {
+    if(!confirm("⚠️ คุณต้องการล้างข้อความ 'Batch Smart-Allocated' ในประวัติเก่าทั้งหมด ให้เหลือช่องว่างใช่หรือไม่?")) return;
+    
+    try {
+        const res = await fetch(`${SUPABASE_URL}/daily_production?remark=eq.Batch Smart-Allocated`, {
+            method: "PATCH",
+            headers: headers,
+            body: JSON.stringify({ remark: "" })
+        });
+        
+        if(res.ok) {
+            alert("✨ เคลียร์หมายเหตุเก่าสำเร็จ!");
+            loadProductionHistory();
+        } else {
+            alert("❌ ไม่สามารถเคลียร์ข้อมูลได้");
+        }
+    } catch(e) {
+        alert("⚠️ เกิดข้อผิดพลาด: " + e.message);
     }
   }
 
@@ -942,7 +965,6 @@
     modal.style.display = 'flex';
 
     try {
-        // ดึงข้อมูลการผลิตทั้งหมดของออเดอร์นี้ เพื่อเรียงตามวันที่ (เอามาทำตารางสะสม)
         const res = await fetch(`${SUPABASE_URL}/daily_production?id_order=eq.${foundOrd.id_order}&select=*&order=record_date.asc,id.asc`, { headers });
         if (!res.ok) throw new Error("โหลดข้อมูลไม่สำเร็จ");
         const prodData = await res.json();
@@ -953,7 +975,6 @@
         const workItem = globalWorkItems.find(w => String(w.id_work) === String(workId));
         const workCode = workItem ? workItem.work_code : '-';
 
-        // กรองแสดงเฉพาะกระดาษใบของขั้นตอนที่เลือกไว้ใน Filter (ถ้าไม่ได้เลือก = แสดงทุกใบของออเดอร์นี้)
         let targetsToShow = orderTargets;
         if (stepFilterVal) {
             targetsToShow = orderTargets.filter(t => String(t.id_step) === String(stepFilterVal));
@@ -970,7 +991,6 @@
             const stepObj = globalSteps.find(s => String(s.id_step) === String(t.id_step));
             const stepName = stepObj ? stepObj.step_name : `ขั้นตอน #${t.id_step}`;
             
-            // กรองข้อมูลเฉพาะ Target (ขั้นตอน) นี้
             const targetData = prodData.filter(p => String(p.id_target) === String(t.id_target));
             
             let tableRows = '';
