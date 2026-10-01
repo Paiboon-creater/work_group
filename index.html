@@ -86,8 +86,8 @@
 
     .history-card { background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 8px; padding: 15px; margin-top: 25px; transition: 0.3s; }
     .history-card h3 { color: var(--blue-dark); margin-top: 0; font-size: 1.1rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;}
-    .history-filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; align-items: center; margin-bottom: 10px; }
-    .btn-history-load { background: var(--blue-gold); color: #000; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; height: 100%; }
+    .history-filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; align-items: end; margin-bottom: 10px; }
+    .btn-history-load { background: var(--blue-gold); color: #000; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; height: 42px; }
     .btn-history-load:hover { background: #d97706; color: #fff; }
     .btn-fullscreen { background: #3b82f6; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; }
     .history-table-wrapper { max-height: 450px; overflow-y: auto; margin-top: 10px; border-radius: 6px; border: 1px solid #cbd5e1; }
@@ -119,6 +119,16 @@
 
     .progress-bar-bg { background: #e2e8f0; border-radius: 10px; height: 8px; width: 100%; margin-top: 4px; overflow: hidden; }
     .progress-bar-fill { background: #10b981; height: 100%; border-radius: 10px; transition: width 0.3s; }
+
+    /* Meter Modal CSS */
+    .meter-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(15, 23, 42, 0.85); z-index: 20000; display: none; justify-content: center; align-items: center; padding: 15px; box-sizing: border-box; backdrop-filter: blur(4px); }
+    .meter-modal-content { background: #fff; width: 100%; max-width: 600px; border-radius: 12px; padding: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.6); max-height: 90vh; overflow-y: auto; border: 3px solid var(--blue-primary); }
+    .meter-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px dashed var(--border-dim); padding-bottom: 15px; margin-bottom: 15px; }
+    .meter-header h2 { margin: 0; color: var(--blue-dark); font-size: 1.25rem; display: flex; align-items: center; gap: 8px; }
+    .close-modal { background: #ef4444; color: white; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-weight: bold; font-size: 16px; display: flex; justify-content: center; align-items: center; }
+    .close-modal:hover { background: #dc2626; }
+    .meter-item { margin-bottom: 15px; background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; border-left: 4px solid var(--blue-primary); }
+    .meter-title { font-size: 14px; font-weight: bold; color: var(--text-main); margin-bottom: 8px; }
   </style>
 </head>
 <body>
@@ -142,13 +152,12 @@
     </div>
 
     <div class="form-group">
-      <label>⏱️️ 2. ช่วงเวลา และชั่วโมงทำงาน / คน</label>
+      <label>⏱ 2. ช่วงเวลา และชั่วโมงทำงาน / คน</label>
       <div class="hours-period-grid">
         <select id="batch_work_period" required>
           <option value="ปกติ" selected>🟢 ช่วงเวลา: ปกติ</option>
           <option value="โอที">🟠 ช่วงเวลา: โอที</option>
         </select>
-        <!-- เพิ่ม onfocus="this.select()" เพื่อให้ถมดำตอนคลิก -->
         <input type="number" id="batch_hours" value="8" step="0.5" required placeholder="จำนวน ชม." onfocus="this.select()">
       </div>
     </div>
@@ -212,9 +221,10 @@
   <!-- 📂 ส่วนดึงประวัติงานกลุ่มตามช่วงวันที่และขั้นตอน -->
   <div class="history-card" id="historyCardContainer">
     <h3>
-      <span><i class="fa-solid fa-box-open"></i> ประวัติล่าสุด & ยอดสะสมตามขั้นตอน</span>
+      <span><i class="fa-solid fa-box-open"></i> ประวัติล่าสุด & ยอดสะสม</span>
       <button class="btn-fullscreen" onclick="toggleFullscreen()"><i class="fa-solid fa-expand" id="fs-icon"></i> ขยายเต็มจอ</button>
     </h3>
+    
     <div class="history-filters">
       <div>
         <label style="font-size: 11px; font-weight: bold; color: var(--text-muted); display: block; margin-bottom: 2px;">วันที่เริ่มต้น</label>
@@ -225,15 +235,22 @@
         <input type="date" id="history_date_end">
       </div>
       <div>
-        <label style="font-size: 11px; font-weight: bold; color: var(--text-muted); display: block; margin-bottom: 2px;">เลือกขั้นตอนการผลิต</label>
+        <label style="font-size: 11px; font-weight: bold; color: var(--text-muted); display: block; margin-bottom: 2px;">ตัวกรอง: เลขที่ใบสั่ง</label>
+        <input type="text" id="history_order_filter" list="order_datalist" placeholder="ทุกใบสั่ง..." autocomplete="off">
+      </div>
+      <div>
+        <label style="font-size: 11px; font-weight: bold; color: var(--text-muted); display: block; margin-bottom: 2px;">ตัวกรอง: ขั้นตอน</label>
         <select id="history_step_filter">
           <option value="">-- ทุกขั้นตอน --</option>
         </select>
       </div>
-      <div style="align-self: flex-end;">
-        <button type="button" class="btn-history-load" onclick="loadProductionHistory()"><i class="fa-solid fa-search"></i> ค้นหาประวัติ</button>
-      </div>
     </div>
+    <!-- ปุ่มควบคุมประวัติแยกแถวลงมาให้กดง่ายขึ้น -->
+    <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+        <button type="button" class="btn-history-load" onclick="loadProductionHistory()" style="flex: 1;"><i class="fa-solid fa-search"></i> ค้นหาประวัติ</button>
+        <button type="button" class="btn-history-load" onclick="showMeterPreview()" style="flex: 1; background: linear-gradient(90deg, #8b5cf6, #6d28d9); color: white; border: 2px solid #a78bfa;"><i class="fa-solid fa-gauge-high"></i> พรีวิวใบมิเตอร์</button>
+    </div>
+
     <div class="history-table-wrapper">
       <table class="preview-table" style="font-size: 11px;">
         <thead>
@@ -253,6 +270,19 @@
     </div>
   </div>
 
+</div>
+
+<!-- 📊 Modal ใบมิเตอร์ความก้าวหน้า -->
+<div id="meterModal" class="meter-modal">
+  <div class="meter-modal-content">
+    <div class="meter-header">
+      <h2><i class="fa-solid fa-gauge-high" style="color:var(--blue-primary);"></i> ใบมิเตอร์ความก้าวหน้าการผลิต</h2>
+      <button onclick="document.getElementById('meterModal').style.display='none'" class="close-modal"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div id="meterBody" style="min-height: 150px;">
+      <!-- ข้อมูลใบมิเตอร์จะถูกสร้างที่นี่ -->
+    </div>
+  </div>
 </div>
 
 <script>
@@ -276,7 +306,13 @@
     if (e.key === 'Enter') {
       const target = e.target;
       
+      // ข้ามระบบ Enter แบบปกติตอนกรอกฟอร์ม
       if(target.tagName === 'INPUT' || target.tagName === 'SELECT' || target.tagName === 'BUTTON') {
+        if(target.id === 'history_order_filter') {
+          // กด Enter ในช่องกรองประวัติให้ค้นหาเลย
+          loadProductionHistory();
+          return;
+        }
         e.preventDefault();
       }
 
@@ -291,7 +327,6 @@
 
       if (target.id === 'batch_date') { document.getElementById('batch_work_period').focus(); return; }
       
-      // ปรับระบบ Enter จากช่วงเวลา ให้มาที่ชั่วโมงแล้ว "ถมดำ" ให้ด้วย
       if (target.id === 'batch_work_period') { 
           let hrInput = document.getElementById('batch_hours');
           hrInput.focus(); 
@@ -349,7 +384,7 @@
 
   window.onload = async function() {
     const d = new Date();
-    const yyyy = '2026';
+    const yyyy = d.getFullYear(); // ปรับให้ใช้ปีปัจจุบันอัตโนมัติ
     const mm = String(d.getMonth() + 1).padStart(2, '0');
     const dd = String(d.getDate()).padStart(2, '0');
     const dateToday = `${yyyy}-${mm}-${dd}`;
@@ -735,7 +770,7 @@
   }
 
   // ==========================================
-  // 📂 ตารางประวัติ: กรอง + แสดงยอดสะสมตามขั้นตอน
+  // 📂 ตารางประวัติ: กรอง + แสดงยอดสะสม + มิเตอร์
   // ==========================================
   function toggleFullscreen() {
     const card = document.getElementById('historyCardContainer');
@@ -748,11 +783,21 @@
     const startDate = document.getElementById('history_date_start').value;
     const endDate = document.getElementById('history_date_end').value;
     const selectedStepId = document.getElementById('history_step_filter').value;
+    const orderFilterText = document.getElementById('history_order_filter').value.trim();
     const tbody = document.getElementById('historyTbody');
 
     if(!startDate || !endDate) { alert("ระบุช่วงวันที่ให้ครบถ้วน"); return; }
     tbody.innerHTML = `<tr><td colspan="6" style="padding: 15px; color: var(--blue-primary);"><i class="fa-solid fa-spinner fa-spin"></i> กำลังโหลดประวัติ และคำนวณยอดสะสม...</td></tr>`;
 
+    // 1. หา ID Order จากช่องกรอง (ถ้ามี)
+    let selectedOrderId = null;
+    if (orderFilterText) {
+        let orderNoClean = orderFilterText.split('(')[0].trim().toLowerCase();
+        const foundOrd = globalOrders.find(o => String(o.order_no).trim().toLowerCase() === orderNoClean);
+        if(foundOrd) selectedOrderId = foundOrd.id_order;
+    }
+
+    // 2. จัดการ Target IDs (กรณีไม่ได้กรอง Order)
     let targetFilterIds = [];
     if (selectedStepId) {
       targetFilterIds = globalTargets.filter(t => String(t.id_step) === String(selectedStepId)).map(t => t.id_target);
@@ -766,14 +811,21 @@
     }
 
     try {
-      let queryUrl = `${SUPABASE_URL}/daily_production?record_date=gte.${startDate}&record_date=lte.${endDate}&id_target=in.(${targetFilterIds.join(',')})&select=*&order=record_date.desc,id.desc&limit=50`;
+      // 3. สร้าง URL Query รองรับการกรอง Order
+      let queryUrl = `${SUPABASE_URL}/daily_production?record_date=gte.${startDate}&record_date=lte.${endDate}&id_target=in.(${targetFilterIds.join(',')})`;
+      
+      if(selectedOrderId) {
+          queryUrl += `&id_order=eq.${selectedOrderId}`;
+      }
+      
+      queryUrl += `&select=*&order=record_date.desc,id.desc&limit=60`;
       
       const res = await fetch(queryUrl, { headers });
       if(!res.ok) throw new Error("ไม่สามารถดึงข้อมูลประวัติได้");
       const logs = await res.json();
 
       if(logs.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" style="padding: 15px; color: var(--text-muted);">ไม่พบประวัติการทำงานในช่วงวันที่เลือก</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" style="padding: 15px; color: var(--text-muted);">ไม่พบประวัติการทำงานในช่วงวันที่ และตัวกรองที่เลือก</td></tr>`;
         return;
       }
 
@@ -844,6 +896,109 @@
       tbody.innerHTML = html;
     } catch(err) {
       tbody.innerHTML = `<tr><td colspan="6" style="padding: 15px; color: #ef4444;">เกิดข้อผิดพลาด: ${err.message}</td></tr>`;
+    }
+  }
+
+  // ==========================================
+  // 📊 ฟังก์ชั่นแสดง Modal พรีวิวใบมิเตอร์ความก้าวหน้า
+  // ==========================================
+  async function showMeterPreview() {
+    const orderFilterText = document.getElementById('history_order_filter').value.trim();
+    if (!orderFilterText) {
+        alert("⚠️ กรุณาระบุ 'ตัวกรอง: เลขที่ใบสั่ง' ให้ชัดเจนก่อนกดดูพรีวิวใบมิเตอร์ครับ");
+        document.getElementById('history_order_filter').focus();
+        return;
+    }
+
+    let orderNoClean = orderFilterText.split('(')[0].trim().toLowerCase();
+    const foundOrd = globalOrders.find(o => String(o.order_no).trim().toLowerCase() === orderNoClean);
+
+    if (!foundOrd) {
+        alert("⚠️ ไม่พบข้อมูลใบสั่งที่ระบุ กรุณาเลือกจากรายการค้นหาครับ");
+        return;
+    }
+
+    const modal = document.getElementById('meterModal');
+    const body = document.getElementById('meterBody');
+    
+    // โชว์ Modal พร้อม Loading
+    body.innerHTML = `
+      <div style="text-align:center; padding: 30px;">
+        <i class="fa-solid fa-spinner fa-spin fa-3x" style="color:var(--blue-primary); margin-bottom: 15px;"></i>
+        <h3 style="color:var(--blue-dark); margin:0;">กำลังประมวลผลมิเตอร์...</h3>
+      </div>
+    `;
+    modal.style.display = 'flex';
+
+    try {
+        // ดึงยอดสะสมทั้งหมด ของออเดอร์นี้
+        const res = await fetch(`${SUPABASE_URL}/daily_production?id_order=eq.${foundOrd.id_order}&select=id_target,produced_amount`, { headers });
+        if (!res.ok) throw new Error("โหลดข้อมูลไม่สำเร็จ");
+        const prodData = await res.json();
+
+        // กรุ๊ปปิ้งยอดรวมตาม id_target (รวมยอดผลิตจากทุกวัน/ทุกคน ของขั้นตอนนั้นๆ)
+        let targetTotals = {};
+        prodData.forEach(p => {
+            if (!targetTotals[p.id_target]) targetTotals[p.id_target] = 0;
+            targetTotals[p.id_target] += (p.produced_amount || 0);
+        });
+
+        // หากลุ่มขั้นตอน (Targets) ทั้งหมดที่ถูกผูกกับชิ้นงานนี้ (id_work)
+        const workId = foundOrd.id_work;
+        const orderTargets = globalTargets.filter(t => String(t.id_work) === String(workId));
+
+        const workItem = globalWorkItems.find(w => String(w.id_work) === String(workId));
+        const workCode = workItem ? workItem.work_code : '-';
+
+        if (orderTargets.length === 0) {
+            body.innerHTML = '<div style="color:#ef4444; text-align:center; padding: 20px; font-weight: bold;">⚠️ ไม่พบขั้นตอนเป้าหมายสำหรับใบสั่งนี้ หรือยังไม่ได้ตั้งค่า Targets</div>';
+            return;
+        }
+
+        let html = `
+          <div style="background: var(--blue-light); padding: 10px; border-radius: 8px; border: 2px solid var(--blue-primary); margin-bottom: 15px;">
+            <h4 style="margin:0 0 5px 0; color:var(--blue-dark); font-size:16px;">
+              <i class="fa-solid fa-file-invoice"></i> ใบสั่ง: <span style="color:var(--blue-primary);">${foundOrd.order_no}</span>
+            </h4>
+            <div style="font-size: 13px; color: var(--text-main); font-weight: 600;">
+              ชิ้นงาน: ${workCode} <br>
+              เป้ายอดสั่งผลิต: <span style="color:#059669;">${(foundOrd.quantity || 0).toLocaleString()} ชิ้น</span>
+            </div>
+          </div>
+        `;
+
+        // วนลูปสร้างมิเตอร์สำหรับแต่ละขั้นตอนการผลิต
+        orderTargets.forEach(t => {
+            const stepObj = globalSteps.find(s => String(s.id_step) === String(t.id_step));
+            const stepName = stepObj ? stepObj.step_name : `ขั้นตอน #${t.id_step}`;
+            const accumulated = targetTotals[t.id_target] || 0;
+            const orderQty = foundOrd.quantity || 0;
+            const percent = orderQty > 0 ? (accumulated / orderQty) * 100 : 0;
+            
+            let pBarWidth = Math.min(percent, 100);
+            let color = percent >= 100 ? '#10b981' : (percent >= 75 ? '#f59e0b' : '#2563eb');
+
+            html += `
+            <div class="meter-item">
+                <div class="meter-title"><i class="fa-solid fa-caret-right" style="color:var(--blue-primary);"></i> ${stepName} (Target #${t.id_target})</div>
+                <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:bold; margin-bottom: 5px;">
+                    <span style="color: ${color};">ยอดที่ทำได้: ${accumulated.toLocaleString()}</span>
+                    <span style="color: var(--text-muted);">เป้า: ${orderQty.toLocaleString()}</span>
+                </div>
+                <div class="progress-bar-bg" style="height: 16px; border-radius: 12px; background:#e2e8f0; border: 1px solid #cbd5e1;">
+                    <div class="progress-bar-fill" style="width: ${pBarWidth}%; background-color: ${color}; height: 100%; border-radius: 12px; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; color: white; font-size: 11px; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.4);">
+                        ${percent > 8 ? percent.toFixed(1) + '%' : ''}
+                    </div>
+                </div>
+                ${percent <= 8 ? `<div style="text-align:right; font-size:11px; color:${color}; font-weight:bold; margin-top:3px;">${percent.toFixed(1)}%</div>` : ''}
+            </div>
+            `;
+        });
+
+        body.innerHTML = html;
+
+    } catch(e) {
+        body.innerHTML = `<div style="color:#ef4444; text-align:center; font-weight:bold; padding: 20px;">เกิดข้อผิดพลาด: ${e.message}</div>`;
     }
   }
 
