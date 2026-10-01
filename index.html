@@ -140,6 +140,10 @@
     .paper-table th { background: #f9fafb; font-weight: bold; font-size: 13px; }
     .paper-table td { color: #1f2937; }
     
+    .status-badge { display: inline-block; padding: 4px 10px; border-radius: 6px; font-weight: bold; font-size: 13px; margin-top: 10px; }
+    .status-done { background: #d1fae5; color: #065f46; border: 1px solid #34d399; }
+    .status-ongoing { background: #fef3c7; color: #92400e; border: 1px solid #fbbf24; }
+
     @media(max-width: 600px) {
       .paper-header-grid { grid-template-columns: 1fr; }
       .paper-sheet { padding: 20px 10px; }
@@ -262,7 +266,6 @@
       </div>
     </div>
     
-    <!-- ปุ่มควบคุมการค้นหา + พรีวิวใบมิเตอร์ + ปุ่มเคลียร์หมายเหตุเก่า -->
     <div style="display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap;">
         <button type="button" class="btn-history-load" onclick="loadProductionHistory()" style="flex: 1; min-width: 120px;"><i class="fa-solid fa-search"></i> ค้นหาประวัติ</button>
         <button type="button" class="btn-history-load" onclick="showMeterPreview()" style="flex: 1; min-width: 120px; background: linear-gradient(90deg, #10b981, #059669); color: white; border: 2px solid #047857;"><i class="fa-solid fa-file-lines"></i> พรีวิวใบมิเตอร์</button>
@@ -277,7 +280,7 @@
             <th style="width: 100px;">พนักงาน</th>
             <th style="min-width: 200px;">รหัสชิ้นงาน / ใบสั่ง / ขั้นตอน</th>
             <th>ยอดผลิตรอบนี้</th>
-            <th style="min-width: 130px;">ยอดสะสม / ยอดสั่ง</th>
+            <th style="min-width: 150px;">ยอดสะสม / ยอดสั่ง / สถานะ</th>
             <th style="width: 100px;">จัดการ</th>
           </tr>
         </thead>
@@ -312,9 +315,6 @@
   let selectedEmployeeList = [];
   let preparedPayload = [];
 
-  // ==========================================
-  // ⌨️ ระบบกด Enter เปลี่ยนช่องขั้นเทพ (Flow Navigation)
-  // ==========================================
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Enter') {
       const target = e.target;
@@ -564,7 +564,7 @@
     
     dropdown.innerHTML = '';
     if (targetsData.length === 0) {
-        dropdown.innerHTML = `<div class="smart-dropdown-item" style="color:#6b7280; cursor:default;">⚠️ กรุณาเลือกใบสั่งงานก่อน</div>`;
+        dropdown.innerHTML = `<div class="smart-dropdown-item" style="color:#6b7280; cursor:default;">⚠️️ กรุณาเลือกใบสั่งงานก่อน</div>`;
         dropdown.style.display = 'block';
         return;
     }
@@ -692,7 +692,6 @@
         if (eff < 85) { hasLowEff = true; }
         let effColor = eff >= 85 ? '#10b981' : '#ef4444';
 
-        // บันทึกเฉพาะข้อความที่ผู้ใช้พิมพ์จริง หากไม่พิมพ์ให้เป็นค่าว่าง "" ทันที
         preparedPayload.push({
           record_date: dateVal, id_order: parseInt(task.id_order), id_work: parseInt(task.id_work),
           id_target: parseInt(task.id_target), id_name: parseInt(emp.id_name),
@@ -781,9 +780,6 @@
     }
   }
 
-  // ==========================================
-  // 📂 ปุ่มพิเศษ: เคลียร์คำว่า Batch Smart-Allocated ในฐานข้อมูลเก่า
-  // ==========================================
   async function clearOldBatchRemarks() {
     if(!confirm("⚠️ คุณต้องการล้างข้อความ 'Batch Smart-Allocated' ในประวัติเก่าทั้งหมด ให้เหลือช่องว่างใช่หรือไม่?")) return;
     
@@ -805,9 +801,6 @@
     }
   }
 
-  // ==========================================
-  // 📂 ตารางประวัติ: กรอง + แสดงยอดสะสม
-  // ==========================================
   function toggleFullscreen() {
     const card = document.getElementById('historyCardContainer');
     card.classList.toggle('fullscreen-active');
@@ -897,7 +890,8 @@
         const totalAccumulated = accumulatedTotals[log.id_target] || 0;
         let accPercent = orderTargetQty > 0 ? (totalAccumulated / orderTargetQty) * 100 : 0;
         let pBarWidth = Math.min(accPercent, 100);
-        let accColor = accPercent >= 100 ? '#10b981' : (accPercent >= 80 ? '#f59e0b' : '#3b82f6');
+        let isCompleted = totalAccumulated >= orderTargetQty;
+        let accColor = isCompleted ? '#10b981' : '#2563eb';
 
         html += `<tr id="row-${log.id}">
           <td class="val-date">${log.record_date}</td>
@@ -910,7 +904,7 @@
              <div style="font-size: 13px; font-weight: bold; color: #059669;">+ ${log.produced_amount.toLocaleString()}</div>
              <div style="font-size: 9px; color: #6b7280;">(${log.hour_work} ชม. | ${log.work_period || 'ปกติ'})</div>
           </td>
-          <td style="text-align: left; padding: 0 8px;">
+          <td style="text-align: left; padding: 4px 8px;">
              <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:11px;">
                 <span style="color: ${accColor};">${totalAccumulated.toLocaleString()}</span>
                 <span style="color: var(--text-muted);">/ ${orderTargetQty.toLocaleString()}</span>
@@ -918,7 +912,12 @@
              <div class="progress-bar-bg">
                 <div class="progress-bar-fill" style="width: ${pBarWidth}%; background-color: ${accColor};"></div>
              </div>
-             <div style="text-align:right; font-size:9px; color:${accColor};">${accPercent.toFixed(1)}%</div>
+             <div style="display:flex; justify-content:space-between; font-size:9px; margin-top:3px;">
+                <span style="color:${accColor}; font-weight:bold;">${accPercent.toFixed(1)}%</span>
+                <span style="font-weight:bold; color:${isCompleted ? '#059669' : '#d97706'};">
+                    ${isCompleted ? '🎯 ถึงกำหนดเสร็จแล้ว' : '⏳ กำลังผลิต'}
+                </span>
+             </div>
           </td>
           <td>
             <button class="btn-row-edit" onclick="enableEdit(${log.id})"><i class="fa-solid fa-pen"></i></button>
@@ -932,9 +931,6 @@
     }
   }
 
-  // ==========================================
-  // 📄 ฟังก์ชั่นแสดง Modal พรีวิวใบมิเตอร์ "ใบความก้าวหน้าของการผลิต"
-  // ==========================================
   async function showMeterPreview() {
     const orderFilterText = document.getElementById('history_order_filter').value.trim();
     const stepFilterVal = document.getElementById('history_step_filter').value;
@@ -971,9 +967,9 @@
 
         const workId = foundOrd.id_work;
         const orderTargets = globalTargets.filter(t => String(t.id_work) === String(workId));
-
         const workItem = globalWorkItems.find(w => String(w.id_work) === String(workId));
         const workCode = workItem ? workItem.work_code : '-';
+        const totalOrderQty = foundOrd.quantity || 0;
 
         let targetsToShow = orderTargets;
         if (stepFilterVal) {
@@ -1019,6 +1015,8 @@
                 });
             }
 
+            let isStepCompleted = accumulated >= totalOrderQty;
+
             html += `
             <div class="paper-sheet">
                 <h3 class="paper-title">ใบความก้าวหน้าของการผลิต</h3>
@@ -1030,7 +1028,7 @@
                     <div class="paper-field"><span>ชนิดงาน</span> <span class="field-value">${workCode}</span></div>
                     <div class="paper-field"><span>เครื่องเลขที่</span> <span class="field-value">-</span></div>
                     
-                    <div class="paper-field" style="grid-column: 1 / -1; width: 70%;"><span>จำนวนชิ้นงานสั่งผลิต</span> <span class="field-value">${(foundOrd.quantity || 0).toLocaleString()}</span></div>
+                    <div class="paper-field" style="grid-column: 1 / -1; width: 70%;"><span>จำนวนชิ้นงานสั่งผลิต</span> <span class="field-value">${totalOrderQty.toLocaleString()}</span></div>
                 </div>
 
                 <div style="overflow-x: auto;">
@@ -1051,6 +1049,12 @@
                           ${tableRows}
                       </tbody>
                   </table>
+                </div>
+
+                <div style="text-align: right; margin-top: 12px;">
+                    <span class="status-badge ${isStepCompleted ? 'status-done' : 'status-ongoing'}">
+                        ${isStepCompleted ? '🎯 ถึงกำหนดเสร็จแล้ว (ยอดสะสมครบตามเป้า)' : '⏳ กำลังดำเนินการผลิต (ยังไม่ครบตามเป้า)'}
+                    </span>
                 </div>
             </div>
             `;
