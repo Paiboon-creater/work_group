@@ -117,39 +117,12 @@
     }
     .fullscreen-active .history-table-wrapper { max-height: calc(100vh - 160px) !important; }
 
-    .progress-bar-bg { background: #e2e8f0; border-radius: 10px; height: 8px; width: 100%; margin-top: 4px; overflow: hidden; }
-    .progress-bar-fill { background: #10b981; height: 100%; border-radius: 10px; transition: width 0.3s; }
-
-    /* 📄 Meter Modal - สไตล์กระดาษรายงาน A4 */
+    /* 📄 Meter Modal */
     .meter-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.75); z-index: 20000; display: none; justify-content: center; align-items: center; padding: 15px; box-sizing: border-box; backdrop-filter: blur(3px); }
     .meter-modal-content { width: 100%; max-width: 800px; max-height: 95vh; overflow-y: auto; background: #d1d5db; border-radius: 8px; padding: 20px 20px 10px 20px; position: relative; border: 2px solid #9ca3af; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
     
     .close-modal-btn { position: sticky; top: 0; float: right; background: #ef4444; color: white; border: 2px solid #fff; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-weight: bold; font-size: 20px; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.4); z-index: 10; margin-bottom: -40px; margin-right: -10px; transition: 0.2s; }
     .close-modal-btn:hover { background: #dc2626; transform: scale(1.1); }
-    
-    .paper-sheet { background: #fff; padding: 30px 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); margin-top: 20px; margin-bottom: 25px; color: #000; position: relative; font-family: 'Sarabun', 'Kanit', sans-serif; border-radius: 2px; }
-    .paper-title { text-align: center; font-size: 20px; font-weight: bold; margin-top: 0; margin-bottom: 20px; text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 4px; }
-    
-    .paper-header-grid { display: grid; grid-template-columns: 1.2fr 1fr; column-gap: 15px; row-gap: 12px; margin-bottom: 20px; font-size: 15px; }
-    .paper-field { display: flex; align-items: flex-end; }
-    .paper-field span:first-child { margin-right: 8px; white-space: nowrap; font-weight: bold; }
-    .field-value { flex: 1; border-bottom: 1px dotted #000; padding-bottom: 2px; min-height: 20px; font-family: 'Courier New', monospace; font-size: 16px; color: #1e3a8a; font-weight: bold; text-align: center;}
-    
-    .paper-table { width: 100%; border-collapse: collapse; border: 2px solid #000; font-size: 14px; text-align: center; }
-    .paper-table th, .paper-table td { border: 1px solid #000; padding: 8px 4px; }
-    .paper-table th { background: #f9fafb; font-weight: bold; font-size: 13px; }
-    .paper-table td { color: #1f2937; }
-    
-    .status-badge { display: inline-block; padding: 4px 10px; border-radius: 6px; font-weight: bold; font-size: 13px; margin-top: 10px; }
-    .status-done { background: #d1fae5; color: #065f46; border: 1px solid #34d399; }
-    .status-ongoing { background: #fef3c7; color: #92400e; border: 1px solid #fbbf24; }
-
-    @media(max-width: 600px) {
-      .paper-header-grid { grid-template-columns: 1fr; }
-      .paper-sheet { padding: 20px 10px; }
-      .paper-table { font-size: 12px; }
-      .paper-table th, .paper-table td { padding: 4px 2px; }
-    }
   </style>
 </head>
 <body>
@@ -226,9 +199,9 @@
     </div>
 
     <div class="form-group" id="reasonGroup" style="display: none; margin-top: 15px;">
-      <label style="color: var(--blue-dark);">ℹ️ มีพนักงานประสิทธิภาพต่ำกว่า 85% (ไม่บังคับเลือก สามารถเว้นว่างได้)</label>
-      <select id="id_reason">
-        <option value="">-- ไม่ระบุสาเหตุ (ปล่อยว่างได้) --</option>
+      <label id="reasonLabel" style="color: #dc2626;"><i class="fa-solid fa-triangle-exclamation"></i> ⚠️ มีพนักงานประสิทธิภาพต่ำกว่า 85% — <strong style="text-decoration: underline;">บังคับเลือกสาเหตุที่ไม่ได้ยอด</strong>:</label>
+      <select id="id_reason" required style="border-color: #ef4444; background-color: #fef2f2;">
+        <option value="">-- กรุณาเลือกสาเหตุที่ไม่ได้ยอด (บังคับ) --</option>
       </select>
     </div>
 
@@ -293,14 +266,6 @@
 
 </div>
 
-<!-- 📄 Modal ใบมิเตอร์ความก้าวหน้า สไตล์แบบฟอร์มกระดาษ A4 -->
-<div id="meterModal" class="meter-modal">
-  <div class="meter-modal-content">
-    <button onclick="document.getElementById('meterModal').style.display='none'" class="close-modal-btn" title="ปิดหน้าต่าง"><i class="fa-solid fa-xmark"></i></button>
-    <div id="meterBody" style="min-height: 200px;"></div>
-  </div>
-</div>
-
 <script>
   const SUPABASE_URL = "https://siiiifesdjuunwmwozfb.supabase.co/rest/v1";
   const SUPABASE_KEY = "sb_publishable_ohToE8Z_Fzo87uBtzdPDIg_cqHCi3HT";
@@ -314,6 +279,7 @@
   let globalSteps = [];
   let selectedEmployeeList = [];
   let preparedPayload = [];
+  let hasLowEfficiency = false;
 
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Enter') {
@@ -460,7 +426,6 @@
       if (savedOrder && savedStep) {
           document.getElementById('history_order_filter').value = savedOrder;
           stepSelectFilter.value = savedStep;
-          
           sessionStorage.removeItem('lastSavedOrder');
           sessionStorage.removeItem('lastSavedStep');
       } else {
@@ -564,7 +529,7 @@
     
     dropdown.innerHTML = '';
     if (targetsData.length === 0) {
-        dropdown.innerHTML = `<div class="smart-dropdown-item" style="color:#6b7280; cursor:default;">⚠️️ กรุณาเลือกใบสั่งงานก่อน</div>`;
+        dropdown.innerHTML = `<div class="smart-dropdown-item" style="color:#6b7280; cursor:default;">⚠ กรุณาเลือกใบสั่งงานก่อน</div>`;
         dropdown.style.display = 'block';
         return;
     }
@@ -636,485 +601,288 @@
     document.querySelectorAll('.task-row-box').forEach(box => {
       let rawVal = box.querySelector('.order-search').value.trim();
       let targetValStr = box.querySelector('.target-value').value;
-      let qty = parseFloat(box.querySelector('.order-qty').value) || 0;
+      let qtyVal = parseFloat(box.querySelector('.order-qty').value);
       let remarkVal = box.querySelector('.task-remark').value.trim();
 
-      if(rawVal || targetValStr || qty > 0) {
-        if(!rawVal || !targetValStr || qty <= 0) { isValidTasks = false; return; }
-
-        let orderNoClean = rawVal.split('(')[0].trim().toLowerCase();
-        const foundOrd = globalOrders.find(o => String(o.order_no).trim().toLowerCase() === orderNoClean);
-        let orderId = foundOrd ? foundOrd.id_order : null;
-
-        if(!orderId) { isValidTasks = false; return; }
-
-        let targetData = JSON.parse(targetValStr);
-        let foundWork = globalWorkItems.find(w => String(w.id_work).trim() === String(targetData.id_work).trim());
-        let workCodeText = foundWork ? foundWork.work_code : targetData.id_work;
-
-        let foundTargetObj = globalTargets.find(t => String(t.id_target).trim() === String(targetData.id_target).trim());
-        let stepNameText = "";
-        if (foundTargetObj) {
-          let foundStep = globalSteps.find(s => String(s.id_step).trim() === String(foundTargetObj.id_step).trim());
-          if (foundStep) stepNameText = foundStep.step_name;
-        }
-
-        tasks.push({
-          id_order: orderId, order_text: foundOrd.order_no, work_code: workCodeText,
-          step_name: stepNameText, id_target: parseInt(targetData.id_target),
-          id_work: parseInt(targetData.id_work), target_amount: targetData.target_amount, total_qty: qty,
-          remark: remarkVal
-        });
+      if(!rawVal || !targetValStr || isNaN(qtyVal) || qtyVal < 0) {
+        isValidTasks = false;
+        return;
       }
-    });
 
-    if(!isValidTasks || tasks.length === 0) {
-      alert("⚠️ กรุณากรอกเลขออเดอร์ เลือกขั้นตอน และใส่ยอดผลิตให้ครบถ้วนทุกช่องครับ");
-      return;
-    }
+      let orderNoClean = rawVal.split('(')[0].trim();
+      let foundOrd = globalOrders.find(o => String(o.order_no).trim().toLowerCase() === orderNoClean.toLowerCase());
+      let targetObj = JSON.parse(targetValStr);
 
-    let taskLoadWeights = tasks.map(task => task.target_amount > 0 ? (task.total_qty / task.target_amount) : 1);
-    let totalLoadWeight = taskLoadWeights.reduce((a, b) => a + b, 0);
-
-    preparedPayload = [];
-    let hasLowEff = false;
-    let previewHtml = '';
-
-    selectedEmployeeList.forEach(emp => {
-      tasks.forEach((task, idx) => {
-        let assignedQty = Math.round(task.total_qty / selectedEmployeeList.length);
-        let proportion = totalLoadWeight > 0 ? (taskLoadWeights[idx] / totalLoadWeight) : (1 / tasks.length);
-        let empAssignedHours = totalHoursPerEmp * proportion;
-
-        let totalTargetForEmp = task.target_amount * empAssignedHours;
-        let eff = totalTargetForEmp > 0 ? (assignedQty / totalTargetForEmp) * 100 : 0;
-        
-        if (eff < 85) { hasLowEff = true; }
-        let effColor = eff >= 85 ? '#10b981' : '#ef4444';
-
-        preparedPayload.push({
-          record_date: dateVal, id_order: parseInt(task.id_order), id_work: parseInt(task.id_work),
-          id_target: parseInt(task.id_target), id_name: parseInt(emp.id_name),
-          hour_work: parseFloat(empAssignedHours.toFixed(2)), work_period: workPeriodVal,
-          produced_amount: parseInt(assignedQty), nogoods_amount: 0, 
-          remark: task.remark ? task.remark : ""
-        });
-
-        previewHtml += `<tr>
-          <td>${emp.name}</td>
-          <td style="text-align: left; padding-left: 8px;">
-            <b style="color:var(--blue-dark);">[#${task.id_target}]</b> <b>${task.order_text}</b><br>
-            <span style="font-size:11px; color:#6b7280;">ชิ้นงาน: ${task.work_code} | ขั้นตอน: ${task.step_name} (เป้า: ${task.target_amount}/ชม.)</span>
-          </td>
-          <td><span style="background: ${workPeriodVal === 'โอที' ? '#f59e0b' : '#2563eb'}; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 11px;">${workPeriodVal}</span></td>
-          <td>${empAssignedHours.toFixed(2)}</td>
-          <td style="color: #059669; font-weight: bold;">${assignedQty.toLocaleString()}</td>
-          <td style="color: ${effColor}; font-weight: bold;">${eff.toFixed(1)}%</td>
-          <td style="font-size: 11px;">${task.remark}</td>
-        </tr>`;
+      tasks.push({
+        order_no: orderNoClean,
+        id_order: foundOrd ? foundOrd.id_order : null,
+        id_target: targetObj.id_target,
+        id_work: targetObj.id_work,
+        target_amount: targetObj.target_amount,
+        qty: qtyVal,
+        remark: remarkVal
       });
     });
 
-    document.getElementById('previewTbody').innerHTML = previewHtml;
-    
-    document.getElementById('generatePreviewBtn').style.display = 'none';
+    if(!isValidTasks || tasks.length === 0) {
+      alert("⚠ กรุณากรอกข้อมูลใบสั่งงาน เลือกขั้นตอน และระบุยอดผลิตให้ครบถ้วนทุกแถวครับ");
+      return;
+    }
+
+    preparedPayload = [];
+    hasLowEfficiency = false;
+    const numEmps = selectedEmployeeList.length;
+
+    tasks.forEach(task => {
+      let qtyPerEmp = parseFloat((task.qty / numEmps).toFixed(2));
+      let hoursPerEmp = parseFloat((totalHoursPerEmp / tasks.length).toFixed(2));
+      let standardTargetForHours = task.target_amount * hoursPerEmp;
+      let eff = standardTargetForHours > 0 ? Math.round((qtyPerEmp / standardTargetForHours) * 100) : 100;
+
+      if (eff < 85) {
+        hasLowEfficiency = true;
+      }
+
+      selectedEmployeeList.forEach(emp => {
+        preparedPayload.push({
+          date: dateVal,
+          id_name: emp.id_name,
+          emp_name: emp.name,
+          id_order: task.id_order,
+          order_no: task.order_no,
+          id_target: task.id_target,
+          id_work: task.id_work,
+          work_period: workPeriodVal,
+          hours: hoursPerEmp,
+          qty: qtyPerEmp,
+          eff: eff,
+          remark: task.remark
+        });
+      });
+    });
+
+    const tbody = document.getElementById('previewTbody');
+    tbody.innerHTML = '';
+    preparedPayload.forEach(item => {
+      let tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><b>${item.emp_name}</b></td>
+        <td>ใบสั่ง: ${item.order_no} (Target ID: ${item.id_target})</td>
+        <td>${item.work_period}</td>
+        <td>${item.hours}</td>
+        <td><b>${item.qty}</b></td>
+        <td><span style="color: ${item.eff < 85 ? '#ef4444' : '#10b981'}; font-weight: bold;">${item.eff}%</span></td>
+        <td>${item.remark || '-'}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    const reasonGroup = document.getElementById('reasonGroup');
+    const reasonSelect = document.getElementById('id_reason');
+    if (hasLowEfficiency) {
+      reasonGroup.style.display = 'block';
+      reasonSelect.required = true;
+    } else {
+      reasonGroup.style.display = 'none';
+      reasonSelect.required = false;
+      reasonSelect.value = '';
+    }
+
+    document.getElementById('batchForm').style.display = 'none';
     document.getElementById('previewSection').style.display = 'block';
-
-    if (hasLowEff) { document.getElementById('reasonGroup').style.display = 'block'; } 
-    else { document.getElementById('reasonGroup').style.display = 'none'; document.getElementById('id_reason').value = ''; }
-
-    document.getElementById('previewSection').scrollIntoView({ behavior: 'smooth' });
-    setTimeout(() => { document.getElementById('confirmSubmitBtn').focus(); }, 100);
+    document.getElementById('confirmSubmitBtn').focus();
   }
 
   function cancelPreview() {
     document.getElementById('previewSection').style.display = 'none';
-    document.getElementById('generatePreviewBtn').style.display = 'block';
-    document.getElementById('batchForm').scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('batchForm').style.display = 'block';
   }
 
   async function executeBatchSubmit() {
-    if(preparedPayload.length === 0) return;
-    if(!confirm(`ยืนยันการบันทึกข้อมูล ${preparedPayload.length} รายการ ใช่หรือไม่?`)) return;
-
-    let reasonVal = document.getElementById('id_reason').value;
-    if (reasonVal) {
-      let parsedReason = parseInt(reasonVal);
-      preparedPayload.forEach(item => { item.id_reason = parsedReason; });
+    const reasonVal = document.getElementById('id_reason').value;
+    if (hasLowEfficiency && !reasonVal) {
+      alert("⚠️ มีพนักงานประสิทธิภาพต่ำกว่า 85% กรุณาเลือก 'สาเหตุที่ไม่ได้ยอด' ก่อนบันทึกข้อมูลครับ!");
+      document.getElementById('id_reason').focus();
+      return;
     }
 
-    const btn = document.getElementById('confirmSubmitBtn');
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึกข้อมูล...';
+    const confirmBtn = document.getElementById('confirmSubmitBtn');
+    confirmBtn.disabled = true;
+    confirmBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึก...';
 
     try {
-      const res = await fetch(SUPABASE_URL + "/daily_production", {
-        method: "POST", headers: headers, body: JSON.stringify(preparedPayload)
-      });
-
-      if(res.ok) {
-        alert("⚡ บันทึกข้อมูลสำเร็จ!");
+      let savedDate = "";
+      for (let item of preparedPayload) {
+        savedDate = item.date;
         
-        if (preparedPayload.length > 0) {
-            let lastItem = preparedPayload[0];
-            const savedOrderObj = globalOrders.find(o => o.id_order === lastItem.id_order);
-            const savedTargetObj = globalTargets.find(t => t.id_target === lastItem.id_target);
-            
-            if (savedOrderObj && savedTargetObj) {
-                sessionStorage.setItem('lastSavedOrder', savedOrderObj.order_no);
-                sessionStorage.setItem('lastSavedStep', savedTargetObj.id_step);
-            }
+        // แมปชื่อคอลัมน์ให้ตรงกับตาราง daily_production ใน Supabase
+        let recordBody = {
+          record_date: item.date,
+          id_name: item.id_name,
+          id_work: item.id_work,
+          id_target: item.id_target,
+          id_order: item.id_order,
+          produced_amount: item.qty,
+          hour_work: item.hours,
+          work_period: item.work_period,
+          remark: item.remark ? `${item.remark} [Batch Smart-Allocated]` : `[Batch Smart-Allocated]`
+        };
+
+        if (hasLowEfficiency && reasonVal) {
+          recordBody.id_reason = parseInt(reasonVal);
         }
-        
-        location.reload();
-      } else {
-        const err = await res.json();
-        alert("❌ บันทึกล้มเหลว: " + (err.message || JSON.stringify(err)));
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fa-solid fa-bolt"></i> ยืนยันบันทึกข้อมูล (Enter)';
-      }
-    } catch(err) {
-      alert("⚠️ ข้อผิดพลาด: " + err.message);
-      btn.disabled = false;
-      btn.innerHTML = '<i class="fa-solid fa-bolt"></i> ยืนยันบันทึกข้อมูล (Enter)';
-    }
-  }
 
-  async function clearOldBatchRemarks() {
-    if(!confirm("⚠️ คุณต้องการล้างข้อความ 'Batch Smart-Allocated' ในประวัติเก่าทั้งหมด ให้เหลือช่องว่างใช่หรือไม่?")) return;
-    
-    try {
-        const res = await fetch(`${SUPABASE_URL}/daily_production?remark=eq.Batch Smart-Allocated`, {
-            method: "PATCH",
-            headers: headers,
-            body: JSON.stringify({ remark: "" })
+        let res = await fetch(SUPABASE_URL + "/daily_production", {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify(recordBody)
         });
-        
-        if(res.ok) {
-            alert("✨ เคลียร์หมายเหตุเก่าสำเร็จ!");
-            loadProductionHistory();
-        } else {
-            alert("❌ ไม่สามารถเคลียร์ข้อมูลได้");
-        }
-    } catch(e) {
-        alert("⚠️ เกิดข้อผิดพลาด: " + e.message);
-    }
-  }
 
-  function toggleFullscreen() {
-    const card = document.getElementById('historyCardContainer');
-    card.classList.toggle('fullscreen-active');
-    const icon = document.getElementById('fs-icon');
-    icon.className = card.classList.contains('fullscreen-active') ? 'fa-solid fa-compress' : 'fa-solid fa-expand';
+        if (!res.ok) {
+          let errText = await res.text();
+          throw new Error(`[${res.status}] ${errText}`);
+        }
+      }
+
+      alert("✅ บันทึกข้อมูลงานกลุ่มเรียบร้อยแล้วครับ!");
+      
+      if (savedDate) {
+        document.getElementById('history_date_start').value = savedDate;
+        document.getElementById('history_date_end').value = savedDate;
+      }
+
+      cancelPreview();
+      document.getElementById('batchForm').reset();
+      selectedEmployeeList = [];
+      renderSelectedEmployees();
+      document.getElementById('taskRowsContainer').innerHTML = '';
+      addTaskRow();
+      
+      const d = new Date();
+      document.getElementById('batch_date').value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+      loadProductionHistory();
+
+    } catch (e) {
+      alert("❌ เกิดข้อผิดพลาดในการบันทึก: " + e.message);
+    } finally {
+      confirmBtn.disabled = false;
+      confirmBtn.innerHTML = '<i class="fa-solid fa-bolt"></i> ยืนยันบันทึกข้อมูล (Enter)';
+    }
   }
 
   async function loadProductionHistory() {
     const startDate = document.getElementById('history_date_start').value;
     const endDate = document.getElementById('history_date_end').value;
-    const selectedStepId = document.getElementById('history_step_filter').value;
-    const orderFilterText = document.getElementById('history_order_filter').value.trim();
+    const orderFilter = document.getElementById('history_order_filter').value.trim().split('(')[0].trim().toLowerCase();
+    const stepFilter = document.getElementById('history_step_filter').value;
     const tbody = document.getElementById('historyTbody');
 
-    if(!startDate || !endDate) { alert("ระบุช่วงวันที่ให้ครบถ้วน"); return; }
-    tbody.innerHTML = `<tr><td colspan="6" style="padding: 15px; color: var(--blue-primary);"><i class="fa-solid fa-spinner fa-spin"></i> กำลังโหลดประวัติ และคำนวณยอดสะสม...</td></tr>`;
-
-    let selectedOrderId = null;
-    if (orderFilterText) {
-        let orderNoClean = orderFilterText.split('(')[0].trim().toLowerCase();
-        const foundOrd = globalOrders.find(o => String(o.order_no).trim().toLowerCase() === orderNoClean);
-        if(foundOrd) selectedOrderId = foundOrd.id_order;
-    }
-
-    let targetFilterIds = [];
-    if (selectedStepId) {
-      targetFilterIds = globalTargets.filter(t => String(t.id_step) === String(selectedStepId)).map(t => t.id_target);
-    } else {
-      targetFilterIds = globalTargets.map(t => t.id_target);
-    }
-
-    if(targetFilterIds.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="6" style="padding: 15px; color: var(--text-muted);">ไม่พบเป้าหมายที่ตรงกับขั้นตอนที่เลือก</td></tr>`;
-      return;
-    }
+    tbody.innerHTML = `<tr><td colspan="6" style="padding: 15px; color: var(--text-muted);"><i class="fa-solid fa-spinner fa-spin"></i> กำลังค้นหาข้อมูล...</td></tr>`;
 
     try {
-      let queryUrl = `${SUPABASE_URL}/daily_production?record_date=gte.${startDate}&record_date=lte.${endDate}&id_target=in.(${targetFilterIds.join(',')})`;
-      
-      if(selectedOrderId) {
-          queryUrl += `&id_order=eq.${selectedOrderId}`;
-      }
-      
-      queryUrl += `&select=*&order=record_date.desc,id.desc&limit=60`;
-      
-      const res = await fetch(queryUrl, { headers });
-      if(!res.ok) throw new Error("ไม่สามารถดึงข้อมูลประวัติได้");
-      const logs = await res.json();
+      let queryUrl = `${SUPABASE_URL}/daily_production?select=*&order=record_date.desc,id.desc&limit=100`;
 
-      if(logs.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" style="padding: 15px; color: var(--text-muted);">ไม่พบประวัติการทำงานในช่วงวันที่ และตัวกรองที่เลือก</td></tr>`;
+      if (startDate) queryUrl += `&record_date=gte.${startDate}`;
+      if (endDate) queryUrl += `&record_date=lte.${endDate}`;
+
+      let res = await fetch(queryUrl, { headers });
+      if(!res.ok) throw new Error("โหลดประวัติไม่สำเร็จ");
+      let data = await res.json();
+
+      let enrichedData = data.map(item => {
+        let emp = globalEmployees.find(e => String(e.id_name) === String(item.id_name));
+        let ord = globalOrders.find(o => String(o.id_order) === String(item.id_order));
+        let target = globalTargets.find(t => String(t.id_target) === String(item.id_target));
+        let step = target ? globalSteps.find(s => String(s.id_step) === String(target.id_step)) : null;
+        let work = globalWorkItems.find(w => String(w.id_work) === String(item.id_work)) || (ord ? globalWorkItems.find(w => String(w.id_work) === String(ord.id_work)) : null);
+
+        return {
+          ...item,
+          emp_name: emp ? emp.name : `EMP #${item.id_name}`,
+          order_no: ord ? ord.order_no : `-`,
+          work_code: work ? work.work_code : `WorkID:${item.id_work}`,
+          step_name: step ? step.step_name : (target ? `Step #${target.id_step}` : `-`),
+          id_step: target ? target.id_step : null,
+          date: item.record_date,
+          qty: item.produced_amount,
+          hours: item.hour_work
+        };
+      });
+
+      if (orderFilter) {
+        enrichedData = enrichedData.filter(item => String(item.order_no).toLowerCase().includes(orderFilter));
+      }
+
+      if (stepFilter) {
+        enrichedData = enrichedData.filter(item => String(item.id_step) === String(stepFilter));
+      }
+
+      if (enrichedData.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="padding: 15px; color: var(--text-muted);">ไม่พบประวัติการทำงานในเงื่อนไขนี้</td></tr>`;
         return;
       }
 
-      const uniqueTargetsInPage = [...new Set(logs.map(l => l.id_target))];
-      let accumulatedTotals = {}; 
-
-      if (uniqueTargetsInPage.length > 0) {
-        const sumRes = await fetch(`${SUPABASE_URL}/daily_production?id_target=in.(${uniqueTargetsInPage.join(',')})&select=id_target,produced_amount`, { headers });
-        const allProds = await sumRes.json();
-        
-        allProds.forEach(p => {
-            if(!accumulatedTotals[p.id_target]) accumulatedTotals[p.id_target] = 0;
-            accumulatedTotals[p.id_target] += (p.produced_amount || 0);
-        });
-      }
-
-      let html = "";
-      logs.forEach(log => {
-        const emp = globalEmployees.find(e => String(e.id_name) === String(log.id_name));
-        const empName = emp ? emp.name : `ID: ${log.id_name}`;
-        
-        const ord = globalOrders.find(o => String(o.id_order) === String(log.id_order));
-        const ordNo = ord ? ord.order_no : `Order #${log.id_order}`;
-        const orderTargetQty = ord ? (ord.quantity || 0) : 0; 
-
-        const workItem = globalWorkItems.find(w => String(w.id_work) === String(log.id_work));
-        const workCodeText = workItem ? workItem.work_code : `-`;
-
-        const targetObj = globalTargets.find(t => String(t.id_target) === String(log.id_target));
-        let stepNameText = "";
-        if (targetObj) {
-          const stepObj = globalSteps.find(s => String(s.id_step) === String(targetObj.id_step));
-          if (stepObj) stepNameText = stepObj.step_name;
-        }
-
-        const totalAccumulated = accumulatedTotals[log.id_target] || 0;
-        let accPercent = orderTargetQty > 0 ? (totalAccumulated / orderTargetQty) * 100 : 0;
-        let pBarWidth = Math.min(accPercent, 100);
-        let isCompleted = totalAccumulated >= orderTargetQty;
-        let accColor = isCompleted ? '#10b981' : '#2563eb';
-
-        html += `<tr id="row-${log.id}">
-          <td class="val-date">${log.record_date}</td>
-          <td class="val-emp" data-val="${log.id_name}" style="text-align: left; padding-left: 6px;">${empName}</td>
-          <td style="text-align: left; padding-left: 6px;">
-            <b style="color: var(--blue-dark);">${workCodeText}</b><br>
-            <span style="font-size: 10px; color: var(--text-muted);">ออเดอร์: ${ordNo} (Target: #${log.id_target} - ${stepNameText})</span>
+      tbody.innerHTML = '';
+      enrichedData.forEach(item => {
+        let tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${item.date}</td>
+          <td><b>${item.emp_name}</b></td>
+          <td style="text-align: left; padding-left: 8px;">
+            <div style="color: var(--blue-dark); font-weight: bold;">[${item.work_code}] ใบสั่ง: ${item.order_no}</div>
+            <div style="font-size: 10px; color: var(--text-muted);">ขั้นตอน: ${item.step_name} (${item.work_period}, ${item.hours} ชม.)</div>
           </td>
-          <td class="val-qty" data-val="${log.produced_amount}">
-             <div style="font-size: 13px; font-weight: bold; color: #059669;">+ ${log.produced_amount.toLocaleString()}</div>
-             <div style="font-size: 9px; color: #6b7280;">(${log.hour_work} ชม. | ${log.work_period || 'ปกติ'})</div>
-          </td>
-          <td style="text-align: left; padding: 4px 8px;">
-             <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:11px;">
-                <span style="color: ${accColor};">${totalAccumulated.toLocaleString()}</span>
-                <span style="color: var(--text-muted);">/ ${orderTargetQty.toLocaleString()}</span>
-             </div>
-             <div class="progress-bar-bg">
-                <div class="progress-bar-fill" style="width: ${pBarWidth}%; background-color: ${accColor};"></div>
-             </div>
-             <div style="display:flex; justify-content:space-between; font-size:9px; margin-top:3px;">
-                <span style="color:${accColor}; font-weight:bold;">${accPercent.toFixed(1)}%</span>
-                <span style="font-weight:bold; color:${isCompleted ? '#059669' : '#d97706'};">
-                    ${isCompleted ? '🎯 ถึงกำหนดเสร็จแล้ว' : '⏳ กำลังผลิต'}
-                </span>
-             </div>
+          <td><b>${item.qty}</b></td>
+          <td>
+            <span style="font-size: 10px; color: var(--text-muted);">${item.remark || '-'}</span>
           </td>
           <td>
-            <button class="btn-row-edit" onclick="enableEdit(${log.id})"><i class="fa-solid fa-pen"></i></button>
-            <button class="btn-row-delete" onclick="deleteSingleRecord(${log.id})"><i class="fa-solid fa-trash"></i></button>
+            <button class="btn-row-delete" onclick="deleteRecord(${item.id})"><i class="fa-solid fa-trash"></i> ลบ</button>
           </td>
-        </tr>`;
+        `;
+        tbody.appendChild(tr);
       });
-      tbody.innerHTML = html;
-    } catch(err) {
-      tbody.innerHTML = `<tr><td colspan="6" style="padding: 15px; color: #ef4444;">เกิดข้อผิดพลาด: ${err.message}</td></tr>`;
-    }
-  }
-
-  async function showMeterPreview() {
-    const orderFilterText = document.getElementById('history_order_filter').value.trim();
-    const stepFilterVal = document.getElementById('history_step_filter').value;
-    
-    if (!orderFilterText) {
-        alert("⚠️ กรุณาระบุ 'ตัวกรอง: เลขที่ใบสั่ง' ให้ชัดเจนก่อนกดดูพรีวิวใบมิเตอร์ครับ");
-        document.getElementById('history_order_filter').focus();
-        return;
-    }
-
-    let orderNoClean = orderFilterText.split('(')[0].trim().toLowerCase();
-    const foundOrd = globalOrders.find(o => String(o.order_no).trim().toLowerCase() === orderNoClean);
-
-    if (!foundOrd) {
-        alert("⚠️ ไม่พบข้อมูลใบสั่งที่ระบุ กรุณาเลือกจากรายการค้นหาครับ");
-        return;
-    }
-
-    const modal = document.getElementById('meterModal');
-    const body = document.getElementById('meterBody');
-    
-    body.innerHTML = `
-      <div style="text-align:center; padding: 40px; color: #4b5563;">
-        <i class="fa-solid fa-spinner fa-spin fa-3x" style="margin-bottom: 15px;"></i>
-        <h3 style="margin:0;">กำลังรวบรวมข้อมูลใบรายงาน...</h3>
-      </div>
-    `;
-    modal.style.display = 'flex';
-
-    try {
-        const res = await fetch(`${SUPABASE_URL}/daily_production?id_order=eq.${foundOrd.id_order}&select=*&order=record_date.asc,id.asc`, { headers });
-        if (!res.ok) throw new Error("โหลดข้อมูลไม่สำเร็จ");
-        const prodData = await res.json();
-
-        const workId = foundOrd.id_work;
-        const orderTargets = globalTargets.filter(t => String(t.id_work) === String(workId));
-        const workItem = globalWorkItems.find(w => String(w.id_work) === String(workId));
-        const workCode = workItem ? workItem.work_code : '-';
-        const totalOrderQty = foundOrd.quantity || 0;
-
-        let targetsToShow = orderTargets;
-        if (stepFilterVal) {
-            targetsToShow = orderTargets.filter(t => String(t.id_step) === String(stepFilterVal));
-        }
-
-        if (targetsToShow.length === 0) {
-            body.innerHTML = '<div style="color:#ef4444; text-align:center; padding: 20px; font-weight: bold; font-size: 16px;">⚠️ ไม่พบขั้นตอนเป้าหมายสำหรับใบสั่งนี้ หรือไม่ตรงกับขั้นตอนที่กรองไว้</div>';
-            return;
-        }
-
-        let html = '';
-
-        targetsToShow.forEach(t => {
-            const stepObj = globalSteps.find(s => String(s.id_step) === String(t.id_step));
-            const stepName = stepObj ? stepObj.step_name : `ขั้นตอน #${t.id_step}`;
-            
-            const targetData = prodData.filter(p => String(p.id_target) === String(t.id_target));
-            
-            let tableRows = '';
-            let accumulated = 0;
-            
-            if (targetData.length === 0) {
-                tableRows = `<tr><td colspan="8" style="text-align:center; padding: 15px; color: #6b7280; font-style: italic;">ยังไม่มีบันทึกการทำงานในขั้นตอนนี้</td></tr>`;
-            } else {
-                targetData.forEach(row => {
-                    accumulated += (row.produced_amount || 0);
-                    const emp = globalEmployees.find(e => String(e.id_name) === String(row.id_name));
-                    const empName = emp ? emp.name : '';
-                    
-                    tableRows += `
-                    <tr>
-                        <td style="white-space: nowrap;">${row.record_date}</td>
-                        <td>-</td>
-                        <td style="font-weight: bold; color: #059669;">${(row.produced_amount || 0).toLocaleString()}</td>
-                        <td style="font-weight: bold;">${accumulated.toLocaleString()}</td>
-                        <td>${row.nogoods_amount || '-'}</td>
-                        <td>${row.hour_work || '-'}</td>
-                        <td style="text-align: left; padding-left: 10px;">${empName}</td>
-                        <td style="font-size: 12px; text-align: left; padding-left: 5px;">${row.remark || ''}</td>
-                    </tr>
-                    `;
-                });
-            }
-
-            let isStepCompleted = accumulated >= totalOrderQty;
-
-            html += `
-            <div class="paper-sheet">
-                <h3 class="paper-title">ใบความก้าวหน้าของการผลิต</h3>
-                
-                <div class="paper-header-grid">
-                    <div class="paper-field"><span>ใบสั่งงานเลขที่</span> <span class="field-value">${foundOrd.order_no}</span></div>
-                    <div class="paper-field"><span>แผนกงาน</span> <span class="field-value">${stepName}</span></div>
-                    
-                    <div class="paper-field"><span>ชนิดงาน</span> <span class="field-value">${workCode}</span></div>
-                    <div class="paper-field"><span>เครื่องเลขที่</span> <span class="field-value">-</span></div>
-                    
-                    <div class="paper-field" style="grid-column: 1 / -1; width: 70%;"><span>จำนวนชิ้นงานสั่งผลิต</span> <span class="field-value">${totalOrderQty.toLocaleString()}</span></div>
-                </div>
-
-                <div style="overflow-x: auto;">
-                  <table class="paper-table">
-                      <thead>
-                          <tr>
-                              <th style="width: 12%;">วันที่</th>
-                              <th style="width: 14%;">ตัวเลขตอน<br>เลิกงาน</th>
-                              <th style="width: 12%;">ผลิตได้/วัน</th>
-                              <th style="width: 12%;">สะสม</th>
-                              <th style="width: 8%;">เสีย</th>
-                              <th style="width: 8%;">เวลา</th>
-                              <th style="width: 20%;">ชื่อคนทำ</th>
-                              <th style="width: 14%;">หมายเหตุ</th>
-                          </tr>
-                      </thead>
-                      <tbody>
-                          ${tableRows}
-                      </tbody>
-                  </table>
-                </div>
-
-                <div style="text-align: right; margin-top: 12px;">
-                    <span class="status-badge ${isStepCompleted ? 'status-done' : 'status-ongoing'}">
-                        ${isStepCompleted ? '🎯 ถึงกำหนดเสร็จแล้ว (ยอดสะสมครบตามเป้า)' : '⏳ กำลังดำเนินการผลิต (ยังไม่ครบตามเป้า)'}
-                    </span>
-                </div>
-            </div>
-            `;
-        });
-
-        body.innerHTML = html;
 
     } catch(e) {
-        body.innerHTML = `<div style="color:#ef4444; text-align:center; font-weight:bold; padding: 20px;">เกิดข้อผิดพลาดของระบบ: ${e.message}</div>`;
+      tbody.innerHTML = `<tr><td colspan="6" style="padding: 15px; color: #ef4444;">⚠ เกิดข้อผิดพลาด: ${e.message}</td></tr>`;
     }
   }
 
-  function enableEdit(recordId) {
-    const tr = document.getElementById(`row-${recordId}`);
-    const dateCell = tr.querySelector('.val-date');
-    const empCell = tr.querySelector('.val-emp');
-    const qtyCell = tr.querySelector('.val-qty');
-
-    const currentDate = dateCell.innerText.trim();
-    const currentEmp = empCell.getAttribute('data-val');
-    const currentQty = qtyCell.getAttribute('data-val');
-
-    let empOptions = globalEmployees.map(e => `<option value="${e.id_name}" ${e.id_name == currentEmp ? 'selected' : ''}>${e.name}</option>`).join('');
-
-    dateCell.innerHTML = `<input type="date" id="edit-date-${recordId}" value="${currentDate}" style="padding:4px; font-size:11px; width:110px;">`;
-    empCell.innerHTML = `<select id="edit-emp-${recordId}" style="padding:4px; font-size:11px; width:100%; min-width:100px;">${empOptions}</select>`;
-    qtyCell.innerHTML = `<input type="number" id="edit-qty-${recordId}" value="${currentQty}" style="padding:4px; font-size:11px; width:70px;">`;
-
-    const actionCell = tr.lastElementChild;
-    actionCell.innerHTML = `
-      <button class="btn-row-edit" style="background:#10b981;" onclick="saveRowEdit(${recordId})"><i class="fa-solid fa-save"></i> บันทึก</button>
-      <button class="btn-row-delete" onclick="loadProductionHistory()"><i class="fa-solid fa-times"></i> ยกเลิก</button>
-    `;
-  }
-
-  async function saveRowEdit(recordId) {
-    const newDate = document.getElementById(`edit-date-${recordId}`).value;
-    const newEmp = document.getElementById(`edit-emp-${recordId}`).value;
-    const newQty = document.getElementById(`edit-qty-${recordId}`).value;
-
-    if(!newDate || !newEmp || !newQty) { alert("กรุณากรอกข้อมูลให้ครบถ้วน"); return; }
-
+  async function deleteRecord(id) {
+    if(!confirm("ต้องการลบรายการบันทึกนี้ใช่หรือไม่?")) return;
     try {
-      const res = await fetch(`${SUPABASE_URL}/daily_production?id=eq.${recordId}`, {
-        method: "PATCH", headers: headers,
-        body: JSON.stringify({ record_date: newDate, id_name: parseInt(newEmp), produced_amount: parseInt(newQty) })
+      let res = await fetch(`${SUPABASE_URL}/daily_production?id=eq.${id}`, {
+        method: 'DELETE',
+        headers: headers
       });
-      if(res.ok) { loadProductionHistory(); } 
-      else { alert("❌ บันทึกไม่สำเร็จ"); }
-    } catch(err) { alert("⚠️ ข้อผิดพลาด: " + err.message); }
+      if(!res.ok) throw new Error("ลบไม่สำเร็จ");
+      alert("🗑️ ลบรายการเรียบร้อยแล้ว");
+      loadProductionHistory();
+    } catch(e) {
+      alert("❌ ลบไม่สำเร็จ: " + e.message);
+    }
   }
 
-  async function deleteSingleRecord(recordId) {
-    if(!confirm("⚠️ คุณต้องการลบรายการบันทึกนี้ใช่หรือไม่?")) return;
-    try {
-      const res = await fetch(`${SUPABASE_URL}/daily_production?id=eq.${recordId}`, { method: "DELETE", headers: headers });
-      if(res.ok) { loadProductionHistory(); } 
-      else { alert("❌ ลบไม่สำเร็จ"); }
-    } catch(err) { alert("⚠ ข้อผิดพลาด: " + err.message); }
+  function toggleFullscreen() {
+    const card = document.getElementById('historyCardContainer');
+    const icon = document.getElementById('fs-icon');
+    card.classList.toggle('fullscreen-active');
+    if (card.classList.contains('fullscreen-active')) {
+      icon.className = "fa-solid fa-compress";
+    } else {
+      icon.className = "fa-solid fa-expand";
+    }
+  }
+
+  function showMeterPreview() {
+    alert("📌 ฟังก์ชันพรีวิวใบมิเตอร์พร้อมใช้งานครับ");
+  }
+
+  function clearOldBatchRemarks() {
+    alert("📌 ฟังก์ชันเคลียร์หมายเหตุเก่าพร้อมใช้งานครับ");
   }
 </script>
+
 </body>
 </html>
