@@ -7,8 +7,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&display=swap');
-    @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap');
-    
     :root {
       --bg-blue: #1e3a8a; --panel-bg: #ffffff; --blue-primary: #2563eb; 
       --blue-dark: #1e40af; --blue-light: #eff6ff; --blue-gold: #f59e0b; 
@@ -21,7 +19,7 @@
       margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; min-height: 100vh;
     }
     .terminal-container {
-      width: 100%; max-width: 850px; background: var(--panel-bg);
+      width: 100%; max-width: 650px; background: var(--panel-bg);
       padding: 20px 15px; border-radius: 12px; border: 3px solid var(--blue-gold);
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 15px rgba(245, 158, 11, 0.4);
       margin-bottom: 15px; box-sizing: border-box;
@@ -42,20 +40,25 @@
     .form-group label { display: block; margin-bottom: 6px; font-size: 15px; font-weight: 700; color: var(--blue-dark); }
     input, select {
       width: 100%; padding: 12px; background-color: var(--input-bg); border: 2px solid var(--border-dim); 
-      color: var(--text-main); font-weight: 600; border-radius: 8px; box-sizing: border-box; font-family: inherit; font-size: 14px;
+      color: var(--text-main); font-weight: 600; border-radius: 8px; box-sizing: border-box; font-family: inherit; font-size: 15px;
     }
     input[type="date"] { text-align: center; }
     input:focus, select:focus { border-color: var(--blue-gold); outline: none; box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.2); background-color: #fff; }
 
-    .hours-period-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 10px; }
+    .hours-period-grid {
+      display: grid; grid-template-columns: 1.5fr 1fr; gap: 10px;
+    }
 
-    .task-row-box { background: var(--blue-light); border: 2px dashed var(--blue-primary); padding: 10px; border-radius: 8px; margin-bottom: 10px; transition: 0.2s; }
-    .task-row-box:focus-within { border-color: var(--blue-gold); box-shadow: 0 0 8px rgba(245, 158, 11, 0.3); background: #fffbeb; }
+    .task-row-box {
+      background: var(--blue-light); border: 2px dashed var(--blue-primary); padding: 10px; border-radius: 8px; margin-bottom: 10px;
+    }
     .task-row-grid { display: flex; flex-direction: column; gap: 8px; margin-bottom: 6px; }
     @media(min-width: 480px) {
-      .task-row-grid { display: grid; grid-template-columns: 1.5fr 1.5fr 0.8fr 1.2fr; gap: 6px; }
+      .task-row-grid { display: grid; grid-template-columns: 1.5fr 2fr 1fr; gap: 6px; }
     }
-    .remove-task-btn { background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: bold; }
+    .remove-task-btn {
+      background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: bold;
+    }
 
     .nav-buttons-wrapper { display: flex; gap: 10px; margin-bottom: 15px; }
     .nav-btn {
@@ -66,8 +69,12 @@
     .nav-btn:hover { background: var(--blue-primary); color: #fff; }
 
     .emp-input-row { display: flex; gap: 8px; margin-bottom: 8px; }
-    .add-btn { background: var(--blue-primary); color: white; border: none; padding: 0 15px; border-radius: 8px; font-weight: bold; cursor: pointer; white-space: nowrap; }
-    .selected-emp-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .add-btn {
+      background: var(--blue-primary); color: white; border: none; padding: 0 15px; border-radius: 8px; font-weight: bold; cursor: pointer; white-space: nowrap;
+    }
+    .selected-emp-list {
+      display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px;
+    }
     .emp-badge {
       background: var(--blue-light); border: 1px solid var(--blue-primary); color: var(--blue-dark);
       padding: 5px 10px; border-radius: 20px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px;
@@ -77,59 +84,23 @@
     .preview-table-wrapper { width: 100%; overflow-x: auto; margin-top: 15px; border-radius: 8px; border: 2px solid var(--blue-primary); }
     .preview-table { width: 100%; border-collapse: collapse; font-size: 12px; text-align: center; }
     .preview-table th { background: var(--blue-primary); color: white; padding: 8px 4px; font-weight: 700; }
-    .preview-table td { padding: 6px 4px; border-bottom: 1px solid var(--border-dim); background: #fff; vertical-align: middle; }
+    .preview-table td { padding: 6px 4px; border-bottom: 1px solid var(--border-dim); background: #fff; }
 
     .action-btn {
       width: 100%; background: linear-gradient(90deg, var(--blue-dark), var(--blue-primary)); color: #ffffff; border: 2px solid var(--blue-gold); padding: 16px; font-size: 18px;
-      border-radius: 8px; cursor: pointer; font-weight: 800; font-style: italic; font-family: inherit; box-shadow: 0 6px 15px rgba(37, 99, 235, 0.4); text-transform: uppercase;
+      border-radius: 8px; cursor: pointer; font-weight: 800; font-style: italic; margin-top: 15px; font-family: inherit; box-shadow: 0 6px 15px rgba(37, 99, 235, 0.4); text-transform: uppercase;
     }
-    .action-btn:hover, .action-btn:focus { background: linear-gradient(90deg, var(--blue-primary), var(--blue-gold)); outline: none; box-shadow: 0 0 0 4px rgba(245,158,11,0.4); }
-    .preview-btn { background: #10b981; border-color: #059669; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3); margin-top: 15px;}
-
-    .history-card { background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 8px; padding: 15px; margin-top: 25px; transition: 0.3s; }
-    .history-card h3 { color: var(--blue-dark); margin-top: 0; font-size: 1.1rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;}
-    .history-filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; align-items: end; margin-bottom: 10px; }
-    .btn-history-load { background: var(--blue-gold); color: #000; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; height: 42px; }
-    .btn-history-load:hover { background: #d97706; color: #fff; }
-    .btn-fullscreen { background: #3b82f6; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; }
-    .history-table-wrapper { max-height: 450px; overflow-y: auto; margin-top: 10px; border-radius: 6px; border: 1px solid #cbd5e1; }
-    .btn-row-edit { background: #3b82f6; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold; }
-    .btn-row-delete { background: #ef4444; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold; margin-left: 4px; }
-    
-    .smart-dropdown-menu {
-      position: absolute; top: 100%; left: 0; right: 0; background: #fff;
-      border: 2px solid var(--blue-primary); border-top: none; z-index: 1000;
-      max-height: 250px; overflow-y: auto; border-radius: 0 0 8px 8px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    .action-btn:hover { background: linear-gradient(90deg, var(--blue-primary), var(--blue-gold)); }
+    .preview-btn {
+      background: #10b981; border-color: #059669; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
     }
-    .smart-dropdown-item {
-      padding: 10px 12px; cursor: pointer; border-bottom: 1px solid var(--border-dim);
-      font-size: 13px; font-weight: 600; color: var(--blue-dark);
-    }
-    .smart-dropdown-item:hover, .smart-dropdown-item.active { background: var(--blue-light); color: var(--blue-primary); }
-    .smart-dropdown-item:last-child { border-bottom: none; }
-
-    .fullscreen-active {
-      position: fixed !important; top: 0; left: 0; right: 0; bottom: 0;
-      width: 100vw; height: 100vh; background-color: #f8fafc !important;
-      z-index: 10000; margin: 0 !important; padding: 30px !important;
-      border-radius: 0 !important; overflow-y: auto;
-    }
-    .fullscreen-active .history-table-wrapper { max-height: calc(100vh - 160px) !important; }
-
-    /* 📄 Meter Modal */
-    .meter-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.75); z-index: 20000; display: none; justify-content: center; align-items: center; padding: 15px; box-sizing: border-box; backdrop-filter: blur(3px); }
-    .meter-modal-content { width: 100%; max-width: 800px; max-height: 95vh; overflow-y: auto; background: #d1d5db; border-radius: 8px; padding: 20px 20px 10px 20px; position: relative; border: 2px solid #9ca3af; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-    
-    .close-modal-btn { position: sticky; top: 0; float: right; background: #ef4444; color: white; border: 2px solid #fff; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-weight: bold; font-size: 20px; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.4); z-index: 10; margin-bottom: -40px; margin-right: -10px; transition: 0.2s; }
-    .close-modal-btn:hover { background: #dc2626; transform: scale(1.1); }
   </style>
 </head>
 <body>
 
 <div class="terminal-container">
   <div class="nav-buttons-wrapper">
-    <a href="https://paiboon-creater.github.io/fast_form_daily/" class="nav-btn"><i class="fa-solid fa-house"></i> หน้าหลัก</a>
+    <a href="https://paiboon-creater.github.io/daily-production/" class="nav-btn"><i class="fa-solid fa-house"></i> หน้าหลัก</a>
     <a href="#" class="nav-btn" style="background: var(--blue-primary); color: #fff;"><i class="fa-solid fa-users-gear"></i> งานกลุ่ม (Active)</a>
   </div>
 
@@ -139,24 +110,25 @@
   </div>
 
   <form id="batchForm" onsubmit="event.preventDefault();">
+
     <div class="form-group">
       <label>📅 1. วันที่ทำงาน</label>
-      <input type="date" id="batch_date" required autofocus>
+      <input type="date" id="batch_date" required>
     </div>
 
     <div class="form-group">
-      <label>⏱ 2. ช่วงเวลา และชั่วโมงทำงาน / คน</label>
+      <label>⏱️ 2. ช่วงเวลา และชั่วโมงทำงาน / คน</label>
       <div class="hours-period-grid">
         <select id="batch_work_period" required>
           <option value="ปกติ" selected>🟢 ช่วงเวลา: ปกติ</option>
           <option value="โอที">🟠 ช่วงเวลา: โอที</option>
         </select>
-        <input type="number" id="batch_hours" value="8" step="0.5" required placeholder="จำนวน ชม." onfocus="this.select()">
+        <input type="number" id="batch_hours" value="8" step="0.5" required placeholder="จำนวน ชม.">
       </div>
     </div>
 
     <div class="form-group">
-      <label>🏃 3. เพิ่มรายชื่อพนักงาน (พิมพ์ชื่อและกด <kbd>Enter</kbd> หรือกดปุ่ม)</label>
+      <label>🏃 3. เพิ่มรายชื่อพนักงาน (พิมพ์ค้นหาและกดเพิ่มทีละคน)</label>
       <div class="emp-input-row">
         <input type="text" id="emp_search_input" list="emp_datalist" placeholder="พิมพ์ชื่อพนักงาน..." autocomplete="off">
         <button type="button" class="add-btn" onclick="addEmployee()"><i class="fa-solid fa-plus"></i> เพิ่ม</button>
@@ -167,16 +139,15 @@
 
     <div class="form-group">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-        <label style="margin:0;">📦 4. รายการใบสั่งงาน ขั้นตอน ยอดผลิต และหมายเหตุ</label>
+        <label style="margin:0;">📦 4. รายการใบสั่งงาน ขั้นตอน และยอดผลิตรวม</label>
         <button type="button" class="add-btn" style="padding: 6px 12px; font-size: 13px;" onclick="addTaskRow()"><i class="fa-solid fa-plus"></i> เพิ่มใบสั่งงาน</button>
       </div>
       
       <div id="taskRowsContainer"></div>
       <datalist id="order_datalist"></datalist>
-      <div style="font-size: 12px; color: var(--blue-primary); margin-top: 5px;">* 💡 พิมพ์ช่องหมายเหตุเสร็จ กด <kbd>Enter</kbd> เพื่อเพิ่มบรรทัดใหม่ / กด <kbd>Enter</kbd> ตอนว่าง เพื่อบันทึก</div>
     </div>
 
-    <button type="button" class="action-btn preview-btn" id="generatePreviewBtn" onclick="generatePreview()"><i class="fa-solid fa-eye"></i> พรีวิวตารางงานก่อนบันทึก (Enter)</button>
+    <button type="button" class="action-btn preview-btn" onclick="generatePreview()"><i class="fa-solid fa-eye"></i> พรีวิวตารางงานก่อนบันทึก</button>
   </form>
 
   <div id="previewSection" style="display: none;">
@@ -191,7 +162,6 @@
             <th>ชม.</th>
             <th>ยอดผลิต</th>
             <th>EFF%</th>
-            <th>หมายเหตุ</th>
           </tr>
         </thead>
         <tbody id="previewTbody"></tbody>
@@ -199,71 +169,14 @@
     </div>
 
     <div class="form-group" id="reasonGroup" style="display: none; margin-top: 15px;">
-      <label id="reasonLabel" style="color: #dc2626;"><i class="fa-solid fa-triangle-exclamation"></i> ⚠️ มีพนักงานประสิทธิภาพต่ำกว่า 85% — <strong style="text-decoration: underline;">บังคับเลือกสาเหตุที่ไม่ได้ยอด</strong>:</label>
-      <select id="id_reason" required style="border-color: #ef4444; background-color: #fef2f2;">
-        <option value="">-- กรุณาเลือกสาเหตุที่ไม่ได้ยอด (บังคับ) --</option>
+      <label style="color: var(--blue-dark);">ℹ️ มีพนักงานประสิทธิภาพต่ำกว่า 85% (ไม่บังคับเลือก สามารถเว้นว่างได้)</label>
+      <select id="id_reason">
+        <option value="">-- ไม่ระบุสาเหตุ (ปล่อยว่างได้) --</option>
       </select>
     </div>
 
-    <div style="display: flex; gap: 10px; margin-top: 20px;">
-        <button type="button" class="action-btn" id="confirmSubmitBtn" style="flex: 2; margin-top: 0;" onclick="executeBatchSubmit()"><i class="fa-solid fa-bolt"></i> ยืนยันบันทึกข้อมูล (Enter)</button>
-        <button type="button" class="action-btn" style="flex: 1; margin-top: 0; background: #64748b; border-color: #475569;" onclick="cancelPreview()"><i class="fa-solid fa-xmark"></i> ยกเลิก</button>
-    </div>
+    <button type="button" class="action-btn" id="confirmSubmitBtn" onclick="executeBatchSubmit()"><i class="fa-solid fa-bolt"></i> ยืนยันบันทึกข้อมูลด้วยความเร็วแสง!</button>
   </div>
-
-  <!-- 📂 ส่วนดึงประวัติงานกลุ่ม -->
-  <div class="history-card" id="historyCardContainer">
-    <h3>
-      <span><i class="fa-solid fa-box-open"></i> ประวัติล่าสุด & ยอดสะสม</span>
-      <button class="btn-fullscreen" onclick="toggleFullscreen()"><i class="fa-solid fa-expand" id="fs-icon"></i> ขยายเต็มจอ</button>
-    </h3>
-    
-    <div class="history-filters">
-      <div>
-        <label style="font-size: 11px; font-weight: bold; color: var(--text-muted); display: block; margin-bottom: 2px;">วันที่เริ่มต้น</label>
-        <input type="date" id="history_date_start">
-      </div>
-      <div>
-        <label style="font-size: 11px; font-weight: bold; color: var(--text-muted); display: block; margin-bottom: 2px;">วันที่สิ้นสุด</label>
-        <input type="date" id="history_date_end">
-      </div>
-      <div>
-        <label style="font-size: 11px; font-weight: bold; color: var(--text-muted); display: block; margin-bottom: 2px;">ตัวกรอง: เลขที่ใบสั่ง</label>
-        <input type="text" id="history_order_filter" list="order_datalist" placeholder="ทุกใบสั่ง..." autocomplete="off">
-      </div>
-      <div>
-        <label style="font-size: 11px; font-weight: bold; color: var(--text-muted); display: block; margin-bottom: 2px;">ตัวกรอง: ขั้นตอน</label>
-        <select id="history_step_filter">
-          <option value="">-- ทุกขั้นตอน --</option>
-        </select>
-      </div>
-    </div>
-    
-    <div style="display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap;">
-        <button type="button" class="btn-history-load" onclick="loadProductionHistory()" style="flex: 1; min-width: 120px;"><i class="fa-solid fa-search"></i> ค้นหาประวัติ</button>
-        <button type="button" class="btn-history-load" onclick="showMeterPreview()" style="flex: 1; min-width: 120px; background: linear-gradient(90deg, #10b981, #059669); color: white; border: 2px solid #047857;"><i class="fa-solid fa-file-lines"></i> พรีวิวใบมิเตอร์</button>
-        <button type="button" class="btn-history-load" onclick="clearOldBatchRemarks()" style="flex: 1; min-width: 150px; background: linear-gradient(90deg, #f59e0b, #d97706); color: white; border: 2px solid #b45309;" title="ล้างคำว่า Batch Smart-Allocated ในฐานข้อมูลเก่าออกให้หมด"><i class="fa-solid fa-eraser"></i> เคลียร์หมายเหตุเก่า</button>
-    </div>
-
-    <div class="history-table-wrapper">
-      <table class="preview-table" style="font-size: 11px;">
-        <thead>
-          <tr>
-            <th style="width: 70px;">วันที่</th>
-            <th style="width: 100px;">พนักงาน</th>
-            <th style="min-width: 200px;">รหัสชิ้นงาน / ใบสั่ง / ขั้นตอน</th>
-            <th>ยอดผลิตรอบนี้</th>
-            <th style="min-width: 150px;">ยอดสะสม / ยอดสั่ง / สถานะ</th>
-            <th style="width: 100px;">จัดการ</th>
-          </tr>
-        </thead>
-        <tbody id="historyTbody">
-          <tr><td colspan="6" style="padding: 15px; color: var(--text-muted);">กำลังโหลดข้อมูล...</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
 </div>
 
 <script>
@@ -279,92 +192,9 @@
   let globalSteps = [];
   let selectedEmployeeList = [];
   let preparedPayload = [];
-  let hasLowEfficiency = false;
-
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') {
-      const target = e.target;
-      
-      if(target.tagName === 'INPUT' || target.tagName === 'SELECT' || target.tagName === 'BUTTON') {
-        if(target.id === 'history_order_filter') {
-          loadProductionHistory();
-          return;
-        }
-        e.preventDefault();
-      }
-
-      if (document.getElementById('previewSection').style.display === 'block') {
-          if (target.id === 'confirmSubmitBtn' || target.id === 'id_reason' || target.id === 'generatePreviewBtn') {
-              executeBatchSubmit();
-          } else {
-              document.getElementById('confirmSubmitBtn').focus();
-          }
-          return;
-      }
-
-      if (target.id === 'batch_date') { document.getElementById('batch_work_period').focus(); return; }
-      
-      if (target.id === 'batch_work_period') { 
-          let hrInput = document.getElementById('batch_hours');
-          hrInput.focus(); 
-          hrInput.select();
-          return; 
-      }
-      
-      if (target.id === 'batch_hours') { document.getElementById('emp_search_input').focus(); return; }
-      if (target.id === 'emp_search_input') { addEmployee(); return; } 
-
-      if (target.classList.contains('order-search')) {
-          setTimeout(() => { target.closest('.task-row-box').querySelector('.target-input').focus(); }, 100);
-          return;
-      }
-      if (target.classList.contains('target-input')) {
-          const dropdown = target.nextElementSibling.nextElementSibling;
-          if (dropdown && dropdown.style.display === 'block' && dropdown.firstChild) {
-              dropdown.firstChild.click(); 
-          }
-          setTimeout(() => { target.closest('.task-row-box').querySelector('.order-qty').focus(); }, 50);
-          return;
-      }
-      if (target.classList.contains('order-qty')) { 
-          target.closest('.task-row-box').querySelector('.task-remark').focus(); 
-          return; 
-      }
-      if (target.classList.contains('task-remark')) {
-          let qty = target.closest('.task-row-box').querySelector('.order-qty').value;
-          if (qty && qty > 0) {
-              addTaskRow();
-              const rows = document.querySelectorAll('.task-row-box');
-              rows[rows.length - 1].querySelector('.order-search').focus();
-          } else {
-              document.getElementById('generatePreviewBtn').focus();
-          }
-          return;
-      }
-
-      if (target.id === 'generatePreviewBtn') {
-          generatePreview();
-          return;
-      }
-    }
-  });
-
-  document.addEventListener('click', function(e) {
-    if (!e.target.classList.contains('target-input')) {
-      document.querySelectorAll('.target-dropdown').forEach(dd => {
-        if (!dd.contains(e.target)) {
-          dd.style.display = 'none';
-        }
-      });
-    }
-  });
 
   window.onload = async function() {
-    const d = new Date();
-    const yyyy = d.getFullYear();
-    const mm = String(d.getMonth() + 1).padStart(2, '0');
-    const dd = String(d.getDate()).padStart(2, '0');
-    const dateToday = `${yyyy}-${mm}-${dd}`;
+    document.getElementById('batch_date').value = new Date().toISOString().split('T')[0];
 
     try {
       const [ordersRes, empsRes, targetsRes, reasonsRes, worksRes, stepsRes] = await Promise.all([
@@ -408,36 +238,7 @@
         reasonSelect.appendChild(opt);
       });
 
-      const stepSelectFilter = document.getElementById('history_step_filter');
-      globalSteps.forEach(s => {
-        let opt = document.createElement('option');
-        opt.value = s.id_step;
-        opt.textContent = s.step_name;
-        stepSelectFilter.appendChild(opt);
-      });
-
-      document.getElementById('batch_date').value = dateToday;
-      document.getElementById('history_date_start').value = dateToday;
-      document.getElementById('history_date_end').value = dateToday;
-
-      let savedOrder = sessionStorage.getItem('lastSavedOrder');
-      let savedStep = sessionStorage.getItem('lastSavedStep');
-
-      if (savedOrder && savedStep) {
-          document.getElementById('history_order_filter').value = savedOrder;
-          stepSelectFilter.value = savedStep;
-          sessionStorage.removeItem('lastSavedOrder');
-          sessionStorage.removeItem('lastSavedStep');
-      } else {
-          let defaultPackingStep = globalSteps.find(s => s.step_name && (s.step_name.includes('แพ็ค') || s.step_name.includes('แพค')));
-          if (defaultPackingStep) {
-              stepSelectFilter.value = defaultPackingStep.id_step;
-          }
-      }
-
       addTaskRow();
-      loadProductionHistory();
-
     } catch(e) {
       alert("⚠️ โหลดข้อมูลไม่สำเร็จ: " + e.message);
     }
@@ -447,18 +248,14 @@
     const container = document.getElementById('taskRowsContainer');
     const div = document.createElement('div');
     div.className = 'task-row-box';
+    // แถวย่อยเหลือแค่ ออเดอร์, ขั้นตอน, ยอดรวม (ช่องเลือกช่วงเวลาถูกย้ายไปข้างบนแล้ว)
     div.innerHTML = `
       <div class="task-row-grid">
-        <input type="text" class="order-search" list="order_datalist" placeholder="ค้นหาใบสั่ง..." autocomplete="off" oninput="handleOrderInput(this)" onchange="handleOrderInput(this)">
-        
-        <div style="position: relative;">
-          <input type="text" class="target-input" placeholder="👉 กรุณาเลือกใบสั่งงานก่อน" autocomplete="off" onfocus="showTargetDropdown(this)" oninput="filterTargetDropdown(this)" required>
-          <input type="hidden" class="target-value">
-          <div class="target-dropdown smart-dropdown-menu" style="display:none; text-align: left;"></div>
-        </div>
-        
-        <input type="number" class="order-qty" placeholder="ยอดผลิต" required>
-        <input type="text" class="task-remark" placeholder="หมายเหตุ/M/C (Enter)" autocomplete="off">
+        <input type="text" class="order-search" list="order_datalist" placeholder="พิมพ์ค้นหาเลขออเดอร์ หรือ ID..." autocomplete="off" oninput="handleOrderInput(this)" onchange="handleOrderInput(this)">
+        <select class="target-select" required>
+          <option value="">👉 เลือกขั้นตอนการผลิต</option>
+        </select>
+        <input type="number" class="order-qty" placeholder="ยอดรวม (ชิ้น)">
       </div>
       <div style="text-align: right; margin-top: 5px;">
         <button type="button" class="remove-task-btn" onclick="this.closest('.task-row-box').remove()"><i class="fa-solid fa-trash"></i> ลบแถวนี้</button>
@@ -470,24 +267,21 @@
   function handleOrderInput(inputEl) {
     let rawVal = inputEl.value.trim();
     const box = inputEl.closest('.task-row-box');
-    const targetInput = box.querySelector('.target-input');
-    const targetValue = box.querySelector('.target-value');
+    const targetSelect = box.querySelector('.target-select');
     
-    targetInput.targetsData = [];
-    targetInput.value = '';
-    targetValue.value = '';
+    targetSelect.innerHTML = '<option value="">👉 เลือกขั้นตอนการผลิต</option>';
 
-    if(!rawVal) {
-        targetInput.placeholder = "👉 กรุณาเลือกใบสั่งงานก่อน";
-        return;
-    }
+    if(!rawVal) return;
 
     let orderNoClean = rawVal.split('(')[0].trim().toLowerCase();
     const foundOrd = globalOrders.find(o => String(o.order_no).trim().toLowerCase() === orderNoClean);
     if(!foundOrd) return;
 
-    if(!foundOrd.id_work) {
-      targetInput.placeholder = "⚠️ ยังไม่ได้ผูกรหัสชิ้นงาน";
+    if(foundOrd.id_work === null || foundOrd.id_work === undefined || foundOrd.id_work === "") {
+      let opt = document.createElement('option');
+      opt.value = "";
+      opt.textContent = "⚠️ ออเดอร์นี้ยังไม่ได้ผูกรหัสชิ้นงาน (id_work ว่าง)";
+      targetSelect.appendChild(opt);
       return;
     }
 
@@ -495,62 +289,33 @@
     const targetsForThisWork = globalTargets.filter(t => String(t.id_work).trim() === targetWorkIdStr);
 
     if(targetsForThisWork.length === 0) {
-      targetInput.placeholder = "⚠️ ยังไม่ได้ตั้งเป้าหมาย (Targets)";
+      let opt = document.createElement('option');
+      opt.value = "";
+      opt.textContent = "⚠️ ชิ้นงานนี้ยังไม่ได้ตั้งค่าเป้าหมาย (Targets) ในระบบ";
+      targetSelect.appendChild(opt);
       return;
     }
 
     const foundWork = globalWorkItems.find(w => String(w.id_work).trim() === targetWorkIdStr);
     const workCode = foundWork ? foundWork.work_code : `ID:${targetWorkIdStr}`;
 
-    let mappedTargets = targetsForThisWork.map(t => {
+    targetsForThisWork.forEach(t => {
       const foundStep = globalSteps.find(s => String(s.id_step).trim() === String(t.id_step).trim());
       const stepName = foundStep ? foundStep.step_name : `ขั้นตอน #${t.id_step}`;
-      return {
-        val: JSON.stringify({ id_target: parseInt(t.id_target), id_work: parseInt(t.id_work), target_amount: t.target_amount }),
-        label: `[#${t.id_target}] ${workCode} | ${stepName} (เป้า: ${t.target_amount}/ชม.)`
-      };
+
+      let opt = document.createElement('option');
+      opt.value = JSON.stringify({ 
+        id_target: parseInt(t.id_target), 
+        id_work: parseInt(t.id_work), 
+        target_amount: t.target_amount 
+      });
+      opt.textContent = `[รหัส 5 หลัก: #${t.id_target}] ${workCode} | ขั้นตอน: ${stepName} (เป้า: ${t.target_amount}/ชม.)`;
+      targetSelect.appendChild(opt);
     });
 
-    targetInput.targetsData = mappedTargets;
-    targetInput.placeholder = "👉 ค้นหา/เลือกขั้นตอน...";
-
-    if (mappedTargets.length === 1) {
-       targetInput.value = mappedTargets[0].label;
-       targetValue.value = mappedTargets[0].val;
+    if (targetsForThisWork.length === 1) {
+      targetSelect.selectedIndex = 1;
     }
-  }
-
-  function showTargetDropdown(inputEl) { filterTargetDropdown(inputEl); }
-
-  function filterTargetDropdown(inputEl) {
-    const dropdown = inputEl.nextElementSibling.nextElementSibling;
-    const targetsData = inputEl.targetsData || [];
-    const filterText = inputEl.value.toLowerCase().trim();
-    
-    dropdown.innerHTML = '';
-    if (targetsData.length === 0) {
-        dropdown.innerHTML = `<div class="smart-dropdown-item" style="color:#6b7280; cursor:default;">⚠ กรุณาเลือกใบสั่งงานก่อน</div>`;
-        dropdown.style.display = 'block';
-        return;
-    }
-
-    const matched = targetsData.filter(t => t.label.toLowerCase().includes(filterText));
-    if (matched.length === 0) {
-        dropdown.innerHTML = `<div class="smart-dropdown-item" style="color:#6b7280; cursor:default;">ไม่พบขั้นตอนที่ค้นหา</div>`;
-    } else {
-        matched.forEach(t => {
-            let div = document.createElement('div');
-            div.className = 'smart-dropdown-item';
-            div.innerHTML = t.label;
-            div.onclick = function() {
-                inputEl.value = t.label;
-                inputEl.nextElementSibling.value = t.val;
-                dropdown.style.display = 'none';
-            };
-            dropdown.appendChild(div);
-        });
-    }
-    dropdown.style.display = 'block';
   }
 
   function addEmployee() {
@@ -559,10 +324,15 @@
     if(!nameVal) return;
 
     const empObj = globalEmployees.find(e => e.name === nameVal);
-    if(!empObj) { alert("⚠️ ไม่พบชื่อพนักงานนี้ กรุณาเลือกจากรายการค้นหา"); return; }
+    if(!empObj) {
+      alert("⚠️ ไม่พบชื่อพนักงานนี้ในระบบ กรุณาเลือกจากรายการค้นหา");
+      return;
+    }
 
     if(selectedEmployeeList.some(e => e.id_name === empObj.id_name)) {
-      input.value = ''; return;
+      alert("⚠️ พนักงานคนนี้ถูกเพิ่มไปแล้วครับ");
+      input.value = '';
+      return;
     }
 
     selectedEmployeeList.push(empObj);
@@ -589,300 +359,171 @@
 
   function generatePreview() {
     const dateVal = document.getElementById('batch_date').value;
-    const workPeriodVal = document.getElementById('batch_work_period').value;
+    const workPeriodVal = document.getElementById('batch_work_period').value; // ดึงค่าช่วงเวลาจากด้านบนสุด
     const totalHoursPerEmp = parseFloat(document.getElementById('batch_hours').value) || 8;
 
-    if(!dateVal) { alert("⚠ กรุณาระบุวันที่ทำงานด้านบนด้วยครับ"); return; }
-    if(selectedEmployeeList.length === 0) { alert("⚠ กรุณาเพิ่มรายชื่อพนักงานอย่างน้อย 1 คนครับ!"); return; }
+    if(selectedEmployeeList.length === 0) {
+      alert("⚠️ กรุณาเพิ่มรายชื่อพนักงานอย่างน้อย 1 คนครับ!");
+      return;
+    }
 
     let tasks = [];
     let isValidTasks = true;
 
     document.querySelectorAll('.task-row-box').forEach(box => {
       let rawVal = box.querySelector('.order-search').value.trim();
-      let targetValStr = box.querySelector('.target-value').value;
-      let qtyVal = parseFloat(box.querySelector('.order-qty').value);
-      let remarkVal = box.querySelector('.task-remark').value.trim();
+      let targetValStr = box.querySelector('.target-select').value;
+      let qty = parseFloat(box.querySelector('.order-qty').value) || 0;
 
-      if(!rawVal || !targetValStr || isNaN(qtyVal) || qtyVal < 0) {
-        isValidTasks = false;
-        return;
+      if(rawVal || targetValStr || qty > 0) {
+        if(!rawVal || !targetValStr || qty <= 0) {
+          isValidTasks = false;
+          return;
+        }
+
+        let orderNoClean = rawVal.split('(')[0].trim().toLowerCase();
+        const foundOrd = globalOrders.find(o => String(o.order_no).trim().toLowerCase() === orderNoClean);
+        let orderId = foundOrd ? foundOrd.id_order : null;
+
+        if(!orderId) {
+          isValidTasks = false;
+          return;
+        }
+
+        let targetData = JSON.parse(targetValStr);
+        let foundWork = globalWorkItems.find(w => String(w.id_work).trim() === String(targetData.id_work).trim());
+        let workCodeText = foundWork ? foundWork.work_code : targetData.id_work;
+
+        let foundTargetObj = globalTargets.find(t => String(t.id_target).trim() === String(targetData.id_target).trim());
+        let stepNameText = "";
+        if (foundTargetObj) {
+          let foundStep = globalSteps.find(s => String(s.id_step).trim() === String(foundTargetObj.id_step).trim());
+          if (foundStep) stepNameText = foundStep.step_name;
+        }
+
+        tasks.push({
+          id_order: orderId,
+          order_text: foundOrd.order_no,
+          work_code: workCodeText,
+          step_name: stepNameText,
+          id_target: parseInt(targetData.id_target),
+          id_work: parseInt(targetData.id_work),
+          target_amount: targetData.target_amount,
+          total_qty: qty
+        });
       }
-
-      let orderNoClean = rawVal.split('(')[0].trim();
-      let foundOrd = globalOrders.find(o => String(o.order_no).trim().toLowerCase() === orderNoClean.toLowerCase());
-      let targetObj = JSON.parse(targetValStr);
-
-      tasks.push({
-        order_no: orderNoClean,
-        id_order: foundOrd ? foundOrd.id_order : null,
-        id_target: targetObj.id_target,
-        id_work: targetObj.id_work,
-        target_amount: targetObj.target_amount,
-        qty: qtyVal,
-        remark: remarkVal
-      });
     });
 
     if(!isValidTasks || tasks.length === 0) {
-      alert("⚠ กรุณากรอกข้อมูลใบสั่งงาน เลือกขั้นตอน และระบุยอดผลิตให้ครบถ้วนทุกแถวครับ");
+      alert("⚠️ กรุณากรอกเลขออเดอร์ เลือกขั้นตอน และใส่ยอดผลิตให้ครบถ้วนทุกช่องครับ!");
       return;
     }
 
+    let taskLoadWeights = tasks.map(task => {
+      let hoursNeeded = task.target_amount > 0 ? (task.total_qty / task.target_amount) : 1;
+      return hoursNeeded;
+    });
+
+    let totalLoadWeight = taskLoadWeights.reduce((a, b) => a + b, 0);
+
     preparedPayload = [];
-    hasLowEfficiency = false;
-    const numEmps = selectedEmployeeList.length;
+    let hasLowEff = false;
+    let previewHtml = '';
 
-    tasks.forEach(task => {
-      let qtyPerEmp = parseFloat((task.qty / numEmps).toFixed(2));
-      let hoursPerEmp = parseFloat((totalHoursPerEmp / tasks.length).toFixed(2));
-      let standardTargetForHours = task.target_amount * hoursPerEmp;
-      let eff = standardTargetForHours > 0 ? Math.round((qtyPerEmp / standardTargetForHours) * 100) : 100;
+    selectedEmployeeList.forEach(emp => {
+      tasks.forEach((task, idx) => {
+        let assignedQty = Math.round(task.total_qty / selectedEmployeeList.length);
+        
+        let proportion = totalLoadWeight > 0 ? (taskLoadWeights[idx] / totalLoadWeight) : (1 / tasks.length);
+        let empAssignedHours = totalHoursPerEmp * proportion;
 
-      if (eff < 85) {
-        hasLowEfficiency = true;
-      }
+        let totalTargetForEmp = task.target_amount * empAssignedHours;
+        let eff = totalTargetForEmp > 0 ? (assignedQty / totalTargetForEmp) * 100 : 0;
+        
+        if (eff < 85) {
+          hasLowEff = true;
+        }
 
-      selectedEmployeeList.forEach(emp => {
+        let effColor = eff >= 85 ? '#10b981' : '#ef4444';
+
         preparedPayload.push({
-          date: dateVal,
-          id_name: emp.id_name,
-          emp_name: emp.name,
-          id_order: task.id_order,
-          order_no: task.order_no,
-          id_target: task.id_target,
-          id_work: task.id_work,
-          work_period: workPeriodVal,
-          hours: hoursPerEmp,
-          qty: qtyPerEmp,
-          eff: eff,
-          remark: task.remark
+          record_date: dateVal,
+          id_order: parseInt(task.id_order),
+          id_work: parseInt(task.id_work),
+          id_target: parseInt(task.id_target),
+          id_name: parseInt(emp.id_name),
+          hour_work: parseFloat(empAssignedHours.toFixed(2)),
+          work_period: workPeriodVal, // ใช้ค่าช่วงเวลาหลักด้านบน
+          produced_amount: parseInt(assignedQty),
+          nogoods_amount: 0,
+          remark: `Batch Smart-Allocated`
         });
+
+        previewHtml += `<tr>
+          <td>${emp.name}</td>
+          <td style="text-align: left; padding-left: 8px;">
+            <b style="color:var(--blue-dark);">[#${task.id_target}]</b> <b>${task.order_text}</b><br>
+            <span style="font-size:11px; color:#6b7280;">ชิ้นงาน: ${task.work_code} | ขั้นตอน: ${task.step_name} (เป้า: ${task.target_amount}/ชม.)</span>
+          </td>
+          <td><span style="background: ${workPeriodVal === 'โอที' ? '#f59e0b' : '#2563eb'}; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 11px;">${workPeriodVal}</span></td>
+          <td>${empAssignedHours.toFixed(2)}</td>
+          <td style="color: #059669; font-weight: bold;">${assignedQty.toLocaleString()}</td>
+          <td style="color: ${effColor}; font-weight: bold;">${eff.toFixed(1)}%</td>
+        </tr>`;
       });
     });
 
-    const tbody = document.getElementById('previewTbody');
-    tbody.innerHTML = '';
-    preparedPayload.forEach(item => {
-      let tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td><b>${item.emp_name}</b></td>
-        <td>ใบสั่ง: ${item.order_no} (Target ID: ${item.id_target})</td>
-        <td>${item.work_period}</td>
-        <td>${item.hours}</td>
-        <td><b>${item.qty}</b></td>
-        <td><span style="color: ${item.eff < 85 ? '#ef4444' : '#10b981'}; font-weight: bold;">${item.eff}%</span></td>
-        <td>${item.remark || '-'}</td>
-      `;
-      tbody.appendChild(tr);
-    });
+    document.getElementById('previewTbody').innerHTML = previewHtml;
+    document.getElementById('previewSection').style.display = 'block';
 
-    const reasonGroup = document.getElementById('reasonGroup');
-    const reasonSelect = document.getElementById('id_reason');
-    if (hasLowEfficiency) {
-      reasonGroup.style.display = 'block';
-      reasonSelect.required = true;
+    if (hasLowEff) {
+      document.getElementById('reasonGroup').style.display = 'block';
     } else {
-      reasonGroup.style.display = 'none';
-      reasonSelect.required = false;
-      reasonSelect.value = '';
+      document.getElementById('reasonGroup').style.display = 'none';
+      document.getElementById('id_reason').value = '';
     }
 
-    document.getElementById('batchForm').style.display = 'none';
-    document.getElementById('previewSection').style.display = 'block';
-    document.getElementById('confirmSubmitBtn').focus();
-  }
-
-  function cancelPreview() {
-    document.getElementById('previewSection').style.display = 'none';
-    document.getElementById('batchForm').style.display = 'block';
+    document.getElementById('previewSection').scrollIntoView({ behavior: 'smooth' });
   }
 
   async function executeBatchSubmit() {
-    const reasonVal = document.getElementById('id_reason').value;
-    if (hasLowEfficiency && !reasonVal) {
-      alert("⚠️ มีพนักงานประสิทธิภาพต่ำกว่า 85% กรุณาเลือก 'สาเหตุที่ไม่ได้ยอด' ก่อนบันทึกข้อมูลครับ!");
-      document.getElementById('id_reason').focus();
-      return;
+    if(preparedPayload.length === 0) return;
+    if(!confirm(`ยืนยันการบันทึกข้อมูลชุดนี้ทั้งหมด ${preparedPayload.length} รายการ ใช่หรือไม่?`)) return;
+
+    let reasonVal = document.getElementById('id_reason').value;
+    if (reasonVal) {
+      let parsedReason = parseInt(reasonVal);
+      preparedPayload.forEach(item => {
+        item.id_reason = parsedReason;
+      });
     }
 
-    const confirmBtn = document.getElementById('confirmSubmitBtn');
-    confirmBtn.disabled = true;
-    confirmBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึก...';
+    const btn = document.getElementById('confirmSubmitBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึกข้อมูลลงฐานข้อมูล...';
 
     try {
-      let savedDate = "";
-      for (let item of preparedPayload) {
-        savedDate = item.date;
-        
-        // แมปชื่อคอลัมน์ให้ตรงกับตาราง daily_production ใน Supabase
-        let recordBody = {
-          record_date: item.date,
-          id_name: item.id_name,
-          id_work: item.id_work,
-          id_target: item.id_target,
-          id_order: item.id_order,
-          produced_amount: item.qty,
-          hour_work: item.hours,
-          work_period: item.work_period,
-          remark: item.remark ? `${item.remark} [Batch Smart-Allocated]` : `[Batch Smart-Allocated]`
-        };
-
-        if (hasLowEfficiency && reasonVal) {
-          recordBody.id_reason = parseInt(reasonVal);
-        }
-
-        let res = await fetch(SUPABASE_URL + "/daily_production", {
-          method: "POST",
-          headers: headers,
-          body: JSON.stringify(recordBody)
-        });
-
-        if (!res.ok) {
-          let errText = await res.text();
-          throw new Error(`[${res.status}] ${errText}`);
-        }
-      }
-
-      alert("✅ บันทึกข้อมูลงานกลุ่มเรียบร้อยแล้วครับ!");
-      
-      if (savedDate) {
-        document.getElementById('history_date_start').value = savedDate;
-        document.getElementById('history_date_end').value = savedDate;
-      }
-
-      cancelPreview();
-      document.getElementById('batchForm').reset();
-      selectedEmployeeList = [];
-      renderSelectedEmployees();
-      document.getElementById('taskRowsContainer').innerHTML = '';
-      addTaskRow();
-      
-      const d = new Date();
-      document.getElementById('batch_date').value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-
-      loadProductionHistory();
-
-    } catch (e) {
-      alert("❌ เกิดข้อผิดพลาดในการบันทึก: " + e.message);
-    } finally {
-      confirmBtn.disabled = false;
-      confirmBtn.innerHTML = '<i class="fa-solid fa-bolt"></i> ยืนยันบันทึกข้อมูล (Enter)';
-    }
-  }
-
-  async function loadProductionHistory() {
-    const startDate = document.getElementById('history_date_start').value;
-    const endDate = document.getElementById('history_date_end').value;
-    const orderFilter = document.getElementById('history_order_filter').value.trim().split('(')[0].trim().toLowerCase();
-    const stepFilter = document.getElementById('history_step_filter').value;
-    const tbody = document.getElementById('historyTbody');
-
-    tbody.innerHTML = `<tr><td colspan="6" style="padding: 15px; color: var(--text-muted);"><i class="fa-solid fa-spinner fa-spin"></i> กำลังค้นหาข้อมูล...</td></tr>`;
-
-    try {
-      let queryUrl = `${SUPABASE_URL}/daily_production?select=*&order=record_date.desc,id.desc&limit=100`;
-
-      if (startDate) queryUrl += `&record_date=gte.${startDate}`;
-      if (endDate) queryUrl += `&record_date=lte.${endDate}`;
-
-      let res = await fetch(queryUrl, { headers });
-      if(!res.ok) throw new Error("โหลดประวัติไม่สำเร็จ");
-      let data = await res.json();
-
-      let enrichedData = data.map(item => {
-        let emp = globalEmployees.find(e => String(e.id_name) === String(item.id_name));
-        let ord = globalOrders.find(o => String(o.id_order) === String(item.id_order));
-        let target = globalTargets.find(t => String(t.id_target) === String(item.id_target));
-        let step = target ? globalSteps.find(s => String(s.id_step) === String(target.id_step)) : null;
-        let work = globalWorkItems.find(w => String(w.id_work) === String(item.id_work)) || (ord ? globalWorkItems.find(w => String(w.id_work) === String(ord.id_work)) : null);
-
-        return {
-          ...item,
-          emp_name: emp ? emp.name : `EMP #${item.id_name}`,
-          order_no: ord ? ord.order_no : `-`,
-          work_code: work ? work.work_code : `WorkID:${item.id_work}`,
-          step_name: step ? step.step_name : (target ? `Step #${target.id_step}` : `-`),
-          id_step: target ? target.id_step : null,
-          date: item.record_date,
-          qty: item.produced_amount,
-          hours: item.hour_work
-        };
+      const res = await fetch(SUPABASE_URL + "/daily_production", {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(preparedPayload)
       });
 
-      if (orderFilter) {
-        enrichedData = enrichedData.filter(item => String(item.order_no).toLowerCase().includes(orderFilter));
+      if(res.ok) {
+        alert("⚡ บันทึกข้อมูลกลุ่มลง Supabase สำเร็จเรียบร้อยแล้ว!");
+        location.reload();
+      } else {
+        const err = await res.json();
+        alert("❌ บันทึกล้มเหลว: " + (err.message || JSON.stringify(err)));
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-bolt"></i> ยืนยันบันทึกข้อมูลด้วยความเร็วแสง!';
       }
-
-      if (stepFilter) {
-        enrichedData = enrichedData.filter(item => String(item.id_step) === String(stepFilter));
-      }
-
-      if (enrichedData.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" style="padding: 15px; color: var(--text-muted);">ไม่พบประวัติการทำงานในเงื่อนไขนี้</td></tr>`;
-        return;
-      }
-
-      tbody.innerHTML = '';
-      enrichedData.forEach(item => {
-        let tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${item.date}</td>
-          <td><b>${item.emp_name}</b></td>
-          <td style="text-align: left; padding-left: 8px;">
-            <div style="color: var(--blue-dark); font-weight: bold;">[${item.work_code}] ใบสั่ง: ${item.order_no}</div>
-            <div style="font-size: 10px; color: var(--text-muted);">ขั้นตอน: ${item.step_name} (${item.work_period}, ${item.hours} ชม.)</div>
-          </td>
-          <td><b>${item.qty}</b></td>
-          <td>
-            <span style="font-size: 10px; color: var(--text-muted);">${item.remark || '-'}</span>
-          </td>
-          <td>
-            <button class="btn-row-delete" onclick="deleteRecord(${item.id})"><i class="fa-solid fa-trash"></i> ลบ</button>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-
-    } catch(e) {
-      tbody.innerHTML = `<tr><td colspan="6" style="padding: 15px; color: #ef4444;">⚠ เกิดข้อผิดพลาด: ${e.message}</td></tr>`;
+    } catch(err) {
+      alert("⚠️ ข้อผิดพลาด: " + err.message);
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-bolt"></i> ยืนยันบันทึกข้อมูลด้วยความเร็วแสง!';
     }
-  }
-
-  async function deleteRecord(id) {
-    if(!confirm("ต้องการลบรายการบันทึกนี้ใช่หรือไม่?")) return;
-    try {
-      let res = await fetch(`${SUPABASE_URL}/daily_production?id=eq.${id}`, {
-        method: 'DELETE',
-        headers: headers
-      });
-      if(!res.ok) throw new Error("ลบไม่สำเร็จ");
-      alert("🗑️ ลบรายการเรียบร้อยแล้ว");
-      loadProductionHistory();
-    } catch(e) {
-      alert("❌ ลบไม่สำเร็จ: " + e.message);
-    }
-  }
-
-  function toggleFullscreen() {
-    const card = document.getElementById('historyCardContainer');
-    const icon = document.getElementById('fs-icon');
-    card.classList.toggle('fullscreen-active');
-    if (card.classList.contains('fullscreen-active')) {
-      icon.className = "fa-solid fa-compress";
-    } else {
-      icon.className = "fa-solid fa-expand";
-    }
-  }
-
-  function showMeterPreview() {
-    alert("📌 ฟังก์ชันพรีวิวใบมิเตอร์พร้อมใช้งานครับ");
-  }
-
-  function clearOldBatchRemarks() {
-    alert("📌 ฟังก์ชันเคลียร์หมายเหตุเก่าพร้อมใช้งานครับ");
   }
 </script>
-
 </body>
 </html>
